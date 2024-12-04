@@ -48,7 +48,7 @@
                 return;
             }
 
-            const totalCost = (buyPrice * shares) + 2 * feePerTransaction;
+            const totalCost = (buyPrice * shares) +  feePerTransaction;
             const breakevenPrice = (totalCost + feePerTransaction) / (shares * (1 - sellingFeeRate));
 
             document.getElementById('result').innerText = `Breakeven Selling Price: $${breakevenPrice.toFixed(2)} per share`;
