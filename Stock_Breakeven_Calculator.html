@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Breakeven Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input {
+            margin-bottom: 10px;
+            padding: 5px;
+        }
+        button {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Stock Breakeven Calculator</h1>
+    <p>Enter your purchase details to calculate the breakeven selling price:</p>
+    <label for="buyPrice">Buy Price (per share):</label><br>
+    <input type="number" id="buyPrice" placeholder="e.g., 50"><br>
+    <label for="shares">Number of Shares:</label><br>
+    <input type="number" id="shares" placeholder="e.g., 100"><br>
+    <button onclick="calculateBreakeven()">Calculate Breakeven Price</button>
+    <h2 id="result"></h2>
+
+    <script>
+        function calculateBreakeven() {
+            const buyPrice = parseFloat(document.getElementById('buyPrice').value);
+            const shares = parseInt(document.getElementById('shares').value);
+            const feePerTransaction = 3; // Fixed transaction fee in USD
+            const sellingFeeRate = 0.00278; // Selling fee rate
+
+            if (isNaN(buyPrice) || isNaN(shares)) {
+                document.getElementById('result').innerText = "Please enter valid values for both fields.";
+                return;
+            }
+
+            const totalCost = (buyPrice * shares) + 2 * feePerTransaction;
+            const breakevenPrice = (totalCost + feePerTransaction) / (shares * (1 - sellingFeeRate));
+
+            document.getElementById('result').innerText = `Breakeven Selling Price: $${breakevenPrice.toFixed(2)} per share`;
+        }
+    </script>
+</body>
+</html>
