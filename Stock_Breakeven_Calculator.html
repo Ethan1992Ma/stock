@@ -19,7 +19,7 @@
             padding: 12px;
             margin: 8px 0;
             font-size: 1rem;
-            box-sizing: border-box; /* 確保 padding 不會使元素超出可用寬度 */
+            box-sizing: border-box;
         }
         button {
             background-color: #4CAF50;
@@ -73,7 +73,11 @@
                 const data = await response.json();
                 if (data && data.conversion_rates && data.conversion_rates.USD) {
                     const exchangeRate = data.conversion_rates.USD;
-                    document.getElementById('exchangeRate').placeholder = exchangeRate.toFixed(2);
+
+                    // If the API returns USD to TWD, invert it to get TWD to USD
+                    const twdToUsdRate = 1 / exchangeRate;
+
+                    document.getElementById('exchangeRate').placeholder = twdToUsdRate.toFixed(2);
                 }
             } catch (error) {
                 console.error('Error fetching exchange rate:', error);
@@ -107,28 +111,28 @@
             let exchangeRate = parseFloat(document.getElementById('exchangeRate').value);
 
             if (isNaN(exchangeRate) || exchangeRate <= 0) {
-                exchangeRate = parseFloat(document.getElementById('exchangeRate').placeholder); // 使用從 API 獲取的匯率
+                exchangeRate = parseFloat(document.getElementById('exchangeRate').placeholder); // Use fetched exchange rate
             }
 
-            const feePerTransaction = 3; // 每次交易 $3 手續費
+            const feePerTransaction = 3; // Transaction fee of $3
 
             if (isNaN(buyPriceBudget) || isNaN(budget)) {
                 document.getElementById('budgetResult').innerText = "Please enter valid values.";
                 return;
             }
 
-            // 1. 計算可使用的美金預算（扣掉買入手續費）
-            const usdBudget = budget / exchangeRate; // 台幣預算轉美金
-            const availableBudget = usdBudget - feePerTransaction; // 扣掉買入手續費後的美金預算
+            // 1. Calculate available USD budget (subtract transaction fee)
+            const usdBudget = budget / exchangeRate; // Convert TWD to USD
+            const availableBudget = usdBudget - feePerTransaction; // Subtract transaction fee
 
-            // 2. 計算可購買的股數
+            // 2. Calculate maximum shares that can be purchased
             const maxShares = Math.floor(availableBudget / buyPriceBudget);
 
-            // 3. 計算最終總花費 (買入股數花費 + 手續費)
+            // 3. Calculate total cost (including fee)
             const totalCostUSD = (maxShares * buyPriceBudget) + feePerTransaction;
             const totalCostTWD = totalCostUSD * exchangeRate;
 
-            // 4. 顯示結果
+            // 4. Display result
             document.getElementById('budgetResult').innerText = `
                 You can buy ${maxShares} shares.
                 Total Cost (including fee): $${totalCostUSD.toFixed(2)} USD (${totalCostTWD.toFixed(0)} TWD).
