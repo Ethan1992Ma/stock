@@ -16,9 +16,10 @@
         }
         input, button {
             width: 100%;
-            padding: 10px;
-            margin: 5px 0;
+            padding: 12px;
+            margin: 8px 0;
             font-size: 1rem;
+            box-sizing: border-box; /* 確保 padding 不會使元素超出可用寬度 */
         }
         button {
             background-color: #4CAF50;
@@ -90,21 +91,28 @@
                 exchangeRate = 32; // 預設匯率
             }
 
-            const feePerTransaction = 3; 
+            const feePerTransaction = 3; // 每次交易 $3 手續費
 
             if (isNaN(buyPriceBudget) || isNaN(budget)) {
                 document.getElementById('budgetResult').innerText = "Please enter valid values.";
                 return;
             }
 
-            const usdBudget = budget / exchangeRate;
-            const maxShares = Math.floor((usdBudget - feePerTransaction) / buyPriceBudget);
+            // 1. 計算可使用的美金預算（扣掉買入手續費）
+            const usdBudget = budget / exchangeRate; // 台幣預算轉美金
+            const availableBudget = usdBudget - feePerTransaction; // 扣掉買入手續費後的美金預算
+
+            // 2. 計算可購買的股數
+            const maxShares = Math.floor(availableBudget / buyPriceBudget);
+
+            // 3. 計算最終總花費 (買入股數花費 + 手續費)
             const totalCostUSD = (maxShares * buyPriceBudget) + feePerTransaction;
             const totalCostTWD = totalCostUSD * exchangeRate;
 
+            // 4. 顯示結果
             document.getElementById('budgetResult').innerText = `
                 You can buy ${maxShares} shares.
-                Total Cost: $${totalCostUSD.toFixed(2)} USD (${totalCostTWD.toFixed(0)} TWD).
+                Total Cost (including fee): $${totalCostUSD.toFixed(2)} USD (${totalCostTWD.toFixed(0)} TWD).
             `;
         }
     </script>
