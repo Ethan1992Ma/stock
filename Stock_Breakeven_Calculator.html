@@ -84,8 +84,20 @@
     <script>
         let lastUsedExchangeRate = 32; // Default exchange rate
 
-        // Fetch the exchange rate from the API and set the default value
+        // Function to fetch the exchange rate and store it for the day
         async function fetchExchangeRate() {
+            const today = new Date().toISOString().split('T')[0]; // Get today's date (YYYY-MM-DD)
+            const storedData = JSON.parse(localStorage.getItem('exchangeRateData'));
+
+            // Check if there's stored data for today
+            if (storedData && storedData.date === today) {
+                lastUsedExchangeRate = storedData.rate; // Use the stored rate
+                document.getElementById('exchangeRate').placeholder = lastUsedExchangeRate.toFixed(2);
+                document.getElementById('exchangeRateProfit').placeholder = lastUsedExchangeRate.toFixed(2);
+                return;
+            }
+
+            // If no stored data for today, fetch from API
             try {
                 const response = await fetch('https://v6.exchangerate-api.com/v6/YOUR_API_KEY/latest/TWD');
                 const data = await response.json();
@@ -93,10 +105,16 @@
                     const exchangeRate = data.conversion_rates.USD;
                     const twdToUsdRate = 1 / exchangeRate;
 
-                    lastUsedExchangeRate = twdToUsdRate; // Update the last used exchange rate
+                    lastUsedExchangeRate = twdToUsdRate;
 
-                    document.getElementById('exchangeRate').placeholder = twdToUsdRate.toFixed(2);
-                    document.getElementById('exchangeRateProfit').placeholder = twdToUsdRate.toFixed(2);
+                    // Store the rate and date in localStorage
+                    localStorage.setItem(
+                        'exchangeRateData',
+                        JSON.stringify({ date: today, rate: lastUsedExchangeRate })
+                    );
+
+                    document.getElementById('exchangeRate').placeholder = lastUsedExchangeRate.toFixed(2);
+                    document.getElementById('exchangeRateProfit').placeholder = lastUsedExchangeRate.toFixed(2);
                 }
             } catch (error) {
                 console.error('Error fetching exchange rate:', error);
