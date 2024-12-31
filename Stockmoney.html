@@ -30,7 +30,7 @@
         button:hover {
             background-color: #45a049;
         }
-        #inventoryResult, #profitResult {
+        #inventoryResult, #profitResult, #manualProfitResult {
             margin-top: 10px;
             font-size: 1.2rem;
             color: #333;
@@ -63,6 +63,19 @@
 
         <button onclick="calculateProfit()">Calculate Profit/Loss</button>
         <div id="profitResult"></div>
+
+        <h2>3. Manual Profit/Loss Calculation</h2>
+        <label for="manualShares">Total Number of Shares:</label>
+        <input type="number" id="manualShares" placeholder="e.g., 150">
+
+        <label for="manualCost">Total Cost (in USD):</label>
+        <input type="number" id="manualCost" placeholder="e.g., 7500">
+
+        <label for="manualTargetPrice">Target Selling Price (per share in USD):</label>
+        <input type="number" id="manualTargetPrice" placeholder="e.g., 60">
+
+        <button onclick="calculateManualProfit()">Calculate Manual Profit/Loss</button>
+        <div id="manualProfitResult"></div>
     </div>
 
     <script>
@@ -105,6 +118,25 @@
 
             document.getElementById('profitResult').innerText = `
                 At a target price of $${targetPrice.toFixed(2)},
+                your total profit/loss would be $${profitOrLoss.toFixed(2)}.
+            `;
+        }
+
+        function calculateManualProfit() {
+            const manualShares = parseFloat(document.getElementById('manualShares').value);
+            const manualCost = parseFloat(document.getElementById('manualCost').value);
+            const manualTargetPrice = parseFloat(document.getElementById('manualTargetPrice').value);
+
+            if (isNaN(manualShares) || isNaN(manualCost) || isNaN(manualTargetPrice)) {
+                document.getElementById('manualProfitResult').innerText = "Please enter valid values for all fields.";
+                return;
+            }
+
+            const totalRevenue = manualShares * manualTargetPrice;
+            const profitOrLoss = totalRevenue - manualCost;
+
+            document.getElementById('manualProfitResult').innerText = `
+                For ${manualShares} shares at a target price of $${manualTargetPrice.toFixed(2)},
                 your total profit/loss would be $${profitOrLoss.toFixed(2)}.
             `;
         }
