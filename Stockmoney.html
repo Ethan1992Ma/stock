@@ -65,8 +65,8 @@
         <div id="profitResult"></div>
 
         <h2>3. Manual Profit/Loss Calculation</h2>
-        <label for="manualCost">Total Cost (in USD):</label>
-        <input type="number" id="manualCost" placeholder="e.g., 7500">
+        <label for="manualCostPerShare">Cost per Share (in USD):</label>
+        <input type="number" id="manualCostPerShare" placeholder="e.g., 50">
 
         <label for="manualShares">Total Number of Shares:</label>
         <input type="number" id="manualShares" placeholder="e.g., 150">
@@ -123,17 +123,18 @@
         }
 
         function calculateManualProfit() {
+            const manualCostPerShare = parseFloat(document.getElementById('manualCostPerShare').value);
             const manualShares = parseFloat(document.getElementById('manualShares').value);
-            const manualCost = parseFloat(document.getElementById('manualCost').value);
             const manualTargetPrice = parseFloat(document.getElementById('manualTargetPrice').value);
 
-            if (isNaN(manualShares) || isNaN(manualCost) || isNaN(manualTargetPrice)) {
+            if (isNaN(manualCostPerShare) || isNaN(manualShares) || isNaN(manualTargetPrice)) {
                 document.getElementById('manualProfitResult').innerText = "Please enter valid values for all fields.";
                 return;
             }
 
+            const totalCost = manualCostPerShare * manualShares;
             const totalRevenue = manualShares * manualTargetPrice;
-            const profitOrLoss = totalRevenue - manualCost;
+            const profitOrLoss = totalRevenue - totalCost;
 
             document.getElementById('manualProfitResult').innerText = `
                 For ${manualShares} shares at a target price of $${manualTargetPrice.toFixed(2)},
