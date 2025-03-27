@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>星盤計算器</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    label, input, button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+    }
+    button {
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 10px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>星盤資料查詢器</h1>
+
+  <label for="birthdate">出生日期（YYYY-MM-DD）</label>
+  <input type="date" id="birthdate" />
+
+  <label for="birthtime">出生時間（HH:MM）</label>
+  <input type="time" id="birthtime" />
+
+  <label for="latitude">緯度（例如 26.159417）</label>
+  <input type="number" step="0.000001" id="latitude" />
+
+  <label for="longitude">經度（例如 119.918944）</label>
+  <input type="number" step="0.000001" id="longitude" />
+
+  <button onclick="generateData()">產生星盤資料（用於 GPT 分析）</button>
+
+  <pre id="output"></pre>
+
+  <script>
+    function generateData() {
+      const birthdate = document.getElementById("birthdate").value;
+      const birthtime = document.getElementById("birthtime").value;
+      const latitude = document.getElementById("latitude").value;
+      const longitude = document.getElementById("longitude").value;
+
+      if (!birthdate || !birthtime || !latitude || !longitude) {
+        document.getElementById("output").textContent = "請填寫所有欄位。";
+        return;
+      }
+
+      const jsonResult = {
+        birth_date: birthdate,
+        birth_time: birthtime,
+        latitude: parseFloat(latitude),
+        longitude: parseFloat(longitude),
+        timezone: "+08:00 (預設台灣時間)",
+        description: "請使用這些出生資訊生成完整的星盤分析，並包括行星落點（星座+宮位）、主要小行星與特殊點、行星相位表（使用 3 度容許度）、宮主星分配與落點。請詳細逐步說明。"
+      };
+
+      document.getElementById("output").textContent = JSON.stringify(jsonResult, null, 2);
+    }
+  </script>
+</body>
+</html>
