@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>遊戲貿易快速判定</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h1 { font-size: 20px; }
+    select, button { margin: 5px; padding: 5px; }
+    #result { margin-top: 20px; font-weight: bold; white-space: pre-line; }
+  </style>
+</head>
+<body>
+  <h1>📦 遊戲貿易快速判定器</h1>
+
+  <label>買入城市：</label>
+  <select id="buyCity">
+    <option value="泉州">泉州</option>
+    <option value="幽州">幽州</option>
+    <option value="杭州">杭州</option>
+    <option value="雙王">雙王</option>
+    <option value="十方">十方</option>
+  </select><br>
+
+  <label>買入價格：</label>
+  <select id="buyPrice">
+    <option value="基礎">基礎</option>
+    <option value="高價">高價</option>
+  </select><br>
+
+  <label>賣出價格：</label>
+  <select id="sellPrice">
+    <option value="極低">極低</option>
+    <option value="基礎">基礎</option>
+    <option value="略高">略高 (100%)</option>
+    <option value="高價">高價 (200%)</option>
+    <option value="極高">極高 (300%)</option>
+  </select><br>
+
+  <button onclick="judge()">判定</button>
+
+  <div id="result"></div>
+
+  <script>
+    const profitTable = {
+      "泉州": [["杭州",12000], ["幽州",9000], ["雙王",9000]],
+      "幽州": [["十方",9190], ["泉州",8100]],
+      "杭州": [["泉州",12500], ["幽州",8083], ["十方",7166]],
+      "雙王": [["十方",6097], ["幽州",4609]],
+      "十方": [["幽州",7608], ["雙王",7608], ["杭州",2347]]
+    };
+
+    function judge() {
+      const buyCity = document.getElementById("buyCity").value;
+      const buyPrice = document.getElementById("buyPrice").value;
+      const sellPrice = document.getElementById("sellPrice").value;
+
+      let advice = "";
+      const routes = profitTable[buyCity];
+
+      // 排行
+      let rank = "最佳銷售地：\n";
+      routes.forEach(r => {
+        rank += `➡️ ${r[0]} (${r[1]})\n`;
+      });
+
+      // 是否該賣
+      let canSell = "建議：";
+      if (sellPrice === "極低" || sellPrice === "基礎") {
+        canSell += "不建議賣（幾乎必虧）";
+      } else if (sellPrice === "略高") {
+        if (buyPrice === "基礎") canSell += "可以賣，穩賺";
+        else canSell += "建議再等等（可能小虧）";
+      } else if (sellPrice === "高價") {
+        canSell += "可以賣，安全利潤";
+      } else if (sellPrice === "極高") {
+        canSell += "強烈建議賣，大賺！";
+      }
+
+      document.getElementById("result").innerText = rank + "\n" + canSell;
+    }
+  </script>
+</body>
+</html>
