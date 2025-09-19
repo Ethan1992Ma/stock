@@ -2,15 +2,25 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>貿易利潤判定器</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
-    h1 { font-size: 20px; }
-    table { border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: center; }
+    body { font-family: Arial, sans-serif; padding: 10px; background: #f9f9f9; margin: 0; }
+    h1 { font-size: 18px; text-align: center; }
+    p { font-size: 14px; text-align: center; }
+    .city-input { display: flex; flex-direction: column; margin: 8px 0; padding: 8px; background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .city-input b { margin-bottom: 4px; }
+    select { padding: 6px; font-size: 14px; margin: 2px 0; width: 100%; border-radius: 6px; border: 1px solid #ccc; }
+    button { width: 100%; padding: 10px; margin-top: 12px; font-size: 16px; background: #007aff; color: white; border: none; border-radius: 8px; cursor: pointer; }
+    button:active { background: #005bb5; }
+    .result { margin-top: 16px; font-weight: bold; text-align: center; font-size: 16px; }
+    table { border-collapse: collapse; margin-top: 16px; width: 100%; font-size: 12px; }
+    th, td { border: 1px solid #ccc; padding: 6px; text-align: center; }
     th { background: #eee; }
-    select { margin: 5px; }
-    .result { margin-top: 20px; font-weight: bold; }
+    @media (max-width: 480px) {
+      table { font-size: 10px; }
+      th, td { padding: 4px; }
+    }
   </style>
 </head>
 <body>
@@ -23,7 +33,7 @@
 
   <div class="result" id="bestResult"></div>
 
-  <h2>完整利潤表</h2>
+  <h2 style="font-size:16px; margin-top:20px; text-align:center;">完整利潤表</h2>
   <div id="profitTable"></div>
 
   <script>
@@ -37,7 +47,6 @@
       "極高": 4.0
     };
 
-    // 參考獲利基準表
     const baseProfit = {
       "泉州": { "杭州": 12000, "幽州": 9000, "雙王": 9000 },
       "幽州": { "十方": 9190, "泉州": 8100 },
@@ -46,15 +55,16 @@
       "十方": { "幽州": 7608, "雙王": 7608, "杭州": 2347 }
     };
 
-    // 建立輸入表單
     const container = document.getElementById("inputs");
     cities.forEach(city => {
       const div = document.createElement("div");
-      div.innerHTML = `<b>${city}</b> 買入: 
+      div.classList.add("city-input");
+      div.innerHTML = `<b>${city}</b>
+        買入:
         <select id="${city}-buy">
           ${Object.keys(buyOptions).map(opt => `<option>${opt}</option>`).join("")}
         </select>
-        賣出: 
+        賣出:
         <select id="${city}-sell">
           ${Object.keys(sellOptions).map(opt => `<option>${opt}</option>`).join("")}
         </select>`;
@@ -78,7 +88,7 @@
           let revenue = base * sellOptions[sellType];
           let profit = revenue - cost;
 
-          results.push({ from, to, base, buyType, sellType, profit });
+          results.push({ from, to, base, buyType, sellType, cost, revenue, profit });
 
           if (profit > best.profit) {
             best = { profit, route: `${from} → ${to} (${profit})` };
@@ -86,13 +96,11 @@
         }
       }
 
-      // 顯示最佳解
       document.getElementById("bestResult").innerText = `最優解：${best.route}`;
 
-      // 顯示完整利潤表
-      let html = "<table><tr><th>進貨</th><th>出貨</th><th>基準值</th><th>買入</th><th>賣出</th><th>利潤</th></tr>";
+      let html = "<table><tr><th>進貨</th><th>出貨</th><th>基準值</th><th>買入</th><th>賣出</th><th>成本</th><th>收入</th><th>利潤</th></tr>";
       results.forEach(r => {
-        html += `<tr><td>${r.from}</td><td>${r.to}</td><td>${r.base}</td><td>${r.buyType}</td><td>${r.sellType}</td><td>${r.profit}</td></tr>`;
+        html += `<tr><td>${r.from}</td><td>${r.to}</td><td>${r.base}</td><td>${r.buyType}</td><td>${r.sellType}</td><td>${r.cost}</td><td>${r.revenue}</td><td>${r.profit}</td></tr>`;
       });
       html += "</table>";
       document.getElementById("profitTable").innerHTML = html;
