@@ -1,158 +1,140 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>價目表查詢</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body { font-family: sans-serif; margin: 0; padding: 0; background: #f8f9fa; }
-    header { position: sticky; top: 0; background: white; padding: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 10; }
-    input { width: 100%; padding: 10px; font-size: 16px; margin-bottom: 10px; box-sizing: border-box; }
-    button { padding: 10px 16px; font-size: 16px; margin: 5px 0; background: #007bff; color: white; border: none; border-radius: 6px; }
-    button:hover { background: #0056b3; }
-    #results { margin: 10px; }
-    .item { padding: 8px; background: white; border-radius: 6px; margin: 5px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .cart { padding: 10px; background: #fff3cd; margin: 10px; border-radius: 6px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 15px; }
-    th { background: #f1f1f1; }
-    .checkbox { text-align: center; }
+    body { font-family: sans-serif; margin: 0; padding: 0; }
+    header {
+      position: sticky; top: 0; background: #333; color: white;
+      padding: 10px; font-size: 16px; z-index: 1000;
+    }
+    header .total { font-weight: bold; }
+    #search { width: 100%; padding: 10px; font-size: 16px; border: none; border-bottom: 2px solid #ccc; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background: #f4f4f4; }
+    .cart {
+      background: #fafafa; padding: 10px; border-top: 2px solid #ccc;
+    }
+    .cart-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 5px 0; border-bottom: 1px solid #eee;
+    }
+    .cart-controls button {
+      padding: 2px 6px; margin: 0 3px; font-size: 14px;
+    }
   </style>
 </head>
 <body>
-  <header>
-    <input type="text" id="search" placeholder="輸入品名搜尋 (模糊搜尋)">
-    <div class="cart" id="cart">購物車總額: 0 元 (95折後 0 元)</div>
-  </header>
 
-  <div id="results"></div>
+<header>
+  🛒 總額：<span class="total">0</span> 元
+</header>
 
-  <h2 style="padding:10px;">完整價目表</h2>
-  <table id="priceTable">
-    <thead>
-      <tr>
-        <th class="checkbox">✔</th>
-        <th>品名</th>
-        <th>價錢</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+<input type="text" id="search" placeholder="輸入品名搜尋...">
 
-  <script>
-    const priceList = {
-      "一貫煎":460,"乙字湯":450,"二朮湯":540,"二陳湯":450,"七寶美髯丹":500,
-      "八正散":400,"八味帶下方":400,"八珍湯":460,"十全大補湯":550,"十味敗毒散":430,
-      "十神湯":330,"十六味流氣飲":510,"九味羌活湯":460,"人參敗毒散":520,"人參養榮湯":510,
-      "女科柏子仁丸":330,"三痺湯":580,"三物香薷飲":350,"三黃瀉心湯":700,"三黃石膏湯":480,
-      "上中下通用痛風丸":460,"大黃牡丹皮湯":360,"大青龍湯":330,"大柴胡湯":510,"大承氣湯":360,
-      "小青龍湯":620,"小建中湯":400,"小柴胡湯":690,"小續命湯":450,"小承氣湯":300,
-      "川芎茶調散":500,"少腹逐瘀湯":520,"天王補心丹":600,"丹七散":750,"五苓散":570,
-      "五積散":410,"五皮飲":320,"五淋散":450,"五味消毒飲":540,"止嗽散":390,
-      "天麻鉤藤散":600,"六君子湯":490,"六味地黃丸":430,"木香檳榔丸":420,"升麻葛根湯":410,
-      "升陽益胃湯":650,"生化湯":450,"生脈飲":700,"半夏厚朴湯":500,"半夏白术天麻湯":620,
-      "半夏瀉心湯":700,"白虎加人參湯":430,"白虎湯":350,"白頭翁湯":760,"正骨紫金丹":540,
-      "加味逍遙散":550,"加減駐景丸":520,"右歸丸":600,"左歸丸":650,"玉女煎":330,
-      "玉屏風散":560,"玉泉丸":440,"甘露消毒丹":650,"甘草瀉心湯":580,"甘露飲":420,
-      "甘麥大棗湯":330,"四逆湯":420,"四逆散":470,"四君子湯":520,"四物湯":410,
-      "旋覆代赭石湯":480,"平胃散":430,"安中散":430,"保產無憂方":400,"血府逐瘀湯":500,
-      "百合固金湯":460,"瓜蔞枳實湯":660,"竹葉石膏湯":410,"竹茹溫瞻湯":620,"托裏消毒飲":570,
-      "杏蘇散(幼科)":410,"杏蘇散":380,"枸菊地黃丸":470,"吳茱萸湯":700,"芍藥甘草湯":400,
-      "芎歸膠艾湯":740,"完帶湯":520,"辛夷散":580,"辛夷清肺湯":470,"折衝飲":470,
-      "沙參麥冬湯":440,"防己黃耆湯":500,"防風通聖散":450,"身痛逐瘀湯":560,"虎潛丸（去虎骨）":500,
-      "附子理中湯":610,"炙甘草湯":550,"治濁固本丸":680,"羌活勝濕湯":600,"金沸草散":400,
-      "金鎖固精丸":0,"知柏地黃丸":430,"抑肝散":470,"保和丸":420,"洗肝明目湯":530,
-      "厚朴溫中湯":390,"香砂六君子湯":570,"香砂平胃散":420,"香蘇散":330,"苓桂术甘湯":430,
-      "苓甘薑味辛夏仁湯":540,"胃苓湯":460,"胃康寧":560,"柴胡加龍骨牡蠣湯":550,"柴胡桂枝湯":540,
-      "柴胡疏肝湯":460,"柴胡清肝湯":480,"柴胡桂枝乾薑湯":420,"柴陷湯":680,"柴葛解肌湯":450,
-      "桂枝芍藥知母湯":440,"桂枝加龍骨牡蠣湯":440,"桂枝湯":410,"桂附地黃丸":410,"桂枝茯苓丸":530,
-      "桔梗湯":490,"秦艽鱉甲散":510,"桑菊飲":440,"桑螵蛸散":1100,"消風散":650,
-      "烏藥順氣散":350,"真人活命飲":560,"真武湯":460,"茯菟丹":470,"神秘湯":350,
-      "桃紅四物湯":490,"桃核承氣湯":370,"茵陳蒿湯":340,"茵陳五苓散":420,"益氣聰明湯":580,
-      "荊防敗毒散":510,"荊芥連翹散":480,"參苓白朮散":510,"參蘇飲":410,"涼膈散":410,
-      "清空膏":550,"清上防風湯":510,"清心蓮子飲":500,"清心利膈湯":550,"源氣活力湯":560,
-      "清燥救肺湯":600,"清上蠲痛湯":570,"清肺湯":540,"清胃散":710,"排膿散":370,
-      "理中湯":560,"逍遙散":510,"麥門冬湯":500,"麻黃湯":350,"麻黃附子細辛湯":1000,
-      "麻杏甘石湯":410,"麻杏薏甘湯":400,"麻子仁丸":400,"普濟消毒飲":750,"疏經活血湯":510,
-      "復元活血湯":490,"華蓋散":340,"黃耆建中湯":460,"黃耆五物湯":550,"黃連解毒湯":770,
-      "黃連湯":770,"黃芩湯":400,"黃連上清丸":550,"萆薢分清飲":360,"散腫潰堅湯":460,
-      "越鞠丸":420,"越婢加朮湯":380,"鉤藤散":480,"滋陰降火湯":460,"滋腎明目湯":530,
-      "頓嗽湯":390,"溫膽湯":370,"溫經湯":850,"溫清飲":550,"補中益氣湯":600,
-      "補陽還五湯":510,"葛根黃連黃芩湯":630,"葛根湯":390,"葛花解酲湯":500,"當歸四逆湯":540,
-      "當歸芍藥散":540,"當歸飲子":440,"當歸拈痛湯":560,"當歸六黃湯":570,"當歸補血湯":520,
-      "聖愈湯":520,"過期飲":520,"膈下逐瘀湯":530,"寧嗽丸":550,"蒼耳散":440,
-      "酸棗仁湯":0,"銀翹散":520,"鼻良湯（清鼻湯）":440,"精氣神源":1200,"養心湯":650,
-      "調經丸":450,"潤腸湯":420,"豬苓湯":950,"調胃承氣湯":380,"養陰清肺湯":550,
-      "獨活寄生湯":640,"導赤散":360,"龍膽瀉肝湯":510,"還少丸":580,"濟生腎氣丸":420,
-      "薏苡仁湯":380,"瀉白散":360,"歸脾湯":630,"雙解散":380,"藿香正氣散":420,
-      "蘇子降氣湯":380,"響聲破笛丸":370,"蠲痹湯":510
-    };
+<div class="cart" id="cart">
+  <h3>購物車</h3>
+  <div id="cartItems"></div>
+</div>
 
-    let cartItems = {};
+<table id="priceTable">
+  <thead>
+    <tr>
+      <th>選擇</th>
+      <th>品名</th>
+      <th>價錢</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
 
-    function updateCart() {
-      let total = 0;
-      for (let item in cartItems) {
-        total += priceList[item] * cartItems[item];
-      }
-      let discounted = Math.round(total * 0.95);
-      document.getElementById("cart").innerText =
-        `購物車總額: ${total} 元 (95折後 ${discounted} 元)`;
-    }
+<script>
+  // 你可以在這裡放完整的價目表
+  const priceList = {
+    "蘋果": 30,
+    "香蕉": 20,
+    "橘子": 25,
+    "芒果": 50
+  };
 
-    function addToCart(name) {
-      if (!cartItems[name]) cartItems[name] = 0;
-      cartItems[name]++;
-      updateCart();
-    }
+  const tbody = document.querySelector("#priceTable tbody");
+  const search = document.querySelector("#search");
+  const totalSpan = document.querySelector(".total");
+  const cartItemsDiv = document.getElementById("cartItems");
+  let cart = {};
 
-    // 搜尋功能 (模糊)
-    document.getElementById("search").addEventListener("input", function() {
-      const query = this.value.trim();
-      const resultsDiv = document.getElementById("results");
-      resultsDiv.innerHTML = "";
-      if (query === "") return;
-      const regex = new RegExp(query, "i");
-      for (let name in priceList) {
-        if (regex.test(name)) {
-          let div = document.createElement("div");
-          div.className = "item";
-          div.innerHTML = `${name} - ${priceList[name]} 元 
-            <button onclick="addToCart('${name}')">加入購物車</button>`;
-          resultsDiv.appendChild(div);
-        }
-      }
-    });
-
-    // 生成完整價目表
-    const tbody = document.querySelector("#priceTable tbody");
-    for (let name in priceList) {
-      let tr = document.createElement("tr");
-      let tdCheck = document.createElement("td");
-      tdCheck.className = "checkbox";
-      let checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.addEventListener("change", function() {
-        if (this.checked) {
-          cartItems[name] = (cartItems[name] || 0) + 1;
-        } else {
-          delete cartItems[name];
-        }
-        updateCart();
+  function renderTable(filter="") {
+    tbody.innerHTML = "";
+    Object.entries(priceList)
+      .filter(([name]) => name.includes(filter))
+      .forEach(([name, price]) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><input type="checkbox" data-name="${name}"></td>
+          <td>${name}</td>
+          <td>${price}</td>
+        `;
+        tbody.appendChild(tr);
       });
-      tdCheck.appendChild(checkbox);
+    bindCheckboxEvents();
+  }
 
-      let tdName = document.createElement("td");
-      tdName.textContent = name;
+  function bindCheckboxEvents() {
+    document.querySelectorAll("input[type=checkbox]").forEach(cb => {
+      cb.addEventListener("change", e => {
+        const name = e.target.dataset.name;
+        const price = priceList[name];
+        if (e.target.checked) {
+          cart[name] = (cart[name] || 0) + 1;
+        } else {
+          delete cart[name];
+        }
+        renderCart();
+      });
+    });
+  }
 
-      let tdPrice = document.createElement("td");
-      tdPrice.textContent = priceList[name];
+  function renderCart() {
+    cartItemsDiv.innerHTML = "";
+    let total = 0;
+    Object.entries(cart).forEach(([name, qty]) => {
+      const price = priceList[name];
+      const subtotal = price * qty;
+      total += subtotal;
+      const div = document.createElement("div");
+      div.className = "cart-item";
+      div.innerHTML = `
+        <span>${name} (${price}元)</span>
+        <div class="cart-controls">
+          <button onclick="updateQty('${name}', -1)">−</button>
+          <span>${qty}</span>
+          <button onclick="updateQty('${name}', 1)">＋</button>
+          <span> = ${subtotal}元</span>
+        </div>
+      `;
+      cartItemsDiv.appendChild(div);
+    });
+    totalSpan.textContent = total;
+  }
 
-      tr.appendChild(tdCheck);
-      tr.appendChild(tdName);
-      tr.appendChild(tdPrice);
-      tbody.appendChild(tr);
+  function updateQty(name, change) {
+    if (!cart[name]) return;
+    cart[name] += change;
+    if (cart[name] <= 0) {
+      delete cart[name];
+      // 取消表格中的勾選
+      const cb = document.querySelector(`input[data-name="${name}"]`);
+      if (cb) cb.checked = false;
     }
-  </script>
+    renderCart();
+  }
+
+  search.addEventListener("input", e => renderTable(e.target.value));
+  renderTable();
+</script>
+
 </body>
 </html>
