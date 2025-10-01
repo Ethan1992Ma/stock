@@ -3,325 +3,208 @@
 <head>
   <meta charset="UTF-8" />
   <title>價目表查詢</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <style>
-    :root {
-      --border:#e5e7eb;
-      --muted:#6b7280;
-      --brand:#2563eb;
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", Roboto, "Helvetica Neue", Arial, "PingFang TC", "Microsoft JhengHei", sans-serif; margin: 0; }
+    #cart-bar {
+      position: sticky; top: 0; background: #fff; padding: 10px;
+      border-bottom: 1px solid #eee; z-index: 1000;
     }
-    * { box-sizing: border-box; }
-    body { font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans TC","PingFang TC",sans-serif; margin:0; color:#111827; }
-    header#cart-bar {
-      position: sticky; top: 0; background:#fff; padding:10px 12px;
-      border-bottom:1px solid var(--border); z-index:1000;
-      display:flex; flex-direction:column; gap:6px;
-    }
-    #total-line { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
-    #total-amount { font-weight:700; font-size:18px; }
-    .badge { font-size:12px; padding:2px 6px; border-radius:999px; background:#eef2ff; color:#4338ca; }
-    #cart-list { display:flex; gap:8px; flex-wrap:wrap; }
-    .cart-item {
-      display:flex; align-items:center; gap:6px; border:1px solid var(--border);
-      border-radius:8px; padding:6px 8px; background:#fafafa;
-    }
-    .qty-btn { cursor:pointer; border:1px solid var(--border); background:#fff; padding:0 6px; border-radius:6px; font-size:14px; }
-    .remove-btn { cursor:pointer; border:none; background:transparent; color:#ef4444; font-size:16px; }
-    .light { color:var(--muted); }
-
-    .bar { padding:10px 12px; border-bottom:1px solid var(--border); background:#fff; }
-    #search { width:100%; padding:10px 12px; font-size:16px; border:1px solid var(--border); border-radius:8px; }
-
-    table { width:100%; border-collapse:collapse; }
-    th, td { border-bottom:1px solid var(--border); padding:10px 12px; text-align:left; }
-    thead th { position:sticky; top:76px; background:#f9fafb; z-index:500; }
-    .name { color:var(--brand); cursor:pointer; text-decoration:underline; }
-    .price { white-space:nowrap; }
-    .muted { color:var(--muted); font-size:12px; }
-
-    /* 手機優化 */
-    @media (max-width: 480px) {
-      th:nth-child(3), td:nth-child(3) { text-align:right; }
-      .cart-item { font-size:14px; }
-    }
-
-    /* Modal */
-    .modal { position:fixed; inset:0; background:rgba(0,0,0,0.45); display:none; align-items:center; justify-content:center; padding:16px; z-index:2000; }
-    .modal.open { display:flex; }
-    .modal-card {
-      background:#fff; width:min(720px,100%); max-height:85vh; overflow:auto;
-      border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,.2);
-    }
-    .modal-head { display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border-bottom:1px solid var(--border); }
-    .modal-body { padding:14px 16px; line-height:1.6; }
-    .modal h3 { margin:0; font-size:18px; }
-    .close { border:none; background:#f3f4f6; border-radius:8px; padding:6px 10px; cursor:pointer; }
-    .section { margin:10px 0; }
-    .section h4 { margin:0 0 6px 0; font-size:14px; color:#374151; }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; white-space:pre-wrap; }
-    .empty { color:var(--muted); font-style:italic; }
-    .actions { display:flex; gap:8px; align-items:center; }
-    .clear-btn { border:1px solid var(--border); background:#fff; padding:4px 10px; border-radius:8px; cursor:pointer; }
+    #cart-bar .total { font-weight: 700; }
+    #cart-list .item { display:flex; align-items:center; justify-content: space-between; padding:4px 0; border-bottom:1px dashed #eee; }
+    #cart-list .qty button { padding:2px 6px; margin: 0 3px; }
+    #search { width: 100%; padding: 10px; font-size: 16px; border: none; border-bottom: 1px solid #eee; }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; }
+    th, td { border-bottom: 1px solid #f0f0f0; padding: 10px; text-align: left; }
+    th { background: #fafafa; position: sticky; top: 58px; z-index: 500; }
+    .name { color: #2563eb; cursor: pointer; text-decoration: underline; }
+    .muted { color: #888; }
+    .price { white-space: nowrap; }
+    /* modal */
+    .modal { display:none; position:fixed; inset:0; background: rgba(0,0,0,.45); align-items:center; justify-content:center; padding:14px; }
+    .modal .box { background:#fff; max-width:720px; width:100%; max-height:85vh; overflow:auto; border-radius:10px; padding:16px 18px; }
+    .box h3 { margin: 0 0 8px 0; }
+    .box h4 { margin: 14px 0 6px; }
+    .close { float:right; cursor:pointer; }
   </style>
 </head>
 <body>
-
-  <!-- Sticky cart bar -->
-  <header id="cart-bar">
-    <div id="total-line">
-      <div><strong>購物車總額：</strong><span id="total-amount">0</span> 元 <span class="badge">已含 95 折</span></div>
-      <div class="light">表格顯示原價，加入購物車後自動 95 折</div>
-      <div class="actions">
-        <button class="clear-btn" id="clear-cart">清空</button>
-      </div>
+  <div id="cart-bar">
+    <div>
+      <strong>購物車總額：</strong><span id="cart-total" class="total">0</span> 元
+      <span class="muted">（表格顯示原價，加入購物車後自動 95 折）</span>
+      <button id="clear-cart" style="margin-left:8px;">清空</button>
     </div>
     <div id="cart-list"></div>
-  </header>
-
-  <!-- Search -->
-  <div class="bar">
-    <input id="search" type="text" placeholder="搜尋品名（支援模糊，例如：banxiazhu… 或 半夏 朮 天麻）">
   </div>
 
-  <!-- Table -->
-  <table id="tbl">
+  <input id="search" type="text" placeholder="搜尋品名（支援模糊，例如：banxiazhu… 或 半夏）…" />
+
+  <table>
     <thead>
       <tr>
-        <th style="width:64px">選擇</th>
+        <th style="width:72px;">選擇</th>
         <th>品名</th>
-        <th style="width:120px">原價</th>
+        <th style="width:120px;">原價</th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
   </table>
 
-  <!-- Modal -->
+  <!-- 詳細資訊 Modal -->
   <div class="modal" id="modal">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h3 id="m-title">詳細資訊</h3>
-        <button class="close" id="m-close">關閉</button>
-      </div>
-      <div class="modal-body">
-        <div class="section">
-          <h4>藥物組成</h4>
-          <div id="m-comp" class="mono"></div>
-        </div>
-        <div class="section">
-          <h4>效能</h4>
-          <div id="m-eff" class="mono"></div>
-        </div>
-        <div class="section">
-          <h4>適應症</h4>
-          <div id="m-ind" class="mono"></div>
-        </div>
-      </div>
+    <div class="box">
+      <span class="close" onclick="hideModal()">✕</span>
+      <div id="modal-body"></div>
     </div>
   </div>
 
 <script>
-(async function(){
-  // 讀取資料（與 price.html 同層的 drugs.json）
-  const res = await fetch('drugs.json', {cache:'no-store'});
-  const data = await res.json();
+const DISCOUNT = 0.95; // 95 折只在購物車計算
 
-  // 正規化：去空白/全形空白/不可見字、常見異體字
-  const normalize = s => {
-    if (!s) return '';
-    return String(s)
-      .replace(/[\u200b\u200c\u200d\uFEFF]/g,'')
-      .replace(/\s|　/g,'')
-      .replace(/术/g,'朮')
-      .replace(/秘/g,'祕')
-      .trim()
-      .toLowerCase();
-  };
+let DATA = [];
+let CART = {}; // name -> qty
 
-  // 簡易 token 模糊搜尋：輸入拆關鍵字，全部出現在目標名或別名即可
-  const matchFuzzy = (name, keywords) => {
-    const n = normalize(name);
-    return keywords.every(k => n.includes(k));
-  };
-
-  // 預處理資料
-  const items = data.map(d => ({
-    name: d.name,
-    price: Number(d.price) || 0,          // 表格永遠顯示原價
-    composition: d.composition || '',
-    efficacy: d.efficacy || '',
-    indications: d.indications || '',
-    _norm: normalize(d.name)
-  }))
-  // 只顯示價目表存在的（build.py 已經過濾 >0 價格；若你要把 0 也顯示可移除此行）
-  .filter(x => true);
-
-  // DOM
-  const tbody = document.getElementById('tbody');
-  const search = document.getElementById('search');
-  const cartList = document.getElementById('cart-list');
-  const totalAmount = document.getElementById('total-amount');
-  const clearBtn = document.getElementById('clear-cart');
-
-  // Modal
-  const modal = document.getElementById('modal');
-  const mTitle = document.getElementById('m-title');
-  const mComp  = document.getElementById('m-comp');
-  const mEff   = document.getElementById('m-eff');
-  const mInd   = document.getElementById('m-ind');
-  document.getElementById('m-close').onclick = ()=> modal.classList.remove('open');
-  modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
-
-  // 購物車：{ name: qty }
-  const cart = Object.create(null);
-
-  // 渲染表格（保持原價）
-  function renderTable(filter='') {
-    tbody.innerHTML = '';
-    const keywords = filter.split(/[\s]+/).map(normalize).filter(Boolean);
-
-    items
-      .filter(it => keywords.length ? matchFuzzy(it.name, keywords) : true)
-      .forEach(it => {
-        const tr = document.createElement('tr');
-
-        const cb = document.createElement('input');
-        cb.type = 'checkbox';
-        cb.checked = !!cart[it.name];
-        cb.dataset.name = it.name;
-        cb.addEventListener('change', onToggle);
-
-        const td0 = document.createElement('td'); td0.appendChild(cb);
-        const td1 = document.createElement('td');
-        const a = document.createElement('span');
-        a.textContent = it.name;
-        a.className = 'name';
-        a.dataset.name = it.name;
-        a.onclick = ()=> openModal(it);
-        td1.appendChild(a);
-
-        const td2 = document.createElement('td');
-        td2.className = 'price';
-        if (it.price > 0) {
-          td2.innerHTML = `${it.price.toLocaleString()} <span class="muted">元</span>`;
-        } else {
-          td2.innerHTML = `— <span class="muted">(未定價)</span>`;
-        }
-
-        tr.appendChild(td0);
-        tr.appendChild(td1);
-        tr.appendChild(td2);
-        tbody.appendChild(tr);
-      });
-  }
-
-  function onToggle(e){
-    const name = e.target.dataset.name;
-    if (e.target.checked) {
-      cart[name] = cart[name] ? cart[name] + 1 : 1;
-    } else {
-      delete cart[name];
-    }
-    renderCart();
-  }
-
-  function renderCart(){
-    cartList.innerHTML = '';
-    let total = 0;
-    for (const [name, qty] of Object.entries(cart)) {
-      const item = items.find(i => i.name === name);
-      if (!item) continue;
-      const discounted = Math.round(item.price * 0.95); // 購物車才 95 折
-      const sub = discounted * qty;
-      total += sub;
-
-      const wrap = document.createElement('div');
-      wrap.className = 'cart-item';
-      wrap.innerHTML = `
-        <strong>${name}</strong>
-        <span class="light">${discounted.toLocaleString()} 元 ×</span>
-        <button class="qty-btn" data-name="${name}" data-act="minus">－</button>
-        <span>${qty}</span>
-        <button class="qty-btn" data-name="${name}" data-act="plus">＋</button>
-        <span>= <strong>${sub.toLocaleString()}</strong> 元</span>
-        <button class="remove-btn" title="移除" data-name="${name}" data-act="remove">×</button>
-      `;
-      cartList.appendChild(wrap);
-    }
-    totalAmount.textContent = total.toLocaleString();
-  }
-
-  cartList.addEventListener('click', e=>{
-    const btn = e.target.closest('button');
-    if (!btn) return;
-    const name = btn.dataset.name;
-    const act  = btn.dataset.act;
-    if (!name) return;
-
-    if (act === 'plus') { cart[name] = (cart[name]||1) + 1; }
-    else if (act === 'minus') {
-      cart[name] = (cart[name]||1) - 1;
-      if (cart[name] <= 0) delete cart[name];
-    }
-    else if (act === 'remove') {
-      delete cart[name];
-    }
-    // 同步表格勾選狀態
-    const cb = document.querySelector(`input[type=checkbox][data-name="${CSS.escape(name)}"]`);
-    if (cb) cb.checked = !!cart[name];
-    renderCart();
+// 載入資料（與 price.html 同資料夾）
+fetch('drugs.json', {cache: 'no-store'})
+  .then(r => r.json())
+  .then(json => {
+    // 僅保留需要的四個欄位，忽略任何 efficacy
+    DATA = json.map(x => ({
+      name: String(x.name || ''),
+      price: Number(x.price || 0),
+      composition: (x.composition || '').trim(),
+      indications: (x.indications || '').trim()
+    }));
+    renderTable();
   });
 
-  clearBtn.addEventListener('click', ()=>{
-    for (const k of Object.keys(cart)) delete cart[k];
-    document.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
+// 簡易模糊包含（忽略空白）
+function match(text, query) {
+  if (!query) return true;
+  const t = (text || '').replace(/\s+/g, '');
+  const q = query.replace(/\s+/g, '');
+  return t.includes(q);
+}
+
+const $tbody = document.getElementById('tbody');
+const $search = document.getElementById('search');
+const $cartList = document.getElementById('cart-list');
+const $cartTotal = document.getElementById('cart-total');
+
+function renderTable(filter="") {
+  $tbody.innerHTML = "";
+  DATA.forEach(item => {
+    if (!match(item.name, filter)) return;
+    const tr = document.createElement('tr');
+    const priceText = item.price > 0 ? `${item.price} 元` : `<span class="muted">—</span>`;
+    tr.innerHTML = `
+      <td>
+        <button data-act="add" data-name="${item.name}" ${item.price<=0 ? 'disabled' : ''}>加入</button>
+      </td>
+      <td>
+        <span class="name" data-act="show" data-name="${item.name}">${item.name}</span>
+      </td>
+      <td class="price">${priceText}</td>
+    `;
+    $tbody.appendChild(tr);
+  });
+}
+
+function renderCart() {
+  $cartList.innerHTML = "";
+  let total = 0;
+  Object.entries(CART).forEach(([name, qty]) => {
+    const item = DATA.find(d => d.name === name);
+    if (!item) return;
+    const discounted = Math.round(item.price * DISCOUNT);
+    const sub = discounted * qty;
+    total += sub;
+
+    const row = document.createElement('div');
+    row.className = 'item';
+    row.innerHTML = `
+      <div>${name} <span class="muted">（${discounted} 元/95折）</span></div>
+      <div class="qty">
+        <button data-act="dec" data-name="${name}">−</button>
+        <strong>${qty}</strong>
+        <button data-act="inc" data-name="${name}">＋</button>
+        <span style="margin-left:8px;">= ${sub} 元</span>
+      </div>
+    `;
+    $cartList.appendChild(row);
+  });
+  $cartTotal.textContent = total;
+}
+
+document.body.addEventListener('click', (e) => {
+  const act = e.target.getAttribute('data-act');
+  const name = e.target.getAttribute('data-name');
+  if (!act) return;
+
+  if (act === 'add') {
+    CART[name] = (CART[name] || 0) + 1;
     renderCart();
-  });
-
-  function openModal(it){
-    mTitle.textContent = it.name;
-    mComp.textContent = sanitizeBlock(it.composition) || '—';
-    mEff.textContent  = sanitizeBlock(it.efficacy)    || '—';
-    mInd.textContent  = sanitizeBlock(it.indications) || '—';
-    // 顯示為分行列表更好讀
-    prettifyLines(mComp);
-    prettifyLines(mEff);
-    prettifyLines(mInd);
-    modal.classList.add('open');
   }
-
-  // 清掉多餘記號、重複小標
-  function sanitizeBlock(s){
-    if (!s) return '';
-    return String(s)
-      .replace(/【?藥物組成】?/g,'')
-      .replace(/【?效能】?/g,'')
-      .replace(/【?適應症】?/g,'')
-      .replace(/[．·•‧●◎◇◆■□◦▪︎]+/g,' ')
-      .replace(/\s+\n/g,'\n')
-      .trim();
+  if (act === 'inc' && CART[name] > 0) {
+    CART[name] += 1; renderCart();
   }
-
-  // 將多行以條列方式呈現
-  function prettifyLines(el){
-    const lines = el.textContent.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
-    if (lines.length <= 1) return;
-    el.innerHTML = '<ul style="margin:6px 0;padding-left:18px;">' + 
-      lines.map(li => `<li>${escapeHtml(li)}</li>`).join('') + '</ul>';
+  if (act === 'dec' && CART[name] > 1) {
+    CART[name] -= 1; renderCart();
+  } else if (act === 'dec' && CART[name] === 1) {
+    delete CART[name]; renderCart();
   }
-
-  function escapeHtml(s){
-    return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  if (act === 'show') {
+    showDetail(name);
   }
+});
 
-  // 搜尋
-  search.addEventListener('input', e=>{
-    const val = e.target.value || '';
-    renderTable(val);
-  });
+document.getElementById('clear-cart').addEventListener('click', () => {
+  CART = {}; renderCart();
+});
 
-  // 初始渲染
-  renderTable();
-})();
+$search.addEventListener('input', (e) => renderTable((e.target.value || '').trim()));
+
+function showDetail(name) {
+  const item = DATA.find(d => d.name === name);
+  if (!item) return;
+
+  const comp = item.composition ? `
+      <h4>藥物組成</h4>
+      ${renderBulletLines(item.composition)}
+  ` : `<div class="muted">（尚無成分資料）</div>`;
+
+  const ind  = item.indications ? `
+      <h4>適應症</h4>
+      ${renderBulletLines(item.indications)}
+  ` : `<div class="muted">（尚無適應症資料）</div>`;
+
+  // 只渲染成分與適應症，完全不渲染「效能」
+  document.getElementById('modal-body').innerHTML = `
+    <h3>${escapeHtml(name)}</h3>
+    ${comp}
+    ${ind}
+  `;
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function hideModal(){ document.getElementById('modal').style.display = 'none'; }
+function escapeHtml(s){ return (s||'').replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+
+// 將多行文字（或用頓號/逗號分隔）渲染為項目符號
+function renderBulletLines(text) {
+  const raw = (text || "").replace(/\r/g, "");
+  // 先用換行拆；若只有一行再試著用頓號/、/、逗號拆解
+  let lines = raw.split("\n").map(s => s.trim()).filter(Boolean);
+  if (lines.length <= 1) {
+    lines = raw.split(/[、，,；;•·‧]+/).map(s => s.trim()).filter(Boolean);
+  }
+  if (!lines.length) return `<div class="muted">（無）</div>`;
+  return `<ul>${lines.map(li => `<li>${escapeHtml(li)}</li>`).join("")}</ul>`;
+}
+
+// 首次渲染（防止資料尚未載入時的空白）
+renderTable();
 </script>
 </body>
 </html>
