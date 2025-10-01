@@ -1,169 +1,327 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>價目表查詢</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    body { font-family: sans-serif; padding: 10px; }
-    #cart-bar {
-      position: sticky; top: 0; background: #f8f8f8; padding: 10px;
-      border-bottom: 2px solid #ccc; z-index: 1000;
+    :root {
+      --border:#e5e7eb;
+      --muted:#6b7280;
+      --brand:#2563eb;
     }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-    .name { color: blue; cursor: pointer; text-decoration: underline; }
-    .cart-item { margin: 5px 0; }
-    .qty-btn { cursor: pointer; margin: 0 3px; }
-    /* modal */
-    .modal {
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5); justify-content: center; align-items: center;
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans TC","PingFang TC",sans-serif; margin:0; color:#111827; }
+    header#cart-bar {
+      position: sticky; top: 0; background:#fff; padding:10px 12px;
+      border-bottom:1px solid var(--border); z-index:1000;
+      display:flex; flex-direction:column; gap:6px;
     }
-    .modal-content {
-      background: white; padding: 20px; max-width: 90%; max-height: 80%;
-      overflow-y: auto; border-radius: 8px;
+    #total-line { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    #total-amount { font-weight:700; font-size:18px; }
+    .badge { font-size:12px; padding:2px 6px; border-radius:999px; background:#eef2ff; color:#4338ca; }
+    #cart-list { display:flex; gap:8px; flex-wrap:wrap; }
+    .cart-item {
+      display:flex; align-items:center; gap:6px; border:1px solid var(--border);
+      border-radius:8px; padding:6px 8px; background:#fafafa;
     }
-    .modal-content h3 { margin-top: 0; }
-    .modal-content pre { white-space: pre-wrap; line-height: 1.4; }
+    .qty-btn { cursor:pointer; border:1px solid var(--border); background:#fff; padding:0 6px; border-radius:6px; font-size:14px; }
+    .remove-btn { cursor:pointer; border:none; background:transparent; color:#ef4444; font-size:16px; }
+    .light { color:var(--muted); }
+
+    .bar { padding:10px 12px; border-bottom:1px solid var(--border); background:#fff; }
+    #search { width:100%; padding:10px 12px; font-size:16px; border:1px solid var(--border); border-radius:8px; }
+
+    table { width:100%; border-collapse:collapse; }
+    th, td { border-bottom:1px solid var(--border); padding:10px 12px; text-align:left; }
+    thead th { position:sticky; top:76px; background:#f9fafb; z-index:500; }
+    .name { color:var(--brand); cursor:pointer; text-decoration:underline; }
+    .price { white-space:nowrap; }
+    .muted { color:var(--muted); font-size:12px; }
+
+    /* 手機優化 */
+    @media (max-width: 480px) {
+      th:nth-child(3), td:nth-child(3) { text-align:right; }
+      .cart-item { font-size:14px; }
+    }
+
+    /* Modal */
+    .modal { position:fixed; inset:0; background:rgba(0,0,0,0.45); display:none; align-items:center; justify-content:center; padding:16px; z-index:2000; }
+    .modal.open { display:flex; }
+    .modal-card {
+      background:#fff; width:min(720px,100%); max-height:85vh; overflow:auto;
+      border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,.2);
+    }
+    .modal-head { display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border-bottom:1px solid var(--border); }
+    .modal-body { padding:14px 16px; line-height:1.6; }
+    .modal h3 { margin:0; font-size:18px; }
+    .close { border:none; background:#f3f4f6; border-radius:8px; padding:6px 10px; cursor:pointer; }
+    .section { margin:10px 0; }
+    .section h4 { margin:0 0 6px 0; font-size:14px; color:#374151; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; white-space:pre-wrap; }
+    .empty { color:var(--muted); font-style:italic; }
+    .actions { display:flex; gap:8px; align-items:center; }
+    .clear-btn { border:1px solid var(--border); background:#fff; padding:4px 10px; border-radius:8px; cursor:pointer; }
   </style>
 </head>
 <body>
-  <div id="cart-bar">
-    <strong>購物車總額：</strong><span id="cart-total">0</span> 元（95折已含）
+
+  <!-- Sticky cart bar -->
+  <header id="cart-bar">
+    <div id="total-line">
+      <div><strong>購物車總額：</strong><span id="total-amount">0</span> 元 <span class="badge">已含 95 折</span></div>
+      <div class="light">表格顯示原價，加入購物車後自動 95 折</div>
+      <div class="actions">
+        <button class="clear-btn" id="clear-cart">清空</button>
+      </div>
+    </div>
     <div id="cart-list"></div>
+  </header>
+
+  <!-- Search -->
+  <div class="bar">
+    <input id="search" type="text" placeholder="搜尋品名（支援模糊，例如：banxiazhu… 或 半夏 朮 天麻）">
   </div>
 
-  <input type="text" id="search" placeholder="搜尋品名..." style="width:100%;padding:8px;">
-
-  <table id="price-table">
+  <!-- Table -->
+  <table id="tbl">
     <thead>
       <tr>
-        <th>選擇</th><th>品名</th><th>原價</th>
+        <th style="width:64px">選擇</th>
+        <th>品名</th>
+        <th style="width:120px">原價</th>
       </tr>
     </thead>
-    <tbody id="table-body"></tbody>
+    <tbody id="tbody"></tbody>
   </table>
 
-  <!-- modal -->
-  <div class="modal" id="info-modal">
-    <div class="modal-content" id="modal-content"></div>
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 id="m-title">詳細資訊</h3>
+        <button class="close" id="m-close">關閉</button>
+      </div>
+      <div class="modal-body">
+        <div class="section">
+          <h4>藥物組成</h4>
+          <div id="m-comp" class="mono"></div>
+        </div>
+        <div class="section">
+          <h4>效能</h4>
+          <div id="m-eff" class="mono"></div>
+        </div>
+        <div class="section">
+          <h4>適應症</h4>
+          <div id="m-ind" class="mono"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
 <script>
-let priceData = {};
-let drugInfo = {};
-const cart = {};
-const tableBody = document.getElementById("table-body");
-const cartList = document.getElementById("cart-list");
-const cartTotal = document.getElementById("cart-total");
+(async function(){
+  // 讀取資料（與 price.html 同層的 drugs.json）
+  const res = await fetch('drugs.json', {cache:'no-store'});
+  const data = await res.json();
 
-// 載入 drugs_final.json
-fetch("drugs_final.json")
-  .then(res => res.json())
-  .then(data => {
-    data.forEach(d => {
-      priceData[d.name] = d.price;
-      drugInfo[d.name] = {
-        composition: d.composition,
-        efficacy: d.efficacy,
-        indications: d.indications
-      };
-    });
-    renderTable();
-  });
+  // 正規化：去空白/全形空白/不可見字、常見異體字
+  const normalize = s => {
+    if (!s) return '';
+    return String(s)
+      .replace(/[\u200b\u200c\u200d\uFEFF]/g,'')
+      .replace(/\s|　/g,'')
+      .replace(/术/g,'朮')
+      .replace(/秘/g,'祕')
+      .trim()
+      .toLowerCase();
+  };
 
-// 渲染表格
-function renderTable(filter="") {
-  tableBody.innerHTML = "";
-  for (let name in priceData) {
-    if (name.includes(filter)) {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td><input type="checkbox" data-name="${name}"></td>
-        <td><span class="name" data-name="${name}">${name}</span></td>
-        <td>${priceData[name]} 元</td>
-      `;
-      tableBody.appendChild(row);
-    }
+  // 簡易 token 模糊搜尋：輸入拆關鍵字，全部出現在目標名或別名即可
+  const matchFuzzy = (name, keywords) => {
+    const n = normalize(name);
+    return keywords.every(k => n.includes(k));
+  };
+
+  // 預處理資料
+  const items = data.map(d => ({
+    name: d.name,
+    price: Number(d.price) || 0,          // 表格永遠顯示原價
+    composition: d.composition || '',
+    efficacy: d.efficacy || '',
+    indications: d.indications || '',
+    _norm: normalize(d.name)
+  }))
+  // 只顯示價目表存在的（build.py 已經過濾 >0 價格；若你要把 0 也顯示可移除此行）
+  .filter(x => true);
+
+  // DOM
+  const tbody = document.getElementById('tbody');
+  const search = document.getElementById('search');
+  const cartList = document.getElementById('cart-list');
+  const totalAmount = document.getElementById('total-amount');
+  const clearBtn = document.getElementById('clear-cart');
+
+  // Modal
+  const modal = document.getElementById('modal');
+  const mTitle = document.getElementById('m-title');
+  const mComp  = document.getElementById('m-comp');
+  const mEff   = document.getElementById('m-eff');
+  const mInd   = document.getElementById('m-ind');
+  document.getElementById('m-close').onclick = ()=> modal.classList.remove('open');
+  modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+
+  // 購物車：{ name: qty }
+  const cart = Object.create(null);
+
+  // 渲染表格（保持原價）
+  function renderTable(filter='') {
+    tbody.innerHTML = '';
+    const keywords = filter.split(/[\s]+/).map(normalize).filter(Boolean);
+
+    items
+      .filter(it => keywords.length ? matchFuzzy(it.name, keywords) : true)
+      .forEach(it => {
+        const tr = document.createElement('tr');
+
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = !!cart[it.name];
+        cb.dataset.name = it.name;
+        cb.addEventListener('change', onToggle);
+
+        const td0 = document.createElement('td'); td0.appendChild(cb);
+        const td1 = document.createElement('td');
+        const a = document.createElement('span');
+        a.textContent = it.name;
+        a.className = 'name';
+        a.dataset.name = it.name;
+        a.onclick = ()=> openModal(it);
+        td1.appendChild(a);
+
+        const td2 = document.createElement('td');
+        td2.className = 'price';
+        if (it.price > 0) {
+          td2.innerHTML = `${it.price.toLocaleString()} <span class="muted">元</span>`;
+        } else {
+          td2.innerHTML = `— <span class="muted">(未定價)</span>`;
+        }
+
+        tr.appendChild(td0);
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+        tbody.appendChild(tr);
+      });
   }
-}
 
-// 更新購物車
-function updateCart() {
-  cartList.innerHTML = "";
-  let total = 0;
-  for (let name in cart) {
-    let qty = cart[name];
-    let discountPrice = Math.round(priceData[name] * 0.95);
-    total += discountPrice * qty;
-    const div = document.createElement("div");
-    div.className = "cart-item";
-    div.innerHTML = `
-      ${name} - ${discountPrice} 元 x 
-      <span class="qty-btn" data-name="${name}" data-action="minus">➖</span>
-      ${qty}
-      <span class="qty-btn" data-name="${name}" data-action="plus">➕</span>
-      = ${discountPrice * qty} 元
-    `;
-    cartList.appendChild(div);
-  }
-  cartTotal.textContent = total;
-}
-
-// 搜尋
-document.getElementById("search").addEventListener("input", e=>{
-  renderTable(e.target.value.trim());
-});
-
-// 點藥名看詳細
-document.body.addEventListener("click", e=>{
-  if(e.target.classList.contains("name")){
+  function onToggle(e){
     const name = e.target.dataset.name;
-    const info = drugInfo[name];
-    if(info){
-      document.getElementById("modal-content").innerHTML = `
-        <h3>${name}</h3>
-        <h4>【藥物組成】</h4>
-        <pre>${info.composition || "－"}</pre>
-        <h4>【效能】</h4>
-        <pre>${info.efficacy || "－"}</pre>
-        <h4>【適應症】</h4>
-        <pre>${info.indications || "－"}</pre>
-        <button onclick="closeModal()">關閉</button>
-      `;
-      document.getElementById("info-modal").style.display = "flex";
-    }
-  }
-});
-
-// 勾選加入購物車
-document.body.addEventListener("change", e=>{
-  if(e.target.type==="checkbox"){
-    const name = e.target.dataset.name;
-    if(e.target.checked){
-      cart[name] = 1;
+    if (e.target.checked) {
+      cart[name] = cart[name] ? cart[name] + 1 : 1;
     } else {
       delete cart[name];
     }
-    updateCart();
+    renderCart();
   }
-});
 
-// 調整數量
-document.body.addEventListener("click", e=>{
-  if(e.target.classList.contains("qty-btn")){
-    const name = e.target.dataset.name;
-    const action = e.target.dataset.action;
-    if(action==="plus") cart[name]++;
-    if(action==="minus" && cart[name]>1) cart[name]--;
-    updateCart();
+  function renderCart(){
+    cartList.innerHTML = '';
+    let total = 0;
+    for (const [name, qty] of Object.entries(cart)) {
+      const item = items.find(i => i.name === name);
+      if (!item) continue;
+      const discounted = Math.round(item.price * 0.95); // 購物車才 95 折
+      const sub = discounted * qty;
+      total += sub;
+
+      const wrap = document.createElement('div');
+      wrap.className = 'cart-item';
+      wrap.innerHTML = `
+        <strong>${name}</strong>
+        <span class="light">${discounted.toLocaleString()} 元 ×</span>
+        <button class="qty-btn" data-name="${name}" data-act="minus">－</button>
+        <span>${qty}</span>
+        <button class="qty-btn" data-name="${name}" data-act="plus">＋</button>
+        <span>= <strong>${sub.toLocaleString()}</strong> 元</span>
+        <button class="remove-btn" title="移除" data-name="${name}" data-act="remove">×</button>
+      `;
+      cartList.appendChild(wrap);
+    }
+    totalAmount.textContent = total.toLocaleString();
   }
-});
 
-function closeModal(){
-  document.getElementById("info-modal").style.display = "none";
-}
+  cartList.addEventListener('click', e=>{
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    const name = btn.dataset.name;
+    const act  = btn.dataset.act;
+    if (!name) return;
+
+    if (act === 'plus') { cart[name] = (cart[name]||1) + 1; }
+    else if (act === 'minus') {
+      cart[name] = (cart[name]||1) - 1;
+      if (cart[name] <= 0) delete cart[name];
+    }
+    else if (act === 'remove') {
+      delete cart[name];
+    }
+    // 同步表格勾選狀態
+    const cb = document.querySelector(`input[type=checkbox][data-name="${CSS.escape(name)}"]`);
+    if (cb) cb.checked = !!cart[name];
+    renderCart();
+  });
+
+  clearBtn.addEventListener('click', ()=>{
+    for (const k of Object.keys(cart)) delete cart[k];
+    document.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
+    renderCart();
+  });
+
+  function openModal(it){
+    mTitle.textContent = it.name;
+    mComp.textContent = sanitizeBlock(it.composition) || '—';
+    mEff.textContent  = sanitizeBlock(it.efficacy)    || '—';
+    mInd.textContent  = sanitizeBlock(it.indications) || '—';
+    // 顯示為分行列表更好讀
+    prettifyLines(mComp);
+    prettifyLines(mEff);
+    prettifyLines(mInd);
+    modal.classList.add('open');
+  }
+
+  // 清掉多餘記號、重複小標
+  function sanitizeBlock(s){
+    if (!s) return '';
+    return String(s)
+      .replace(/【?藥物組成】?/g,'')
+      .replace(/【?效能】?/g,'')
+      .replace(/【?適應症】?/g,'')
+      .replace(/[．·•‧●◎◇◆■□◦▪︎]+/g,' ')
+      .replace(/\s+\n/g,'\n')
+      .trim();
+  }
+
+  // 將多行以條列方式呈現
+  function prettifyLines(el){
+    const lines = el.textContent.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+    if (lines.length <= 1) return;
+    el.innerHTML = '<ul style="margin:6px 0;padding-left:18px;">' + 
+      lines.map(li => `<li>${escapeHtml(li)}</li>`).join('') + '</ul>';
+  }
+
+  function escapeHtml(s){
+    return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // 搜尋
+  search.addEventListener('input', e=>{
+    const val = e.target.value || '';
+    renderTable(val);
+  });
+
+  // 初始渲染
+  renderTable();
+})();
 </script>
 </body>
 </html>
