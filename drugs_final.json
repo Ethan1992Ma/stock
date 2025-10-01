@@ -1,0 +1,1577 @@
+[
+  {
+    "name": "精氣神源即溶濃縮(龜鹿二仙膏)",
+    "price": 1200,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "葛根湯",
+    "price": 390,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "獨活寄生湯",
+    "price": 640,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "川芎茶調",
+    "price": 500,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "龍膽瀉肝湯",
+    "price": 510,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "知柏地黃",
+    "price": 430,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "清上防風湯",
+    "price": 510,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "小青龍湯",
+    "price": 620,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "九味羌活湯",
+    "price": 460,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "四物湯",
+    "price": 410,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "六味地黃",
+    "price": 430,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "〝〞源氣活力湯\r\n〝",
+    "price": 560,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "加味逍遙",
+    "price": 550,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "華蓋",
+    "price": 340,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "甘露飲",
+    "price": 420,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "荊防敗毒",
+    "price": 510,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "桑菊飲",
+    "price": 440,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "銀翹",
+    "price": 520,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "人參養榮湯",
+    "price": 510,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "當歸芍藥",
+    "price": 540,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "大柴胡湯",
+    "price": 510,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "逍遙",
+    "price": 550,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "柴胡清肝湯",
+    "price": 480,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "黃連解毒湯",
+    "price": 770,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "疏經活血湯",
+    "price": 510,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "柴葛解肌湯",
+    "price": 450,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "芍藥甘草湯",
+    "price": 400,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "防己黃耆湯",
+    "price": 500,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "玉屏風",
+    "price": 560,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "酸棗仁湯",
+    "price": 99999,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "三黃瀉心湯",
+    "price": 700,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "藿香正氣",
+    "price": 420,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "苓桂朮甘湯",
+    "price": 430,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "麻杏甘石湯",
+    "price": 410,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "半夏厚朴湯",
+    "price": 500,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "杏蘇",
+    "price": 410,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "桂附地黃丸",
+    "price": 410,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "辛夷清肺湯",
+    "price": 470,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "真武湯",
+    "price": 460,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "小建中湯",
+    "price": 400,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "防風通聖",
+    "price": 450,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "涼膈",
+    "price": 410,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "芎歸膠艾湯",
+    "price": 740,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "百合固金湯",
+    "price": 460,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "聖愈湯",
+    "price": 520,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "溫膽湯",
+    "price": 370,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "當歸拈痛湯",
+    "price": 560,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "抑肝",
+    "price": 470,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "清胃",
+    "price": 710,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "平胃",
+    "price": 430,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "枸菊地黃丸",
+    "price": 470,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "濟生腎氣",
+    "price": 420,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "寧嗽",
+    "price": 550,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "羌活勝濕湯",
+    "price": 600,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "射干麻黃湯",
+    "price": 350,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "鼻良湯",
+    "price": 440,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "滋腎明目湯",
+    "price": 530,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "荊芥連翹",
+    "price": 480,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "十味敗毒",
+    "price": 430,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "血府逐瘀湯",
+    "price": 500,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "右歸",
+    "price": 600,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "補陽還五湯",
+    "price": 510,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "還少",
+    "price": 580,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "茵陳五苓",
+    "price": 420,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "胃苓湯",
+    "price": 460,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "黃耆五物湯",
+    "price": 550,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "杏蘇散(幼科)",
+    "price": 410,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "蠲痹湯",
+    "price": 510,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "吳茱萸湯",
+    "price": 700,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "益氣聰明湯",
+    "price": 580,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "白虎湯",
+    "price": 350,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "乙字湯",
+    "price": 450,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "四逆",
+    "price": 420,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "四逆湯",
+    "price": 420,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "虎潛丸（去虎骨）",
+    "price": 500,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "〝〞當歸四逆湯\r\n〝",
+    "price": 420,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "止嗽",
+    "price": 390,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "瓜蔞枳實湯",
+    "price": 660,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "左歸丸",
+    "price": 650,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "少腹逐瘀湯",
+    "price": 520,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "身痛逐瘀湯",
+    "price": 560,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "膈下逐瘀湯",
+    "price": 530,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "甘麥大棗湯",
+    "price": 330,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "丹七散",
+    "price": 750,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "普濟消毒飲",
+    "price": 750,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "〝〞桂枝芍藥知母湯\r\n〝",
+    "price": 440,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "甘露消毒丹",
+    "price": 650,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "白虎加人參湯",
+    "price": 430,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "半夏白朮天麻湯",
+    "price": 620,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "小承氣湯",
+    "price": 300,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "旋覆代赭石湯",
+    "price": 480,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "胃康寧",
+    "price": 560,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "柴胡疏肝湯",
+    "price": 460,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "〝〞過期飲\r\n〝",
+    "price": 520,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "保和",
+    "price": 420,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "桃核承氣湯",
+    "price": 370,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "柴胡桂枝乾薑湯",
+    "price": 420,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "折衝飲",
+    "price": 470,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "八珍湯",
+    "price": 460,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "潤腸湯",
+    "price": 420,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "〝〞清上蠲痛湯\r\n〝",
+    "price": 570,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "〝〞桃紅四物湯\r\n〝",
+    "price": 410,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "香砂平胃",
+    "price": 420,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "〝〞小柴胡湯",
+    "price": 690,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "〝〞二陳湯",
+    "price": 450,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "溫清飲",
+    "price": 550,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "清心利膈湯",
+    "price": 550,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "五味消毒飲",
+    "price": 540,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "川芎茶調散",
+    "price": 500,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "小青龍湯（加減方）",
+    "price": 620,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "獨活寄生湯（加減味）",
+    "price": 640,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "柴胡桂枝湯",
+    "price": 540,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "麻黃附子細辛湯",
+    "price": 1000,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "調胃承氣湯\r\n〝",
+    "price": 380,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "〝〞柴陷湯\r\n〝",
+    "price": 680,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "茯菟丹",
+    "price": 470,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "大承氣湯",
+    "price": 360,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "白頭翁湯",
+    "price": 760,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "玉泉",
+    "price": 440,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "養陰清肺湯",
+    "price": 550,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "補中益氣湯",
+    "price": 600,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "炙甘草湯",
+    "price": 550,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "生脈飲",
+    "price": 700,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "真人活命飲（去穿山甲）",
+    "price": 560,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "桂枝湯",
+    "price": 410,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "消風",
+    "price": 650,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "天王補心丹",
+    "price": 600,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "蒼耳",
+    "price": 440,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "桂枝茯苓",
+    "price": 530,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "歸脾湯",
+    "price": 630,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "半夏瀉心湯",
+    "price": 700,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "五苓",
+    "price": 570,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "柴胡加龍骨牡蠣湯",
+    "price": 550,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "溫經湯",
+    "price": 850,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "香砂六君子湯",
+    "price": 570,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "參苓白朮",
+    "price": 510,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "麥門冬湯",
+    "price": 500,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "麻子仁",
+    "price": 400,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "辛夷",
+    "price": 580,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "鉤藤",
+    "price": 600,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "桂枝加龍骨牡蠣湯",
+    "price": 440,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "清肺湯",
+    "price": 540,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "清心蓮子飲",
+    "price": 500,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "六君子湯",
+    "price": 490,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "導赤",
+    "price": 360,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "一貫煎",
+    "price": 460,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "四君子湯",
+    "price": 520,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "十神湯",
+    "price": 330,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "七寶美髯丹",
+    "price": 500,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "越婢加朮湯",
+    "price": 380,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "黃耆建中湯",
+    "price": 460,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "安中",
+    "price": 430,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "天麻鉤藤飲",
+    "price": 600,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "竹葉石膏湯",
+    "price": 410,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "附子理中湯",
+    "price": 610,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "清燥救肺湯",
+    "price": 600,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "上中下通用痛風",
+    "price": 460,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "沙參麥冬湯",
+    "price": 440,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "當歸飲子",
+    "price": 440,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "麻杏薏甘湯",
+    "price": 400,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "正骨紫金丹",
+    "price": 540,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "十全大補湯",
+    "price": 550,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "麻黃湯",
+    "price": 350,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "大青龍湯",
+    "price": 330,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "養心湯",
+    "price": 650,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "洗肝明目湯",
+    "price": 530,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "黃連湯",
+    "price": 770,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "參蘇飲",
+    "price": 410,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "八正",
+    "price": 400,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "理中湯",
+    "price": 560,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "葛根黃芩黃連湯",
+    "price": 770,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "五積",
+    "price": 410,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "托裏消毒飲",
+    "price": 570,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "玉女煎",
+    "price": 330,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "香蘇",
+    "price": 330,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "黃芩湯",
+    "price": 400,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "萆薢分清飲",
+    "price": 360,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "五淋",
+    "price": 450,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "厚朴溫中湯",
+    "price": 390,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "頓嗽湯",
+    "price": 390,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "薏苡仁湯",
+    "price": 380,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "桑螵蛸",
+    "price": 1100,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "瀉白",
+    "price": 360,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "腫潰堅湯",
+    "price": 460,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "蘇子降氣湯",
+    "price": 380,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "滋陰降火湯",
+    "price": 460,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "神秘湯",
+    "price": 350,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "小續命湯",
+    "price": 450,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "苓甘薑味辛夏仁湯",
+    "price": 540,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "八味帶下方",
+    "price": 400,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "葛花解酲湯",
+    "price": 500,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "豬苓湯",
+    "price": 950,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "大黃牡丹皮湯",
+    "price": 360,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "響聲破笛",
+    "price": 370,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "完帶湯",
+    "price": 520,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "甘草瀉心湯",
+    "price": 580,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "當歸六黃湯",
+    "price": 570,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "黃連上清",
+    "price": 550,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "秦艽鱉甲",
+    "price": 510,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "加減駐景",
+    "price": 520,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "十六味流氣飲",
+    "price": 510,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "人參敗毒",
+    "price": 520,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "雙解",
+    "price": 380,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "排膿",
+    "price": 370,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "烏藥順氣",
+    "price": 350,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "調經",
+    "price": 450,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "治濁固本",
+    "price": 680,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "二朮湯",
+    "price": 540,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "五皮飲",
+    "price": 320,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "生化湯",
+    "price": 450,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "茵陳蒿湯",
+    "price": 340,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "越鞠",
+    "price": 420,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "復元活血湯（去穿山甲）",
+    "price": 490,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "升麻葛根湯",
+    "price": 410,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "金沸草",
+    "price": 400,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "清空膏",
+    "price": 550,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "香薷飲",
+    "price": 350,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "當歸補血湯",
+    "price": 520,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "女科柏子仁",
+    "price": 330,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "三黃石膏湯",
+    "price": 480,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "木香檳榔",
+    "price": 420,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "保產無憂方",
+    "price": 400,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "升陽益胃湯",
+    "price": 650,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "桔梗湯",
+    "price": 490,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  },
+  {
+    "name": "桔梗湯（濟生方）",
+    "price": 490,
+    "composition": "",
+    "efficacy": "",
+    "indications": ""
+  }
+]
