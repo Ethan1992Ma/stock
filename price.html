@@ -28,7 +28,7 @@
 </head>
 <body>
   <div id="cart-bar">
-    <strong>購物車總額：</strong><span id="cart-total">0</span> 元（已含95折）
+    <strong>購物車總額：</strong><span id="cart-total">0</span> 元（已含 95 折）
     <div id="cart-list"></div>
   </div>
 
@@ -37,7 +37,7 @@
   <table id="price-table">
     <thead>
       <tr>
-        <th>選擇</th><th>品名</th><th>原價</th>
+        <th>選擇</th><th>品名</th><th>原價</th><th>折扣價</th>
       </tr>
     </thead>
     <tbody id="table-body"></tbody>
@@ -49,8 +49,13 @@
   </div>
 
 <script>
-// 載入 JSON 檔案
 let drugs = [];
+const cart = {};
+const tableBody = document.getElementById("table-body");
+const cartList = document.getElementById("cart-list");
+const cartTotal = document.getElementById("cart-total");
+
+// 載入資料
 fetch("drugs.json")
   .then(res => res.json())
   .then(data => {
@@ -58,43 +63,41 @@ fetch("drugs.json")
     renderTable();
   });
 
-const tableBody = document.getElementById("table-body");
-const cartList = document.getElementById("cart-list");
-const cartTotal = document.getElementById("cart-total");
-const cart = {};
-
+// 產生表格
 function renderTable(filter="") {
   tableBody.innerHTML = "";
-  drugs.forEach(drug=>{
-    if(drug.name.includes(filter)){
+  drugs.forEach(d => {
+    if(d.name.includes(filter)){
+      const price = d.price || 0;
+      const discount = Math.round(price * 0.95);
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td><input type="checkbox" data-name="${drug.name}"></td>
-        <td><span class="name" data-name="${drug.name}">${drug.name}</span></td>
-        <td>${drug.price ? drug.price : "未定價"}</td>
+        <td><input type="checkbox" data-name="${d.name}" data-price="${price}"></td>
+        <td><span class="name" data-name="${d.name}">${d.name}</span></td>
+        <td>${price}</td>
+        <td>${discount}</td>
       `;
       tableBody.appendChild(row);
     }
   });
 }
 
+// 更新購物車
 function updateCart() {
   cartList.innerHTML = "";
   let total = 0;
   for (let name in cart) {
-    let qty = cart[name];
-    let drug = drugs.find(d=>d.name===name);
-    let origPrice = drug?.price || 0;
-    let discounted = Math.round(origPrice * 0.95);
-    total += discounted * qty;
+    const {qty, price} = cart[name];
+    const discount = Math.round(price * 0.95);
+    total += discount * qty;
     const div = document.createElement("div");
     div.className = "cart-item";
     div.innerHTML = `
-      ${name} - ${discounted} 元 (95折) x 
+      ${name} - ${discount} 元 x 
       <span class="qty-btn" data-name="${name}" data-action="minus">➖</span>
       ${qty}
       <span class="qty-btn" data-name="${name}" data-action="plus">➕</span>
-      = ${discounted * qty} 元
+      = ${discount * qty} 元
     `;
     cartList.appendChild(div);
   }
@@ -109,15 +112,14 @@ document.getElementById("search").addEventListener("input", e=>{
 // 點藥名看詳細
 document.body.addEventListener("click", e=>{
   if(e.target.classList.contains("name")){
-    const name = e.target.dataset.name;
-    const drug = drugs.find(d=>d.name===name);
+    const drug = drugs.find(d => d.name === e.target.dataset.name);
     if(drug){
       document.getElementById("modal-content").innerHTML = `
-        <h3>${name}</h3>
+        <h3>${drug.name}</h3>
         <h4>【藥物組成】</h4>
-        <pre>${drug.composition || "未提供"}</pre>
-        <p><strong>效能：</strong>${drug.efficacy || "未提供"}</p>
-        <p><strong>適應症：</strong>${drug.indications || "未提供"}</p>
+        <p>${drug.composition || "（尚無資料）"}</p>
+        <p><strong>效能：</strong>${drug.efficacy || "（尚無資料）"}</p>
+        <p><strong>適應症：</strong>${drug.indications || "（尚無資料）"}</p>
         <button onclick="closeModal()">關閉</button>
       `;
       document.getElementById("info-modal").style.display = "flex";
@@ -129,8 +131,9 @@ document.body.addEventListener("click", e=>{
 document.body.addEventListener("change", e=>{
   if(e.target.type==="checkbox"){
     const name = e.target.dataset.name;
+    const price = parseInt(e.target.dataset.price);
     if(e.target.checked){
-      cart[name] = 1;
+      cart[name] = {qty:1, price};
     } else {
       delete cart[name];
     }
@@ -143,8 +146,8 @@ document.body.addEventListener("click", e=>{
   if(e.target.classList.contains("qty-btn")){
     const name = e.target.dataset.name;
     const action = e.target.dataset.action;
-    if(action==="plus") cart[name]++;
-    if(action==="minus" && cart[name]>1) cart[name]--;
+    if(action==="plus") cart[name].qty++;
+    if(action==="minus" && cart[name].qty>1) cart[name].qty--;
     updateCart();
   }
 });
