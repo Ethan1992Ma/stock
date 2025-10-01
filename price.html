@@ -24,11 +24,13 @@
       background: white; padding: 20px; max-width: 90%; max-height: 80%;
       overflow-y: auto; border-radius: 8px;
     }
+    .modal-content h3 { margin-top: 0; }
+    .modal-content pre { white-space: pre-wrap; line-height: 1.4; }
   </style>
 </head>
 <body>
   <div id="cart-bar">
-    <strong>購物車總額：</strong><span id="cart-total">0</span> 元（已含 95 折）
+    <strong>購物車總額：</strong><span id="cart-total">0</span> 元（95折已含）
     <div id="cart-list"></div>
   </div>
 
@@ -37,7 +39,7 @@
   <table id="price-table">
     <thead>
       <tr>
-        <th>選擇</th><th>品名</th><th>原價</th><th>折扣價</th>
+        <th>選擇</th><th>品名</th><th>原價</th>
       </tr>
     </thead>
     <tbody id="table-body"></tbody>
@@ -49,37 +51,42 @@
   </div>
 
 <script>
-let drugs = [];
+let priceData = {};
+let drugInfo = {};
 const cart = {};
 const tableBody = document.getElementById("table-body");
 const cartList = document.getElementById("cart-list");
 const cartTotal = document.getElementById("cart-total");
 
-// 載入資料
-fetch("drugs.json")
+// 載入 drugs_final.json
+fetch("drugs_final.json")
   .then(res => res.json())
   .then(data => {
-    drugs = data;
+    data.forEach(d => {
+      priceData[d.name] = d.price;
+      drugInfo[d.name] = {
+        composition: d.composition,
+        efficacy: d.efficacy,
+        indications: d.indications
+      };
+    });
     renderTable();
   });
 
-// 產生表格
+// 渲染表格
 function renderTable(filter="") {
   tableBody.innerHTML = "";
-  drugs.forEach(d => {
-    if(d.name.includes(filter)){
-      const price = d.price || 0;
-      const discount = Math.round(price * 0.95);
+  for (let name in priceData) {
+    if (name.includes(filter)) {
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td><input type="checkbox" data-name="${d.name}" data-price="${price}"></td>
-        <td><span class="name" data-name="${d.name}">${d.name}</span></td>
-        <td>${price}</td>
-        <td>${discount}</td>
+        <td><input type="checkbox" data-name="${name}"></td>
+        <td><span class="name" data-name="${name}">${name}</span></td>
+        <td>${priceData[name]} 元</td>
       `;
       tableBody.appendChild(row);
     }
-  });
+  }
 }
 
 // 更新購物車
@@ -87,17 +94,17 @@ function updateCart() {
   cartList.innerHTML = "";
   let total = 0;
   for (let name in cart) {
-    const {qty, price} = cart[name];
-    const discount = Math.round(price * 0.95);
-    total += discount * qty;
+    let qty = cart[name];
+    let discountPrice = Math.round(priceData[name] * 0.95);
+    total += discountPrice * qty;
     const div = document.createElement("div");
     div.className = "cart-item";
     div.innerHTML = `
-      ${name} - ${discount} 元 x 
+      ${name} - ${discountPrice} 元 x 
       <span class="qty-btn" data-name="${name}" data-action="minus">➖</span>
       ${qty}
       <span class="qty-btn" data-name="${name}" data-action="plus">➕</span>
-      = ${discount * qty} 元
+      = ${discountPrice * qty} 元
     `;
     cartList.appendChild(div);
   }
@@ -112,14 +119,17 @@ document.getElementById("search").addEventListener("input", e=>{
 // 點藥名看詳細
 document.body.addEventListener("click", e=>{
   if(e.target.classList.contains("name")){
-    const drug = drugs.find(d => d.name === e.target.dataset.name);
-    if(drug){
+    const name = e.target.dataset.name;
+    const info = drugInfo[name];
+    if(info){
       document.getElementById("modal-content").innerHTML = `
-        <h3>${drug.name}</h3>
+        <h3>${name}</h3>
         <h4>【藥物組成】</h4>
-        <p>${drug.composition || "（尚無資料）"}</p>
-        <p><strong>效能：</strong>${drug.efficacy || "（尚無資料）"}</p>
-        <p><strong>適應症：</strong>${drug.indications || "（尚無資料）"}</p>
+        <pre>${info.composition || "－"}</pre>
+        <h4>【效能】</h4>
+        <pre>${info.efficacy || "－"}</pre>
+        <h4>【適應症】</h4>
+        <pre>${info.indications || "－"}</pre>
         <button onclick="closeModal()">關閉</button>
       `;
       document.getElementById("info-modal").style.display = "flex";
@@ -131,9 +141,8 @@ document.body.addEventListener("click", e=>{
 document.body.addEventListener("change", e=>{
   if(e.target.type==="checkbox"){
     const name = e.target.dataset.name;
-    const price = parseInt(e.target.dataset.price);
     if(e.target.checked){
-      cart[name] = {qty:1, price};
+      cart[name] = 1;
     } else {
       delete cart[name];
     }
@@ -146,8 +155,8 @@ document.body.addEventListener("click", e=>{
   if(e.target.classList.contains("qty-btn")){
     const name = e.target.dataset.name;
     const action = e.target.dataset.action;
-    if(action==="plus") cart[name].qty++;
-    if(action==="minus" && cart[name].qty>1) cart[name].qty--;
+    if(action==="plus") cart[name]++;
+    if(action==="minus" && cart[name]>1) cart[name]--;
     updateCart();
   }
 });
