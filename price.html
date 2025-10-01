@@ -27,7 +27,7 @@
 </head>
 <body>
   <div id="cart-bar">
-    <strong>購物車總額：</strong><span id="cart-total">0</span> 元（95折已含）
+    <strong>購物車總額：</strong><span id="cart-total">0</span> 元 <small>(已含 95 折)</small>
     <div id="cart-list"></div>
   </div>
 
@@ -36,7 +36,7 @@
   <table id="price-table">
     <thead>
       <tr>
-        <th>選擇</th><th>品名</th><th>價錢</th>
+        <th>選擇</th><th>品名</th><th>原價</th>
       </tr>
     </thead>
     <tbody id="table-body"></tbody>
@@ -47,989 +47,1595 @@
   </div>
 
 <script>
-const drugs = [
-  {
-    "name": "清燥救肺湯",
-    "composition": "藥物組成】每13.2g中含有\n桑　葉　Folium Mori...................................7.5g\n石　膏　Gypsum Fibrosum..........................6.5g\n甘　草　Radix et Rhizoma Glycyrrhizae......2.5g\n胡麻仁　Semen Sesami.................................2.5g\n阿　膠　Colla Corii Asini.............................2.0g\n人　參　Radix et Rhizoma Ginseng Rubra...2.0g\n麥門冬　Radix Ophiopogonis.......................3.0g\n杏　仁　Semen Armeniacae Amarum...........2.0g\n枇杷葉　Folium Eriobotryae..........................2.0g\n以上生藥製成浸膏...............................",
-    "efficacy": "效能】\n清燥潤肺。\n【適應症】\n燥邪傷肺、頭痛身熱、乾咳無痰、氣逆而喘、口渴心煩。",
-    "indications": "適應症】\n燥邪傷肺、頭痛身熱、乾咳無痰、氣逆而喘、口渴心煩。"
-  },
-  {
-    "name": "源氣活力湯",
-    "composition": "藥物組成】每14.4g中含有\n黃　耆　Astragali Radix......................................3.00g\n蒼　朮　Atractylodis Rhizoma.............................3.00g\n升　麻　Cimicifugae Rhizoma.............................3.00g\n人　參　Ginseng Radix........................................1.50g\n澤　瀉　Alismatis Rhizoma..................................1.50g\n神　麴　Massa Medicata Fermentata....................1.50g\n陳　皮　Citri Reticulatae Pericarpium...................1.50g\n白　朮　Atractylodis Macrocephalae Rhizoma.....1.50g\n麥門冬　Ophiopogonis Tu",
-    "efficacy": "效能】\n清暑除溼，益氣生津。\n【適應症】\n長夏溼熱蒸炎、四肢困倦、身熱心煩、自汗口渴、便黃、溺赤、脈虛者。",
-    "indications": "適應症】\n長夏溼熱蒸炎、四肢困倦、身熱心煩、自汗口渴、便黃、溺赤、脈虛者。"
-  },
-  {
-    "name": "響聲破笛丸",
-    "composition": "藥物組成】每6.0g中含有\n大　黃　Rhei Rhizoma..............................1.20g\n砂　仁　Amomi Semen.............................1.20g\n川　芎　Cnidium Rhizoma........................1.20g\n訶\n子    \r\nChebulae Fructus.........................1.20g\n阿\n仙藥    \r\nGambir........................................2.40g\n連　翹　Forsythiae Fructus.......................3.00g\n桔　梗　Platycodi Radix...........................3.00g\n甘　草　Glycyrrhizae Radix.....................3.00g\n薄　荷　Menthae Herba............................4.80g\n以上生藥製成浸膏......",
-    "efficacy": "效能】\n【適應症】\n喉痛聲啞，口燥咽乾。",
-    "indications": "適應症】\n喉痛聲啞，口燥咽乾。"
-  },
-  {
-    "name": "蘇子降氣湯",
-    "composition": "藥物組成】每9.7g中含有\n當　歸　Angelicae Radix............................2.00g\n甘　草　Glycyrrhizae Radix........................2.00g\n厚　朴　Magnoliae Cortex...........................2.00g\n前　胡　Peucedani Radix.............................2.00g\n陳　皮　Auranti Nobilis Pericarpium...........3.00g\n肉　桂　Cinnamomi Cortex.........................3.00g\n蘇　子　Perillae Fructus...............................5.00g\n半　夏　Pinelliae Tuber...............................5.00g\n生　薑　Gingiberis Rhizoma.......................2.00g\n大　棗　Zizyphi",
-    "efficacy": "效能】\n降氣平喘，溫化痰濕。\n【適應症】\n痰涎壅盛，咳喘短氣，胸膈滿悶，咽喉不利。\n【注意事項】\n喘咳具有熱象或腎陰虛者忌用。",
-    "indications": "適應症】\n痰涎壅盛，咳喘短氣，胸膈滿悶，咽喉不利。\n【注意事項】\n喘咳具有熱象或腎陰虛者忌用。"
-  },
-  {
-    "name": "雙解散(防風通聖去硝黃)",
-    "composition": "藥物組成】每6.0g中含有\n當　歸　Angelicae Radix........................1.00g\n白　芍　Paeoniae Radix..........................1.00g\n川　芎　Cnidium Rhizoma......................1.00g\n防　風　Saposhnikovia Radix.................1.00g\n麻　黃　Ephedrae Herba.........................1.00g\n薄　荷　Menthae Herba..........................1.00g\n連　翹　Forsythiae Fructus.....................1.00g\n白　朮　Atractylodis Rhizoma................1.00g\n荊　芥　Schizonepetae Herba.................1.00g\n梔　子　Gardeniae Fructus......................1.00g\n生　薑　Gi",
-    "efficacy": "效能】\n【適應症】\n目赤睛痛圍，耳鳴鼻塞，口苦舌乾，咳嗽上氣。",
-    "indications": "適應症】\n目赤睛痛圍，耳鳴鼻塞，口苦舌乾，咳嗽上氣。"
-  },
-  {
-    "name": "瀉白散",
-    "composition": NaN,
-    "efficacy": NaN,
-    "indications": NaN
-  },
-  {
-    "name": "薏苡仁湯",
-    "composition": NaN,
-    "efficacy": NaN,
-    "indications": NaN
-  },
-  {
-    "name": "導赤散",
-    "composition": "藥物組成】每11.2g中含有\n生地黃　Rehmanniae Radix et Rhizoma........6.00g\n甘　草\nGlycyrrhizae Radix............\n.........\n.......\n6.00g\n木　通\nAkebiae     \r\nCaulis.................\n................\n6.00g\n竹　葉　Lophathero     \r\nHerba..................\n.........\n.6.00g\n以上生藥製成浸膏..........................\n.........\n.....\n5.60g\n（生藥與浸膏比24.00:5.60＝4.29:1.00）\n【效能】\n清心火\n，利小便\n。\n【適應症】\n口糜舌瘡，小便赤澀，熱淋不利。",
-    "efficacy": "效能】\n清心火\n，利小便\n。\n【適應症】\n口糜舌瘡，小便赤澀，熱淋不利。",
-    "indications": "適應症】\n口糜舌瘡，小便赤澀，熱淋不利。"
-  },
-  {
-    "name": "獨活寄生湯",
-    "composition": "藥物組成】\r\n每20.4g中含有\n獨　活　Angelicae Tuhou Radix.............\n......\n3.00g\n寄　生\nLoranthi\r\nRamulus..................\n..........\n2.00g\n杜　仲\nEucommiae\r\nCortex...............\n...........\n2.00g\n牛　膝\nAchyranthis\r\nRadix.................\n..........\n2.00g\n細　辛\nAsiasri\r\nRadix.....................\n..............\n2.00g\n秦　艽\nGentianae\r\nMacrophllae Radix.\n.........\n2.00g\n茯　苓\nHoelen...........................\n..................\n2.00g\n桂　心\nCinnamomi\r\nLignum.................\n........\n2.00g\n防　風\nSaposhnikovis\r\nRadix..........",
-    "efficacy": "效能】\n袪風濕，止痹痛，補氣血。\n【適應症】\n風寒濕痹，腰膝冷痛，腿足屈伸不利。\n【\r\n注意事項】\n濕熱性的關節疼痛， 高血壓患者及孕婦慎服。",
-    "indications": "適應症】\n風寒濕痹，腰膝冷痛，腿足屈伸不利。\n【\r\n注意事項】\n濕熱性的關節疼痛， 高血壓患者及孕婦慎服。"
-  },
-  {
-    "name": "豬苓湯",
-    "composition": "藥物組成】\r\n每10.8g中含有\n豬　苓　\r\nPolyporus....................................\n6.00g\n茯　苓\nHoelen..........................\n..............\n6.00g\n滑　石\nTolcum.........................\n..............\n6.00g\n澤　瀉　Alismatis Rhizoma...................\n...\n6.00g\n阿　膠　Asini\r\nGelatinum..........................\n6.00g\n以上生藥製成浸\r\n膏..........................\n..........\n4.30g\n（生藥與浸膏比30.00:4.30＝6.98:1.00）\n【效能】\n【適應症】\n滋陰，清熱，利水。",
-    "efficacy": "效能】\n【適應症】\n滋陰，清熱，利水。",
-    "indications": "適應症】\n滋陰，清熱，利水。"
-  },
-  {
-    "name": "潤腸湯",
-    "composition": "藥物組成】\r\n每21g中含有\n當　歸　Angelicae Radix..................................\n.2.50g\n熟地黃　\r\nRehmanniae Radix et Rhizoma.........\n...\n2.50g\n生地黃　Rehmanniae Radix et Rhizoma.........\n...\n2.50g\n火麻仁\nCannabis\r\nFructus................\n..................\n2.50g\n桃　仁\nPersicae\r\nSemen...................\n..................\n2.50g\n杏　仁\nArmeniacae\r\nSemen................\n...............\n2.50g\n枳　實\nAurantii\r\nImmaturus Fructus......\n............\n2.50g\n黃　苓\nScutellariae\r\nRadix...............\n..................\n2.50g\n厚　朴\nMagnolia",
-    "efficacy": "效能】\n潤腸通便。\n【適應症】\n腸胃燥熱，大便祕結。",
-    "indications": "適應症】\n腸胃燥熱，大便祕結。"
-  },
-  {
-    "name": "養心湯",
-    "composition": "藥物組成】每\n13.6g\n中含有\n炙黃耆\nAstragali    \r\nRadix.......................3.00g\n茯　神\nPoria.......................................\n3.00g\n茯　苓\nHoelen....................................\n3.00g\n半夏麴\nPinelliae    \r\nTuber...................\n.....\n3.00g\n當　歸\nAngelicae    \r\nRadix...................\n..\n3.00g\n川　芎\nCnidium    \r\nRhizoma...................3.00g\n遠　志\nPolygalae    \r\nRadix......................\n2.00g\n酸棗仁\nZizyphi    \r\nSpinosi Semen............2.00g\n肉　桂\nCinnamomi    \r\nCortex..................2.00g\n柏子仁\nThujae    ",
-    "efficacy": "效能】\n補血養心，安神定志。\n【適應症】\n心血不足，心神不寧，失眠多夢。",
-    "indications": "適應症】\n心血不足，心神不寧，失眠多夢。"
-  },
-  {
-    "name": "鼻良湯(清鼻湯)",
-    "composition": "藥物組成】每6.0g中含有\n葛　根\nPuerariae   \r\nRadix............................\n4.00g\n麻　黃\nEphedrae    \r\nHerba............................2.00g\n生　薑\nGingiberis    \r\nRhizoma......................2.00g\n大　棗\nZizyphi    \r\nFructus.............................\n2.00g\n白　芍\nPaeoniae    \r\nRadix.............................\n1.50g\n桂　枝\nCinnamomi    \r\nRamulus....................1.50g\n桔　梗\nPlatycodi    \r\nRadix...................\n.........1.50g\n辛　夷\nMagnoliae    \r\nFlos.............................1.50g\n川　芎\nCnidum    \r\nRhizoma.....",
-    "efficacy": "效能】\n【適應症】\n慢性鼻炎，蓄膿症。",
-    "indications": "適應症】\n慢性鼻炎，蓄膿症。"
-  },
-  {
-    "name": "銀翹散",
-    "composition": "藥物組成】每12.0g中含有\n銀　花　Lonicerae Flos..............................5.00g\n連　翹　Forsythiae Fructus........................5.00g\n桔 梗　Platycodi Radix...............................3.00g\n牛蒡子　Arctii Fructus................................3.00g\n薄荷葉　Menthae Herba.............................3.00g\n竹　葉　Lophathero Herba.........................2.00g\n荊　芥　Schizonepetae Herba....................2.00g\n甘　草　Glycyrrhizae Radix.......................2.00g\n淡豆鼓　Sojoe Semen Praeparatum.............2.50g\n蘆　根　Pharagmitis Rh",
-    "efficacy": "效能】\n【適應症】\n辛涼透表，清熱解毒。",
-    "indications": "適應症】\n辛涼透表，清熱解毒。"
-  },
-  {
-    "name": "酸棗仁湯",
-    "composition": "藥物組成】每10.2g中含有\n酸棗仁　Zizyphi Spinosi Semen...............15.00g\n茯　苓　Hoelen..........................................5.00g\n知　母　Anemarrhenae Rhizom.................3.00g\n川　芎　Cnidium Rhizoma.........................3.00g\n甘　草　Glycyrrhizae Radix.......................1.00g\n以上生藥製成浸膏......................................4.00g\n（生藥與浸膏比27.00:5.10＝5.29:1.00）\n【效能】\n【適應症】\n養血安神，清熱除煩，不眠症。",
-    "efficacy": "效能】\n【適應症】\n養血安神，清熱除煩，不眠症。",
-    "indications": "適應症】\n養血安神，清熱除煩，不眠症。"
-  },
-  {
-    "name": "蒼耳散",
-    "composition": NaN,
-    "efficacy": NaN,
-    "indications": NaN
-  },
-  {
-    "name": "寧嗽丸",
-    "composition": "藥物組成】每12.0g中含有\n桔　梗　Platycodi Radix...........................3.00g\n茯　苓　Hoelen........................................3.00g\n穀    芽　..............................\n.....................1.50g\n石　斛　Dendrobii Caulis.........................2.00g\n半　夏　Pinelliae Tuber............................3.00g\n貝　母　Fritillaria Thunbergii Bulbus.......3.00g\n紫蘇子　Perillae Fructus...........................3.00g\n薄　荷　Menthae Herba...........................2.30g\n桑白皮　Mori Cortex................................2.30g\n杏　仁　Ar",
-    "efficacy": "效能】\n【適應症】\n鎮咳袪痰。",
-    "indications": "適應症】\n鎮咳袪痰。"
-  },
-  {
-    "name": "膈下逐瘀湯",
-    "composition": "藥物組成】每6.0g中含有\n當　歸　Angelicae Rasix.........................3.00g\n桃　仁　Persicae Semen..........................3.00g\n甘　草　Glycyrrhizae Radix....................3.00g\n紅　花　Carthami Flos.............................3.00g\n川　芎　Cnidium Rhizoma......................2.00g\n牡丹皮　Moutan Cortex...........................2.00g\n赤　芍　Paeoniae Veilchii Radix.............2.00g\n烏　藥　Linderae Radix..........................2.00g\n五靈脂　Trogopterorum Faces.................2.00g\n香　附　Cyperi Rhizoma.........................1.50",
-    "efficacy": "效能】\n【適應症】\n活血袪瘀，行氣止痛。",
-    "indications": "適應症】\n活血袪瘀，行氣止痛。"
-  },
-  {
-    "name": "過期飲",
-    "composition": "藥物組成】每6.0g中含有\n熟地黃　Rehmanniae Radix et Rhizoma.........4.00g\n白　芍　Paeoniae Radix.................................4.00g\n當　歸　Angelicae Radix...............................4.00g\n香　附　Cyperi Rhizoma...............................4.00g\n川　芎　Cnidium Rhizoma............................2.00g\n木　香　Saussureae Radix.............................1.60g\n紅　花　Carthami Flos...................................1.40g\n桃　仁　Persicae Semen................................1.20g\n莪　朮　Zedoariae Rhizoma..........................1.0",
-    "efficacy": "效能】\n【適應症】\n經水過期不行。",
-    "indications": "適應症】\n經水過期不行。"
-  },
-  {
-    "name": "聖愈湯",
-    "composition": "藥物組成】每\n4.5g\n中含有\n熟地黃\nRehmanniae   \r\nRadix et Rhizoma........4.50g\n生地黃\nRehmanniae   \r\nRadix et Rhizoma........4.50g\n黃　耆\nAstragali   \r\nRadix...................\n............\n.4.50g\n人　參\nGinseng   \r\nRadix.................................\n4.50g\n當　歸\nAngelicae  \r\nRadix..............................\n2.50g\n川　芎\nCnidium   \r\nRhizoma............................2.50g\n以上生藥製成浸膏..........................\n............\n..3.00g\n（生藥與浸膏比23.00:3.00＝7.66:1.00）\n【效能】\n【適應症】\n失血過多，氣血俱虛，煩渴躁熱。",
-    "efficacy": "效能】\n【適應症】\n失血過多，氣血俱虛，煩渴躁熱。",
-    "indications": "適應症】\n失血過多，氣血俱虛，煩渴躁熱。"
-  },
-  {
-    "name": "當歸飲子",
-    "composition": "藥物組成】每11.4g中含有\n當　歸　Angelicae Raadix..............................3.00g\n白　芍　Paeoniae Radix.................................3.00g\n川　芎　Cnidium Rhizoma.............................3.00g\n生地黃　Rehmanniae Radix et Rhizoma.........3.00g\n白蒺藜　Tribuli Fructus..................................3.00g\n防　風　Saposhinkovia Radix........................3.00g\n荊　芥　Schizonepetae Herba........................3.00g\n何首烏　Polygoni Multiflori Radix.................1.50g\n黃　耆　Astragali Radix.................................1.5",
-    "efficacy": "效能】\n補氣益血、疏風除濕。\n【適應症】\n瘡疥風癬，濕毒搔癢。",
-    "indications": "適應症】\n瘡疥風癬，濕毒搔癢。"
-  },
-  {
-    "name": "當歸四逆湯",
-    "composition": "藥物組成】每6.0g中含有\n當　歸　Angelicae Radix\n.............................\n3.00g\n桂　枝\nCinnamomi     \r\nRamulus\n......................\n3.00g\n芍　藥\nPaeoniae   \r\nRadix\n...............................\n3.00g\n細　辛\nAsiasri     \r\nRadix\n..................................\n3.00g\n甘　草\nGlycyrrhizae     \r\nRadix.........................2.00g\n木　通\nAkebiae     \r\nCaulis................................2.00g\n大　棗\nZizyphi     \r\nFructus\n...............................\n5.00g\n以上生藥製成浸膏\n.......................................\n4.00g\n（生藥與浸膏比",
-    "efficacy": "效能】\n【適應症】\n寒入厥陰，手足厥冷\n，脈微欲絕\n。",
-    "indications": "適應症】\n寒入厥陰，手足厥冷\n，脈微欲絕\n。"
-  },
-  {
-    "name": "葛根解酲湯",
-    "composition": "藥物組成】每9.6g中含有\n葛　花\nPuerariae\r\nFlos...................\n..............\n3.50g\n白豆蔻\nAmomi\r\nCardamomi Fructus............3.50g\n砂　仁\nAmomi\r\nSemen................................3.50g\n青　皮\nCitri\r\nUndeveloped Exocarpium.......1.50g\n陳　皮\nAuranti\r\nNobilis Pericarpium............1.50g\n人　參\nGinseng\r\nRadix....................\n.............\n1.50g\n白　朮\nAtractylodis\r\nRhizoma......................1.50g\n茯　苓\nHoelen.............................................\n1.50g\n神　麴\nMassa\r\nMedicata Fermentata.............1.00g\n乾　薑\nZin",
-    "efficacy": "效能】\n【適應症】\n治飲酒太過，嘔吐痰逆，頭痛心煩，胸膈痞塞，小便不利，大便泄瀉。",
-    "indications": "適應症】\n治飲酒太過，嘔吐痰逆，頭痛心煩，胸膈痞塞，小便不利，大便泄瀉。"
-  },
-  {
-    "name": "葛根黃連黃芩湯",
-    "composition": "藥物組成】每4.5g中含有\n葛　根\nPuerariae    \r\nRadix.............................8.00g\n黃　連\nCoptidis    \r\nRhizoma..........................3.00g\n黃　芩\nScutellariae    \r\nRadix..........................3.00g\n甘　草\nGlycyrrhizae    \r\nRadix........................3.00g\n以上\n生藥製成浸膏............................\n..........\n3.00g\n(生藥浸膏比17.00:3.00＝5.66:1.00)\n【效能】\n【適應症】\n發熱，瀉痢。",
-    "efficacy": "效能】\n【適應症】\n發熱，瀉痢。",
-    "indications": "適應症】\n發熱，瀉痢。"
-  },
-  {
-    "name": "溫清飲",
-    "composition": "藥物組成】每14.1g中含有\n當 歸　Angelicae\r\nRadix...................\n.........3.50g\n川 芎　Cnidium\r\nRhizoma.....................\n.....3.50g\n熟地黃　\r\nRehmanniae Radix et Rhizoma\n......3\n.50g\n白 芍　Paeoniae\r\nRadix\n....................\n..........3\n.50g\n黃\r\n芩　Scutellariae Radix\n................\n...........3\n.50g\n黃 柏\nPhellodenri\r\nCortex..........\n................3\n.50g\n梔　子　Gardeniae\nFructus\r\n..............\n...........3\n.50g\n黃 連\nCoptidis\r\nRhizoma.............\n..............3\n.50g\n以上生藥製成浸\r\n膏..........................\n.......",
-    "efficacy": "效能】\n【適應症】\n治崩中漏下，面黃腹痛(屬於陰虛有熱者)。",
-    "indications": "適應症】\n治崩中漏下，面黃腹痛(屬於陰虛有熱者)。"
-  },
-  {
-    "name": "溫經湯",
-    "composition": "藥物組成】每16.0g中含有\n吳茱萸　Evodiae\r\nFructus...................\n.........3.00g\n人　參　Ginseng\r\nRadix.....................\n.........2.00g\n桂　枝\nCinnamomi\r\nRamulus..........\n..........\n2.0\ng\n阿　膠\nAsini\r\nGelatinum..................\n..........\n2.0\ng\n牡丹皮\nMoutan\r\nCortex...................\n...........\n2.0\n0g\n甘　草\nGlycyrrhizae\r\nRadix............\n...........\n2.0\n0g\n生　薑\nGingiberis\r\nRhizoma...........\n...........\n2.0\n0g\n川　芎\nCnidiun\r\nRhizoma................\n..........\n2.00g\n白　芍\nPaeoniae\r\nRadix...................\n..........",
-    "efficacy": "效能】\n【適應症】\n溫經散寒，養血袪瘀。",
-    "indications": "適應症】\n溫經散寒，養血袪瘀。"
-  },
-  {
-    "name": "溫膽湯",
-    "composition": "藥物組成】每9.0g中含有\n半　夏\nPinelliae\r\nTbaber............................\n.5.00g\n茯　苓\nHoelen........................................\n...4.00g\n竹　茹\nBambusae\r\nCaulis In Taenii............5.00g\n陳　皮\nAuranti\r\nNobilis Pericarpium..........7.50g\n生　薑\nGingiberis\r\nRhizoma.......................5.00g\n枳　實\nAurantii\r\nImmaturus Fructus............5.00g\n甘　草\nGlycyrrhizae\r\nRadix........................2.50g\n以上生藥製成浸\r\n膏..........................\n............\n.4.20g\n（生藥與浸膏比35.00:4.20＝8.3:1.00）\n【效能】\n【適應症】\n虛煩\n驚悸不眠\n。",
-    "efficacy": "效能】\n【適應症】\n虛煩\n驚悸不眠\n。",
-    "indications": "適應症】\n虛煩\n驚悸不眠\n。"
-  },
-  {
-    "name": "頓嗽湯",
-    "composition": "藥物組成】每6.0g中含有\n柴　胡\nBupleuri  \r\nRadix...................\n........\n5.00g\n桔　梗\nPlatycodi  \r\nRadix..................\n........\n2.50g\n黃　芩\nScutellariae  \r\nRadix..............\n.........\n2.50g\n桑白皮\nMori  \r\nCortex.............................\n...\n2.50g\n梔　子\nGardeniae  \r\nFructus......................1.00g\n甘　草\nGlycyrrhizae  \r\nRadix....................1.00g\n石　膏\nGypsum  \r\nFibrosum.....................5.00g\n以上生藥製成浸膏..........................\n.....\n...3.80g\n（生藥與浸膏比例19.50:3.80＝5.10:1.00）\n【效能】\n【適應症】\n熱性症之咳嗽，乾咳。",
-    "efficacy": "效能】\n【適應症】\n熱性症之咳嗽，乾咳。",
-    "indications": "適應症】\n熱性症之咳嗽，乾咳。"
-  },
-  {
-    "name": "滋腎明目湯",
-    "composition": "藥物組成】每19.5g中含有\n川　芎　Cnidium Rhizoma.............................2.50g\n當　歸　Angelicae Radix...............................2.50g\n白　芍　Paeoniae Radix.................................2.50g\n熟地黃　Rehmanniae Radix et Rhizoma.........2.50g\n生地黃　Rehmanniae Radix et Rhizoma.........2.50g\n人　參　Ginseng Radix..................................1.30g\n桔　梗　Platycodi Radix.................................1.30g\n梔　子　Gardeniae Fructus.............................1.30g\n白　芷　Angelicae Dahuricae Radix..............1.30g\n黃　連　Co",
-    "efficacy": "效能】\n【適應症】\n滋腎，明目。",
-    "indications": "適應症】\n滋腎，明目。"
-  },
-  {
-    "name": "滋陰降火湯",
-    "composition": "藥物組成】每16.0g中含有\n白　芍\nPaeoniae   \r\nRadix.................................\n2.50g\n當　歸\nAngelicae   \r\nRadix...................\n............\n2.50g\n熟地黃\nRehmanniae   \r\nRadix et Rhizoma........2.00g\n白　朮\nAtractylodis   \r\nRhizoma.......................2.00g\n天門冬\nAspargi   \r\nRadix.....................\n.............\n2.00g\n麥門冬\nOphiopogonis   \r\nTuber........................2.00g\n生地黃\nRehmanniae   \r\nRadix et Rhizoma........1.50g\n陳　皮\nAuranti   \r\nNobilis Pericarpium.............1.50g\n知　母\nAnemarrhenae   \r\nRhizoma.....",
-    "efficacy": "效能】\n滋陰降火。\n【適應症】\n陰虛發熱，痰咳喘急，盜汗口乾。",
-    "indications": "適應症】\n陰虛發熱，痰咳喘急，盜汗口乾。"
-  },
-  {
-    "name": "越婢加朮湯",
-    "composition": "藥物組成】每9g中含有\n麻　黃　Ephedrae\r\nHerba..............................\n..6.00g\n石　膏\nGypsum\r\nFibrosum...............\n............\n.8.00g\n生　薑　\r\nGingiberis Rhizoma.........................\n.3.00g\n甘　草\nGlycyrrhizae\r\nRadix..............\n............\n2.00g\n大　棗\nZizyphi\r\nFructus................\n............\n....3.00g\n白　朮\nAtractylodis\r\nRhizoma................\n......\n4.00g\n以上生藥製成浸膏\n.........................\n...............\n4.50g\n（生藥與浸膏比26.00:4.50＝5.78:1.00）\n【效能】\n【適應症】\n�堣穭獉_之面目黃腫，小便不利。",
-    "efficacy": "效能】\n【適應症】\n�堣穭獉_之面目黃腫，小便不利。",
-    "indications": "適應症】\n�堣穭獉_之面目黃腫，小便不利。"
-  },
-  {
-    "name": "散腫潰堅湯",
-    "composition": "藥物組成】每14.8g中含有\n黃　芩　Scutellariae   \r\nRadix...........................\n...4.00g\n龍　膽　Gentianae   \r\nRadix...................\n...........\n..2.50g\n天花粉　(栝樓根)   \r\nTrichosanthes Root.........\n....\n2.50g\n黃　柏　Phellodenri   \r\nCortex...........................\n..4.00g\n知　母\nAnemarrhenae   \r\nRhizoma............\n.........\n2.50g\n桔　梗\nPlatycodi   \r\nRadix...................\n...............\n2.50g\n昆　布\nEckloniae   \r\nThallus.................\n...........\n...2.50g\n柴　胡\nBupleuri   \r\nRadix...................\n................",
-    "efficacy": "效能】\n清熱解毒，破結潰堅。\n【適應症】\n瘰，馬刀瘡。\n【\r\n注意事項】\n病久正氣虛者不宜。",
-    "indications": "適應症】\n瘰，馬刀瘡。\n【\r\n注意事項】\n病久正氣虛者不宜。"
-  },
-  {
-    "name": "萆薢分清飲",
-    "composition": "藥物組成】每8.4g中含有\n益智仁\nAlpiniae   \r\nFructus..........................6.00g\n萆　薢\nDiosoreae   \r\nTokora........................6.00g\n石菖蒲\nAcori   \r\nGraminei............................6.00g\n烏　藥\nLinderae   \r\nRadix............................6.00g\n甘草梢\nGlycyrrhizae   \r\nRadix.....................3.00g\n茯　苓\nHoelen........................................\n3.00g\n以上生藥製成浸膏..........................\n.........\n.4.20g\n（生藥與浸膏比例30.00:4.20＝7.14:1.00）\n【效能】\n溫腎利濕，分清去濁。\n【適應症】\n膏淋白濁，小便頻數。",
-    "efficacy": "效能】\n溫腎利濕，分清去濁。\n【適應症】\n膏淋白濁，小便頻數。",
-    "indications": "適應症】\n膏淋白濁，小便頻數。"
-  },
-  {
-    "name": "黃連上清丸",
-    "composition": "藥物組成】每6.0g中含有\n黃　連　Coptidis Rhizoma..............................2.50g\n黃　柏　Phellodenri   \r\nCortex.............................2.50g\n黃　芩　Scutellariae   \r\nRadix..............................2.50g\n梔　子　Gardeniae   \r\nFructus..............................2.50g\n薑　黃　Curcumae Longae Rhizoma..............1.80g\n連　翹　Forsythiae   \r\nFructus.............................1.80g\n大　黃　Rhei   \r\nRhizoma...................................3.60g\n菊　花\nChrysanthemi   \r\nFlos...................\n.........\n1.20g\n當歸尾　Angelicae   ",
-    "efficacy": "效能】\n【適應症】\n治上焦積熱，眼痛咽痛，口舌生瘡。",
-    "indications": "適應症】\n治上焦積熱，眼痛咽痛，口舌生瘡。"
-  },
-  {
-    "name": "黃芩湯",
-    "composition": "藥物組成】每9g中含有\n黃\r\n　芩　Scutellaeiae Radix........................\n6.00g\n甘　草\nGlycyrrhizae\r\nRadix...........\n...........\n4.00g\n芍　藥\nPaeoniae\r\nRadix.................\n...........\n4.00g\n大　棗\nZizyphi\r\nFructus................\n............\n1.50g\n以上生藥製成浸膏\n.........................\n............\n4.00g\n（生藥與浸膏\r\n比例15.50:4.00＝3.88:1.00）\n【效能】\n【適應症】\n清熱止痢，和中止痛。",
-    "efficacy": "效能】\n【適應症】\n清熱止痢，和中止痛。",
-    "indications": "適應症】\n清熱止痢，和中止痛。"
-  },
-  {
-    "name": "黃連湯",
-    "composition": "藥物組成】每14.1g中含有\n黃　連　Coptidis\r\nRhizoma...........................\n4.50g\n乾　薑　Zingiberis Siccatum Rhizoma.........\n4.50\ng\n桂　枝\nCinnamomi\r\nRamulus...............\n.......\n4.50\ng\n人　參\nGinseng\r\nRadix..................\n..........\n....\n3.00g\n甘　草\nGlycyrrhizae\r\nRadix.......\n..........\n........\n4.50\ng\n半　夏\nPinelliae\r\nTuber...............\n..........\n.......\n6.00g\n大　棗\nZizyphi\r\nFructus..............\n.................\n3.00g\n以上生藥製成浸膏\n.......................\n..........\n......\n6.30g\n（生藥與浸膏比例30.00:6.30＝4.76:1.00）\n【效能】\n",
-    "efficacy": "效能】\n【適應症】\n治傷寒，胸中有熱，胃中有邪氣，腹中痛，欲嘔者。",
-    "indications": "適應症】\n治傷寒，胸中有熱，胃中有邪氣，腹中痛，欲嘔者。"
-  },
-  {
-    "name": "黃耆五物湯",
-    "composition": "藥物組成】\r\n每14.4g中含有\n黃　耆　Astragali Radix........................\n10.00g\n白　芍\nPaeoniae\r\nRadix..............\n............\n5.00g\n桂　枝\nCinnamomi\r\nRamulus..............\n...\n5.00g\n生　薑　Gingiberis\r\nRhizoma...................\n5.00g\n大　棗　Zizyphi\r\nFructus........................\n..3.00g\n以上生藥製成浸\r\n膏..................................\n6.80g\n（生藥與浸膏\r\n比例28.00:6.80＝4.12\n:1.00）\n【效能】\n補氣血，和營衛。\n【適應症】\n營衛氣血不足，風邪入侵，營血痺阻，肌肉麻木，手足無力。\n【\r\n注意事項】\n實證不宜。",
-    "efficacy": "效能】\n補氣血，和營衛。\n【適應症】\n營衛氣血不足，風邪入侵，營血痺阻，肌肉麻木，手足無力。\n【\r\n注意事項】\n實證不宜。",
-    "indications": "適應症】\n營衛氣血不足，風邪入侵，營血痺阻，肌肉麻木，手足無力。\n【\r\n注意事項】\n實證不宜。"
-  },
-  {
-    "name": "黃耆建中湯",
-    "composition": "藥物組成】\n桂　枝\nCinnamomi Ramulus\n.........................4.50g\n炙甘草\nGlycyrrhiza   \r\nRadix\n.............................3.00g\n大　棗\nZizyphi   \r\nFructus.................................4.50g\n白　芍\nPaeoniae   \r\nRadix.................................9.00g\n生　薑\nCingiberis   \r\nRhizoma .........................4.50g\n膠\n飴\nSaccharum   \r\nCum Malto.....................1.00g\n黃　耆\nAstragali   \r\nRadix\n.................................2.50g\n以上\n生藥製成浸膏.........................................5.50g\n(生藥與浸膏比例 29.0:5.5=5.27:1.0",
-    "efficacy": "效能】\n溫中補虛\n，\n和�婼w急。\n【適應症】\n虛勞不足，脾胃虛寒腹痛，自汗，短氣，肢體困倦，及陽虛身痛。",
-    "indications": "適應症】\n虛勞不足，脾胃虛寒腹痛，自汗，短氣，肢體困倦，及陽虛身痛。"
-  },
-  {
-    "name": "華蓋散",
-    "composition": "藥物組成】每9.0g中含有\n麻　黃　Ephedrae  \r\nHerba...................\n……\n.4.00g\n蘇　子　Perillae Fructus..................\n……\n...4.00g\n桑白皮\nMori  \r\nCortex.......................\n……\n...4.00g\n杏　仁\nArmeniacae  \r\nSemen..................\n…\n.4.00g\n赤茯苓\nPaeoniae  \r\nHoelen...................\n……\n4.00g\n陳　皮\nAuranti  \r\nNobilis Pericarpium.........4.00g\n甘　草\nGlycyrrhizae  \r\nRadix................\n…\n...2.00g\n以上生藥製成浸膏\n..........................\n……\n...3.60g\n（生藥與浸膏比例26.00:3.60＝7.22:1.00）\n【效能】\n宣肺平喘，止咳化痰。\n【適應症】\n肺感寒邪，咳嗽上氣，胸膈煩滿，頭昏目眩。",
-    "efficacy": "效能】\n宣肺平喘，止咳化痰。\n【適應症】\n肺感寒邪，咳嗽上氣，胸膈煩滿，頭昏目眩。",
-    "indications": "適應症】\n肺感寒邪，咳嗽上氣，胸膈煩滿，頭昏目眩。"
-  },
-  {
-    "name": "復元活血湯",
-    "composition": "藥物組成】每6.0g中含有\n柴　胡\nBupleuei   \r\nRadix........................3.50g\n當　歸\nAngelicae   \r\nRadix......................2.00g\n天花粉\nTrichosanthes   \r\nRoot..................2.00g\n桃　仁\nPersicae   \r\nSemen........................2.00g\n紅　花\nCarthami   \r\nFlos..........................1.50g\n穿山甲\nMantidis   \r\nSquama.....................1.50g\n甘　草\nGlycyrrhizae   \r\nRadix.................1.50g\n大　黃\nRhei   \r\nRhizoma..........................6.50g\n以上生藥製成浸膏\n................................4.00g\n（\n生藥與浸膏比例\n20.50:4.00＝5.13:1.00",
-    "efficacy": "效能】\n活血祛瘀。\n【適應症】\n跌打損傷，瘀血留脅下痛不可忍者。",
-    "indications": "適應症】\n跌打損傷，瘀血留脅下痛不可忍者。"
-  },
-  {
-    "name": "普濟消毒飲",
-    "composition": "藥物組成】每15.0g中含有\n黃　芩　Scutellariae\r\nRadix.........................\n5.00g\n黃　連　Coptidis\r\nRhizoma.........................\n5.00g\n陳　皮　Auranti Nobilis Pericarpium.........2.0g\n甘　草\nGlycyrrhizae\r\nRadix.............\n.........\n2.0g\n玄　參\nScrophulariae\r\nRadix.............\n........\n2.0g\n柴　胡\nBupleuri\r\nRadix...................\n..........\n2.0g\n桔　梗\nPlatycodi\r\nRadix...................\n.........\n2.0g\n牛蒡子\nArctii\r\nFructus...................\n............\n1.0g\n薄　荷\nMenthae\r\nHerba...................\n.........\n1.0g\n連　翹\nFors",
-    "efficacy": "效能】\n疏風散邪，清熱解毒。\n【適應症】\n大頭瘟症。頭面咽喉腫痛。",
-    "indications": "適應症】\n大頭瘟症。頭面咽喉腫痛。"
-  },
-  {
-    "name": "麻子仁丸",
-    "composition": "藥物組成】每4.5g中含有\n麻　仁\nCannabis  \r\nFructus..........................\n5.00g\n白　芍\nPaeoniae  \r\nRadix....................\n.........\n3.00g\n枳　實\nAurantii  \r\nImmaturus Fructus..........2.00g\n大　黃\nRhei  \r\nRhizoma...............................2.00g\n厚　朴\nMagnoliae  \r\nCortex.........................2.00g\n杏　仁\nArmeniacae  \r\nSemen.......................2.00g\n以上生藥製成浸膏..........................\n..........\n.3.00g\n（生藥與浸膏比16.00:3.00＝5.33:1.00）\n【效能】\n【適應症】\n潤腸通便。",
-    "efficacy": "效能】\n【適應症】\n潤腸通便。",
-    "indications": "適應症】\n潤腸通便。"
-  },
-  {
-    "name": "麻杏薏甘湯",
-    "composition": "藥物組成】每8.5g中含有\n麻　黃　Eaphedrae  \r\nHerba.............................\n5.00g\n炙甘草\nGlycyrrhizae  \r\nRadix..................\n......\n10.00g\n薏苡仁\nCoicis  \r\nSemen......................\n..........\n...\n5.00g\n杏　仁\nArmeniacae  \r\nSemen....................\n......\n4.00g\n以上生藥製成浸膏........................................\n3.40g\n（生藥與浸膏比24.00:3.40＝7.06:1.00）\n【效能】\n發汗解表，袪風濕。\n【適應症】\n風溼身痛發熱，日晡甚者。",
-    "efficacy": "效能】\n發汗解表，袪風濕。\n【適應症】\n風溼身痛發熱，日晡甚者。",
-    "indications": "適應症】\n風溼身痛發熱，日晡甚者。"
-  },
-  {
-    "name": "麻杏甘石湯",
-    "composition": "藥物組成】每10.5g中含有\n麻　黃　Ephedrae  \r\nHerba.........................\n8.00g\n杏　仁\nArmeniacae  \r\nSemen....................\n6.00g\n炙甘草\nGlycyrrhizae  \r\nRadix...............\n.....\n4.00g\n石　膏\nGypsum  \r\nFibrosum....................16.00g\n以上生藥製成浸膏...................................\n3.90g\n（生藥與浸膏比例34.00:3.90＝8.72:1.00）\n【效能】\n辛涼宣泄，清肺平喘。\n【適應症】\n熱邪壅肺，發熱，咳嗽氣喘。",
-    "efficacy": "效能】\n辛涼宣泄，清肺平喘。\n【適應症】\n熱邪壅肺，發熱，咳嗽氣喘。",
-    "indications": "適應症】\n熱邪壅肺，發熱，咳嗽氣喘。"
-  },
-  {
-    "name": "麻黃湯",
-    "composition": "藥物組成】每6.5g中含有\n麻　黃　Ephedrae Herba.........................\n..9.00g\n桂　枝\nCinnamomi  \r\nRamulus...................6.00g\n炙甘草\nGlycyrrhizae  \r\nRadix...............\n......\n3.00g\n杏　仁\nArmeniacae  \r\nSemen...............\n.......\n5.00g\n以上生藥製成浸膏..................................\n..2.60g\n（生藥與浸膏比例23.00:2.60＝8.85:1.00）\n【效能】\n發汗解表，宣肺平喘。\n【適應症】\n外感風寒，發熱惡寒，頭痛身疼，無汗而喘。",
-    "efficacy": "效能】\n發汗解表，宣肺平喘。\n【適應症】\n外感風寒，發熱惡寒，頭痛身疼，無汗而喘。",
-    "indications": "適應症】\n外感風寒，發熱惡寒，頭痛身疼，無汗而喘。"
-  },
-  {
-    "name": "理中湯",
-    "composition": "藥物組成】每\n13.8g\n中含有\n人　參\nGinseng  \r\nRadix...................\n........6.00g\n甘　草\nGlycyrrhizae  \r\nRadix............\n........6.00g\n白　朮\nArtractylodis  \r\nRhizoma...............6.00g\n乾　薑\nZingiberis   \r\nSicatum.............\n........4.00g\n以上生藥製成浸膏\n..................................6.90g\n（\n生藥與浸膏比\n22.00:6.90＝3.19:1.00）\n【效能】\n理脾健胃，溫中散寒。\n【適應症】\n四肢逆冷，自汗脈虛，不思飲食。",
-    "efficacy": "效能】\n理脾健胃，溫中散寒。\n【適應症】\n四肢逆冷，自汗脈虛，不思飲食。",
-    "indications": "適應症】\n四肢逆冷，自汗脈虛，不思飲食。"
-  },
-  {
-    "name": "排膿散",
-    "composition": "藥物組成】每\n10.4g\n中含有\n枳　實\nAurantii  \r\nImmaturus Fructus......18.00g\n白　芍\nPaeoniae  \r\nRadix...........................6.00g\n桔　梗\nPlatycodi  \r\nRadix.........................\n..\n2.00g\n以上生藥製成浸膏.......................\n............\n.5.20g\n（生藥與浸膏比例26.00:5.20＝5.00:1.00）\n【效能】\n排膿止痛。\n【適應症】\n內癰膿從便出。",
-    "efficacy": "效能】\n排膿止痛。\n【適應症】\n內癰膿從便出。",
-    "indications": "適應症】\n內癰膿從便出。"
-  },
-  {
-    "name": "清胃散",
-    "composition": "藥物組成】每19.2g中含有\n當　歸　Angelicae\r\nRadix...............................\n. 3.60g\n黃　連　Coptidis\r\nRhizoma...............................\n3.60g\n生地黃　\r\nRehmanniae Radix et Rhizoma.........\n..\n3\n.60g\n牡丹皮\nMoutan\r\nCortex.....................\n............\n.\n..\n6.00g\n升　麻\nCimicifugae\r\nRhizoma..............\n.........\n12.00g\n以上生藥製成浸\r\n膏..........................................\n.9.20g\n（生藥與浸膏比例28.80:9.20＝3.13:1.00）\n【效能】\n清胃火，涼血熱。\n【適應症】\n胃火所致的牙痛，面熱，唇口頰腮腫痛生瘡，牙宣出血，牙齦潰爛。",
-    "efficacy": "效能】\n清胃火，涼血熱。\n【適應症】\n胃火所致的牙痛，面熱，唇口頰腮腫痛生瘡，牙宣出血，牙齦潰爛。",
-    "indications": "適應症】\n胃火所致的牙痛，面熱，唇口頰腮腫痛生瘡，牙宣出血，牙齦潰爛。"
-  },
-  {
-    "name": "清肺湯",
-    "composition": "藥物組成】每13.9g中含有\n甘　草\nGlycyrrhizae  \r\nRadix.........................\n0.60g\n黃　芩\nScutellariae  \r\nRadix.........................\n..3.00g\n桔　梗\nPlatycodi  \r\nRadix..............................\n.2.00g\n茯　苓\nHoelen............................\n................\n2.00g\n陳　皮\nAuranti  \r\nNobilis Pericarpium............2.00g\n當　歸\nAngelicae  \r\nRadix............................\n..2.00g\n貝    母\nFritillaria Thunbergii Bulbus....\n...2.00g\n桑白皮\nMori  \r\nCortex.....................................\n2.00g\n天門冬\nAspargi  \r\nRadix....",
-    "efficacy": "效能】\n清肺，化痰，止咳。\n【適應症】\n咳嗽，上焦痰盛。",
-    "indications": "適應症】\n咳嗽，上焦痰盛。"
-  },
-  {
-    "name": "清上蠲痛湯",
-    "composition": "藥物組成】每10.6g中含有\n黃　芩　Scutellariae   \r\nRadix.........................\n3.00g\n生　薑　Gingiberis Rhizoma.....................\n.3.00g\n當　歸　Angelicae Radix...........................\n2.00g\n川　芎\nCnidium  \r\nRhizoma.................\n.......\n2.00g\n白　芷\nAngelicae  \r\nDahuricae Radix..........2.00g\n羌　活\nNotopterygii  \r\nRhizoma............\n......\n2.00g\n防　風\nSaposhnikovia  \r\nRadix.............\n......\n2.00g\n蒼　朮\nAtractyloislancea  \r\nRhizoma..........2.00g\n麥門冬\nOphiopogonis  \r\nTuber............\n........\n2.00g\n獨　活\nAngelicae ",
-    "efficacy": "效能】\n【適應症】\n偏，正頭痛，眉稜骨痛。",
-    "indications": "適應症】\n偏，正頭痛，眉稜骨痛。"
-  },
-  {
-    "name": "清心利膈湯",
-    "composition": "藥物組成】\r\n每6.0g中含有\n淡\r\n竹葉　Lophatheri Herba...........................\n4.00g\n防　風　\r\nSaposhnikovia Radix...............\n......\n3.00g\n薄　荷\nMenthae\r\nHerba..................\n............\n3.00g\n桔　梗\nPlatycodi\r\nRadix.................\n............\n3.00g\n黃　芩\nScutellariae\r\nRadix..............\n............\n3.00g\n黃　連\nCoptidis\r\nRhizoma...............\n...........\n3.00g\n荊　芥\nSchizonepeatae\r\nHerba.........\n..........\n3.00g\n連　翹\nForsythiae\r\nFructus.............\n............\n1.50g\n玄　參\nScrophulariae\r\nRadix............\n....",
-    "efficacy": "效能】\n【適應症】\n咽喉腫痛，痰涎壅盛，胸膈不利，大便祕結。",
-    "indications": "適應症】\n咽喉腫痛，痰涎壅盛，胸膈不利，大便祕結。"
-  },
-  {
-    "name": "清上防風湯",
-    "composition": "藥物組成】每15.0g中含有\n防\r\n　風　Saposhnikovia Radix...............\n......\n3.00g\n連　翹　\r\nForsythiae Fractus................\n..........\n2.40g\n白　芷\nAngelicae\r\nDahuricae Radix...........2.40g\n桔　梗\nPlatycodi\r\nRadix...................\n..........\n2.40g\n黃　芩\nScutellariae\r\nRadix..........................\n2.10g\n川　芎\nCnidium\r\nRhizoma..........................2.10g\n黃　連\nCoptidis\r\nRhizoma..........................1.50g\n荊　芥\nSchizonepetae\r\nHerba.....................1.50g\n梔　子\nGardeniae\r\nFructus..........................1.50g\n枳　殼",
-    "efficacy": "效能】\n清上焦火。\n【適應症】\n治頭面瘡癤熱毒。",
-    "indications": "適應症】\n治頭面瘡癤熱毒。"
-  },
-  {
-    "name": "清空膏",
-    "composition": "藥物組成】每4.5g中含有\n羌　活\nNotopterygii  \r\nRhizoma................2.00g\n黃　連\nCoptidis  \r\nRhizoma.......................2.00g\n防　風\nSaposhnikovia  \r\nRadix..................2.00g\n柴　胡\nBupleuri  \r\nRadixs..........................1.40g\n川　芎\nCnidium  \r\nRhizoma.......................1.00g\n甘　草\nGlycyrrhizae  \r\nRadix.....................3.00g\n黃　芩\nScutellariae  \r\nRadix........................6.00g\n以上生藥製成浸膏\n..........................\n.......\n.\n..\n3.00g\n（\n生藥與浸膏比\n17.40:3.00＝5.80:1.00）\n【效能】\n【適應症】\n治頭風，濕熱上盛，遇風即發。",
-    "efficacy": "效能】\n【適應症】\n治頭風，濕熱上盛，遇風即發。",
-    "indications": "適應症】\n治頭風，濕熱上盛，遇風即發。"
-  },
-  {
-    "name": "涼膈散",
-    "composition": "藥物組成】每14.4g中含有\n大　黃　Rhei    \r\nRhizoma.............................\n4.00g\n芒　硝\nMirabilitum Depuratum...............4.00g\n甘　草\nGlycyrrhizae    \r\nRadix............\n.........\n4.00g\n連　翹\nForsythiae Fructus............\n.........\n..8.00g\n山梔子\nGardeniae Fructus..............\n.........\n2.00g\n黃　芩\nScutellariae    \r\nRadix...............\n.........\n2.00g\n薄　荷\nMenthae Herba...................\n.........\n2.00g\n竹　葉\nLophathero Herba...............\n.........\n2.00g\n以上生藥製成浸膏\n..........................\n.........\n.6.90g\n（\n生藥",
-    "efficacy": "效能】\n清熱解毒，瀉火通便。\n【適應症】\n臟腑積熱，煩燥多渴，口舌生瘡，咽喉腫痛\n，便祕尿赤\n。\n【\r\n注意事項】\n體質虛弱及孕婦慎用\n。",
-    "indications": "適應症】\n臟腑積熱，煩燥多渴，口舌生瘡，咽喉腫痛\n，便祕尿赤\n。\n【\r\n注意事項】\n體質虛弱及孕婦慎用\n。"
-  },
-  {
-    "name": "參蘇飲",
-    "composition": "藥物組成】每13.0g中含有\n陳　皮　Auranti Nobilis Pericarpium........2.00g\n枳　殼　Citri  \r\nImmaturus Fructus...........\n....\n2.00g\n桔　梗\nPlatycodi  \r\nRadix..................\n.........\n2.00g\n甘　草\nGlycyrrhizae  \r\nRadix.............\n........\n2.00g\n木　香\nSaussureae  \r\nRadix..............\n.........\n.2.00g\n半　夏\nPinelliae  \r\nTuber...................\n.........\n3.00g\n紫蘇葉\nPerilla  \r\nHerba.....................\n.........\n.3.00g\n葛　根\nPuerariae  \r\nRadix...............\n.........\n..3.00g\n前　胡\nPeucedani  \r\nRadix................\n.........",
-    "efficacy": "效能】\n益氣解表，宣肺化痰。\n【適應症】\n體虛感冒，惡寒發熱，頭痛鼻塞，咳嗽痰多。",
-    "indications": "適應症】\n體虛感冒，惡寒發熱，頭痛鼻塞，咳嗽痰多。"
-  },
-  {
-    "name": "參苓白朮散",
-    "composition": "藥物組成】每10.4g中含有\n白扁豆\nDolichoris   \r\nSemen......................2.30g\n人　參\nGinseng   \r\nRadix..........................3.00g\n茯　苓\nHoelen............................\n..........\n3.00g\n白　朮\nAtractylodis   \r\nRhizoma...............3.00g\n甘　草\nGlycyrrhizae   \r\nRadix...................3.00g\n山　藥\nDioscoreae   \r\nRhizoma.................3.00g\n蓮子肉\nNelumbinis   \r\nSemen....................1.50g\n桔　梗\nPlatycodi   \r\nRadix.........................1.50g\n薏苡仁\nCoicis   \r\nSemen............................1.50g\n砂　仁\nAmomi   \r\nSem",
-    "efficacy": "效能】\n補氣健脾，滲濕和胃。\n【適應症】\n脾胃虛弱，食少便溏。",
-    "indications": "適應症】\n脾胃虛弱，食少便溏。"
-  },
-  {
-    "name": "射干麻黃湯",
-    "composition": "藥物組成】每12.0g中含有\n麻　黃　Ephedrae\r\nHerba..........................\n4.00g\n半　夏\nPinelliae\r\nTuber..................\n..........\n4.00g\n生　薑　\r\nGingiberis Rhizoma....................\n4.00g\n款冬花\nFarfarae\r\nFlos....................\n..........\n.3.00g\n紫　菀\nAsteris\r\nRaidix et Rhizoma...........3.00g\n大　棗\nZizyphi\r\nFructus..................\n..........\n2.00g\n射　干\nBelamcandae\r\nRadix.............\n........\n1.50g\n細　辛\nAsiasri\r\nRadix.....................\n..........\n1.50g\n五味子\nSchisandrae\r\nFructus...........\n..........\n1.00g\n以上生藥製",
-    "efficacy": "效能】\n【適應症】\n欬而上氣，喉中有水雞聲。\n射干麻黃湯\n(No.2286)\nYEH GAN MA HWANG TANG\n/SHE GAN MA HUANG\r\nTANG\n【出處】\n《金匱要略》\n【藥物組成】每12.0g中含有\n麻　黃　Ephedrae\r\nHerba..........................\n4.00g\n半　夏\nPinelliae\r\nTuber..................\n..........\n4.00g\n生　薑　\r\nGingiberis Rhizoma....................\n4.00g\n款冬花\nFarfarae\r\nFlos....................\n..........\n.3.00g\n紫　菀\nAsteris\r\nRaidix et Rhizoma...........3.00g\n大　棗\nZizyphi\r\nFructus..................\n..........\n2.00g\n射　干\nBelamcandae\r\nRadix.............\n........\n1.50g\n細　辛\nAsiasri\r\nRadi",
-    "indications": "適應症】\n欬而上氣，喉中有水雞聲。\n射干麻黃湯\n(No.2286)\nYEH GAN MA HWANG TANG\n/SHE GAN MA HUANG\r\nTANG\n【出處】\n《金匱要略》\n【藥物組成】每12.0g中含有\n麻　黃　Ephedrae\r\nHerba..........................\n4.00g\n半　夏\nPinelliae\r\nTuber..................\n..........\n4.00g\n生　薑　\r\nGingiberis Rhizoma....................\n4.00g\n款冬花\nFarfarae\r\nFlos....................\n..........\n.3.00g\n紫　菀\nAsteris\r\nRaidix et Rhizoma...........3.00g\n大　棗\nZizyphi\r\nFructus..................\n..........\n2.00g\n射　干\nBelamcandae\r\nRadix.............\n........\n1.50g\n細　辛\nAsiasri\r\nRadix...."
-  },
-  {
-    "name": "荊芥連翹散",
-    "composition": "藥物組成】每10.6g中含有\n當　歸　Angelicae  \r\n  Radix...........................2.00g\n白     \r\n  芍     \r\n  Paeoniae Radix.............................2.00g\n川　芎\nCnidium  \r\n  Rhizoma ..................\n......2\n.00g\n黃     \r\n  芩    Scutellariae Radix.........................2.00g\n山梔子    Gardeniae Fructus ........................2.00g\n連     \r\n  翹    Forsythiae Fructus ....................... 2.00g\n荊　芥　Schizonepetae  \r\n  Herba.....................\n2.00g\n防　風　Saposhnikovia  \r\n  Radix.....................2.00g\n枳　殼\nCitr",
-    "efficacy": "效能】\n清熱解毒。\n【適應症】\n治風熱耳腫疼痛。",
-    "indications": "適應症】\n治風熱耳腫疼痛。"
-  },
-  {
-    "name": "益氣聰明湯",
-    "composition": "藥物組成】每10.4g中含有\n黃　耆　Astragali Radix..............\n.......\n6.00g\n甘　草\nGlycyrrhizae  \r\n  Radix.......\n........\n1.20g\n人　參　Ginseng  \r\n  Radix.......................\n6.00g\n升　麻\nCimicifugae  \r\n  Rhizoma....\n........\n1.80g\n葛　根\nPuerariae  \r\n  Radix...............\n......\n3.60g\n蔓荊子\nViticis  \r\n  Fructus..............\n.........\n3.60g\n白　芍\nPaeoniae  \r\n  Radix.............\n.........\n2.40g\n黃　柏\nPhellodenri  \r\n  Cortex........\n.........\n2.40g\n以上生藥製成浸膏\n...................\n.........\n..\n5.20g\n（\n生藥與浸膏比\n27.00:5.20＝5.19:1",
-    "efficacy": "效能】\n益氣升陽，散風清熱。\n【適應症】\n風熱上擾，頭痛眩暈，內障初起，耳鳴耳聾。",
-    "indications": "適應症】\n風熱上擾，頭痛眩暈，內障初起，耳鳴耳聾。"
-  },
-  {
-    "name": "茵陳五苓散",
-    "composition": "藥物組成】每9.6g中含有\n茵陳蒿　Artemisiae Capillaris Herba........16.00g\n澤　瀉　Alismatis   \r\n  Rhizoma.....................\n...2.50g\n豬　苓　Polyporus........................\n...........\n.\n..\n1.50g\n茯　苓\nHoelen...........................\n...........\n..\n..\n1.50g\n白　朮\nAtractylodis   \r\n  Rhizoma...........\n........\n1.50g\n桂　枝\nCinnamomi   \r\n  Ramulus..........\n..........\n1.00g\n以上生藥製成浸膏\n..........................\n...........\n3.70g\n（\n生藥與浸膏比\n24.00:3.70＝6.49:1.00）\n【效能】\n利濕清熱。\n【適應症】\n黃疸，小便不利，煩渴。",
-    "efficacy": "效能】\n利濕清熱。\n【適應症】\n黃疸，小便不利，煩渴。",
-    "indications": "適應症】\n黃疸，小便不利，煩渴。"
-  },
-  {
-    "name": "茵陳蒿湯",
-    "composition": "藥物組成】每10.30g中含有\n茵　陳　Artemisiae Capillaris Herba.......18.00g\n梔　子　Gardeniae   \r\n  Fructus................\n.......\n6.00g\n大　黃　Rhei   \r\n  Rhizoma.....................\n........\n6.00g\n以上生藥製成浸膏.........................\n..........\n4.00g\n（生藥與浸膏比30.00:4.00＝7.50:1.00）\n【效能】\n【適應症】\n黃疸，瘀熱在�堙A腹微滿者，便祕。",
-    "efficacy": "效能】\n【適應症】\n黃疸，瘀熱在�堙A腹微滿者，便祕。",
-    "indications": "適應症】\n黃疸，瘀熱在�堙A腹微滿者，便祕。"
-  },
-  {
-    "name": "桃核承氣湯",
-    "composition": "藥物組成】每18.0g中含有\n桃　仁\nPersicae\r\nSemen...................\n…\n...5.00g\n大　黃\nRhei\r\nRhizoma.....................\n……\n10.0g\n甘　草\nGlycyrrhizae\r\nRadix.................\n…\n5.00g\n桂　枝\nCinnamomi\r\nRamulus..................\n5.00\ng\n芒　硝\nMirabilitum\r\nDepuratum..............\n5.00\ng\n以上生藥製成浸\r\n膏.........................\n……\n. 8.8\n0g\n（生藥與浸膏比30.00:8.80\n＝3.40:1.00）\n【效能】\n【適應症】\n治瘀血，血結，血閉，通潤大腸。",
-    "efficacy": "效能】\n【適應症】\n治瘀血，血結，血閉，通潤大腸。",
-    "indications": "適應症】\n治瘀血，血結，血閉，通潤大腸。"
-  },
-  {
-    "name": "神祕湯",
-    "composition": "藥物組成】每6.0g中含有\n麻　黃\nEphedrae Herba....................\n........\n5.00g\n杏　仁\nArmeniacae Semen...........\n............\n4.00g\n厚　朴\nMagnoliae Cortex.............\n............\n3.00g\n陳　皮\nAuranti Nobilis Pericarpium.........2.50g\n甘　草\nGlycyrrhizae Radix............\n..........\n2.00g\n柴\n胡\nBupleuri Radix..................\n.............\n2.00g\n紫蘇葉\nPerilla Herba...................\n.............\n1.50g\n以上生藥製成浸膏\n.......................\n............\n4.00g\n（\n生藥與浸膏比\n20.0:4.00＝5.00:1.00）\n【效能】\n【適應症】\n氣喘，支氣管喘息，支氣管炎。",
-    "efficacy": "效能】\n【適應症】\n氣喘，支氣管喘息，支氣管炎。",
-    "indications": "適應症】\n氣喘，支氣管喘息，支氣管炎。"
-  },
-  {
-    "name": "真武湯",
-    "composition": "藥物組成】每9.9g中含有\n茯　苓\nHoelen........................................7.50g\n芍　藥\nPaeoniae\r\nRadix...........................\n7.5\n0g\n生　薑\nGingiberis\r\nRhizoma....................\n7.5\n0g\n白　朮\nAtractylodis\r\nRhizoma.................5.00g\n附　子\nAconiti\r\nTuber.............................3.00g\n以上生藥製成浸膏..........................\n.......\n4.70g\n（生藥與浸膏\r\n比30.50:4.70＝6.50:1.00）\n【效能】\n【適應症】\n虛寒體質引起之胃腸病，慢性腹瀉，水腫，小便不利。",
-    "efficacy": "效能】\n【適應症】\n虛寒體質引起之胃腸病，慢性腹瀉，水腫，小便不利。",
-    "indications": "適應症】\n虛寒體質引起之胃腸病，慢性腹瀉，水腫，小便不利。"
-  },
-  {
-    "name": "真人活命散(仙方活命散)",
-    "composition": "藥物組成】每10.0g中含有\n金銀花　Loniurae  \r\n  Flos.....................\n..........\n6.00g\n陳　皮　Auranti  \r\n  Nobilis Pericarpium........3.00g\n當　歸　Angelicae  \r\n  Radix...................\n.......\n3.00g\n白　芷\nAngelicae  \r\n  Dahuricae Radix\n.........\n2.00g\n甘　草\nGlycyrrhizae  \r\n  Radix..........\n............\n2.00g\n貝　母\nFritillaria  \r\n  Thunbergii Bulbus\n........\n2.00g\n栝樓根\nTrichosanthes  \r\n  Root..........\n............\n2.00g\n乳　香\nOlibanum..........................\n...........\n2.00g\n沒　藥\nMyrrha..........................\n...",
-    "efficacy": "效能】\n【適應症】\n癰疽\n初起，赤腫疼痛。",
-    "indications": "適應症】\n癰疽\n初起，赤腫疼痛。"
-  },
-  {
-    "name": "烏藥順氣散",
-    "composition": "藥物組成】每9.9g中含有\n麻　黃　Ephedrae   \r\n  Herba.............................\n4.00g\n陳　皮　Auranti   \r\n  Nobilis Pericarpium..........\n4.00g\n烏　藥　Linderae   \r\n  Radix....................\n..........4.00g\n川　芎\nCnidium   \r\n  Rhizoma..............\n............\n2.00g\n白殭蠶\nBombyx   \r\n  Batryticatus.......\n..............\n2.00g\n枳　殼\nCitri   \r\n  Immaturus Fructus......\n...........\n2.00g\n白　芷\nAngelicae   \r\n  Dahuricae Radix...........2.00g\n甘　草\nGlycyrrhizae   \r\n  Radix...........\n.............\n2.00g\n桔　梗\nPlatycodi   \r\n  Radi",
-    "efficacy": "效能】\n順氣宣散，袪風化痰。\n【適應症】\n遍身頑麻，骨節疼痛，步履艱難，語言\r\n  �a澀，口眼喎斜，筋脈拘攣。\n【\r\n  注意事項】\n孕婦忌用。",
-    "indications": "適應症】\n遍身頑麻，骨節疼痛，步履艱難，語言\r\n  �a澀，口眼喎斜，筋脈拘攣。\n【\r\n  注意事項】\n孕婦忌用。"
-  },
-  {
-    "name": "消風散",
-    "composition": "藥物組成】每12.8g中含有\n當　歸　Angelicae   \r\n  Radix............................\n2.50\ng\n生地黃　Rehmanniae   \r\n  Radix et Rhizoma......2.50g\n防　風　Saposhnikovia   \r\n  Radix.....................\n2.50g\n蟬　蛻　Cicadae Periostracum.....................\n2.50g\n知　母\nAnemarrhenae  \r\n  Rhizoma.........\n........\n2.50g\n苦　參\nSophorae  \r\n  Radix...............\n...............\n2.50g\n胡麻仁\nSesami  \r\n  Semen....................\n............\n2.50g\n荊　芥\nSchizonepetae  \r\n  Herba...\n...................\n2.50g\n蒼　朮\nAtractyloislancea  \r\n  Rhizz",
-    "efficacy": "效能】\n潤血袪風，除濕清熱。\n【適應症】\n風濕浸淫血脈之瘡疥搔癢及風熱隱症。",
-    "indications": "適應症】\n風濕浸淫血脈之瘡疥搔癢及風熱隱症。"
-  },
-  {
-    "name": "桑螵蛸散",
-    "composition": "藥物組成】每11.2g中含有\n桑螵蛸\nMantidis\r\nOotheca..........................3.00g\n遠　志\nPolygalae\r\nRadix............................3.00g\n人　參\nGinseng\r\nRadix..............................3.00g\n茯　苓\nHoelen..........................................\n3.00g\n龍　骨\nFossilia\r\nOssis Mastodi...................3.00g\n龜　板\nTestudinis\r\nPlastrum.......................3.00g\n石菖蒲\nAcori\r\nGraminei Rhizoma..............3.00g\n當　歸\nAngelicae\r\nRadix...........................3.00g\n以上生藥製成浸\r\n膏..........................\n...........\n4.80g\n（生藥與浸",
-    "efficacy": "效能】\n收澀小便。\n【適應症】\n遺尿。",
-    "indications": "適應症】\n遺尿。"
-  },
-  {
-    "name": "桑菊飲",
-    "composition": "藥物組成】每15.0g中含有\n桑　葉　Mori  \r\n  Folium...............................\n6.00g\n菊　花\nChrysanthemi  \r\n  Flos............\n.........\n2.50g\n杏　仁\nArmeniacae  \r\n  Semen...........\n.........\n5.00g\n桔　梗\nPlatycodi  \r\n  Radix..................\n........\n5.00g\n葦　根\nPharogmitis  \r\n  Rhizoma........\n.........\n5.00g\n連　翹\nForsythiae  \r\n  Fructus............\n..........\n4.00g\n薄　荷\nMenthae  \r\n  Herba..................\n.........\n2.00g\n甘　草\nGlycyrrhizae  \r\n  Radix............\n.........\n2.00g\n以上生藥製成浸膏...........................\n..",
-    "efficacy": "效能】\n【適應症】\n感冒、發熱、頭痛、咳嗽、目眩。",
-    "indications": "適應症】\n感冒、發熱、頭痛、咳嗽、目眩。"
-  },
-  {
-    "name": "秦艽鱉甲散",
-    "composition": "藥物組成】每8.4g中含有\n鱉　甲　Amydae   \r\n  Carapax....................\n......\n5.00g\n秦　艽\nGentianae   \r\n  Macrophllae Radix.......2.50g\n知　母\nAnemarrhenae   \r\n  Rhizoma................2.50g\n當　歸\nAngelicae   \r\n  Radix...........................2.50g\n柴　胡\nBupleuri   \r\n  Radix....................\n.........\n5.00g\n地骨皮\nLycii   \r\n  Radicis Cortex.....................5.00g\n烏　梅\nMume   \r\n  Fructus.............................\n..2.00g\n青　蒿\nArtemisiae   \r\n  Apiaceae Herba..........1.50g\n以上生藥製成浸膏\n..........................\n...",
-    "efficacy": "效能】\n滋陰養血，清熱除蒸。\n【適應症】\n骨蒸潮熱，唇紅頰赤，盜汗咳嗽。",
-    "indications": "適應症】\n骨蒸潮熱，唇紅頰赤，盜汗咳嗽。"
-  },
-  {
-    "name": "桔梗湯",
-    "composition": "藥物組成】每\n6.0g\n中含有\n生　薑\nGingiberis   \r\n  Rhizoma............\n..................\n4.00g\n黃　耆\nAstragali   \r\n  Radix...................\n..................\n3.00g\n桔　梗\nPlatycodi   \r\n  Radix...................\n..................\n2.00g\n浙貝母\n（\n浙\n）\nFritillaria Thunbergii Bulbus\n........\n2.00g\n當　歸\nAngelicae   \r\n  Radix..................\n.................\n2.00g\n栝樓仁\nTrichosanthis   \r\n  Semen..........\n...................\n2.00g\n薏苡仁\nCoicis   \r\n  Semen....................\n....................\n2.00g\n桑白皮\nMori   \r\n  Cort",
-    "efficacy": "效能】\n解毒瀉火，清肺利膈。\n【適應症】\n治肺癰\n，\n吐膿，咽乾多渴，兩腳腫滿。",
-    "indications": "適應症】\n治肺癰\n，\n吐膿，咽乾多渴，兩腳腫滿。"
-  },
-  {
-    "name": "桂枝茯苓丸",
-    "composition": "藥物組成】每10.80g中含有\n桂　枝\nCinnamomi  \r\n  Ramulus...................6.00g\n茯　苓\nHoelen.........................................6.00g\n牡丹皮\nMoutan  \r\n  Cortex.............................6.00g\n桃　仁\nPersicae  \r\n  Semen............................\n6.00g\n赤　芍\nPaeoniae  \r\n  Veilchii Radix...............4.50g\n以上生藥製成浸膏..........................\n..........\n4.00g\n（生藥與浸膏比30.00:4.20＝7.14:1.00）\n【效能】\n【適應症】\n活血化瘀、緩消癥塊。",
-    "efficacy": "效能】\n【適應症】\n活血化瘀、緩消癥塊。",
-    "indications": "適應症】\n活血化瘀、緩消癥塊。"
-  },
-  {
-    "name": "桂枝湯",
-    "composition": "藥物組成】每11.7g中含有\n桂　枝\nCinnamomi  \r\n  Ramulus...................6.00g\n白　芍\nPaeoniae  \r\n  Radix............................6.00g\n炙甘草\nGlycyrrhizae  \r\n  Radix......................4.00g\n生　薑\nGingiberis  \r\n  Rhizoma.....................6.00g\n大　棗\nZizyphi  \r\n  Fructus............................\n5.00g\n以上生藥製成浸膏\n...................................\n.4.70g\n（生藥與浸膏比27.00:4.70＝5.74:1.00）\n【效能】\n解肌發表，調和營衛。\n【適應症】\n外感風寒，發熱頭痛，汗出惡風，鼻鳴乾嘔。",
-    "efficacy": "效能】\n解肌發表，調和營衛。\n【適應症】\n外感風寒，發熱頭痛，汗出惡風，鼻鳴乾嘔。",
-    "indications": "適應症】\n外感風寒，發熱頭痛，汗出惡風，鼻鳴乾嘔。"
-  },
-  {
-    "name": "桂枝加龍骨牡蠣湯",
-    "composition": "藥物組成】每6.3g中含有\n桂　枝\nCinnamomi\r\nRamulus...................3.00g\n白　芍\nPaeoniae\r\nRadix............................3.00g\n生　薑\nGingiberis\r\nRhizoma.....................3.00g\n龍　骨\nFossilia\r\nOssis Mastodi..................3.00g\n牡　蠣\nOstreae\r\nTesta...............................3.00g\n甘　草\nGlycyrrhizae\r\nRadix......................2.00g\n大　棗\nZizyphi\r\nFructus............................\n2.00g\n以上生藥製成浸膏\n....................................2.80g\n（\n生藥與浸膏比\n19.00:2.80＝\r\n6.79:1.00）\n【效能】\n【適應症】\n體質虛弱，不眠症。",
-    "efficacy": "效能】\n【適應症】\n體質虛弱，不眠症。",
-    "indications": "適應症】\n體質虛弱，不眠症。"
-  },
-  {
-    "name": "桂枝芍藥知母湯",
-    "composition": "藥物組成】每6.0g中含有\n桂　枝\nCinnamomi  \r\n  Ramulus......................4.00g\n知　母\nAnemarrhenae  \r\n  Rhizoma.................4.00g\n防　風\nSaposhhikovia  \r\n  Radix......................4.00g\n白　芍\nPaeoniae  \r\n  Radix...............................3.00g\n甘　草\nGlycyrrhizae  \r\n  Radix.........................2.00g\n麻　黃\nEphedrae  \r\n  Herba..............................2.00g\n生　薑\nGingiberis  \r\n  Rhizoma........................5.00g\n蒼　朮\nAtractylodis  \r\n  Lancea Rhizoma.........4.00g\n附　子\nAconiti  \r\n  Tuber.................",
-    "efficacy": "效能】\n【適應症】\n風寒\n濕痺\n，肢節腫痛。",
-    "indications": "適應症】\n風寒\n濕痺\n，肢節腫痛。"
-  },
-  {
-    "name": "柴陷湯",
-    "composition": "藥物組成】：每6.0g中含有\n半　夏\nPinelliae  \r\n  Tuber.........................5.00g\n瓜蔞仁\nTrichosanthis  \r\n  Semen................3.00g\n柴　胡\nBupleuri   \r\n  Rodix.........................5.00g\n黃　連\nCoptidis   \r\n  Rhizoma.....................1.50g\n黃　芩\nScutellariae   \r\n  Rodix....................3.00g\n人　參\nGinseng  \r\n  Radix..........................2.00g\n甘　草\nGlycyrrhizae  \r\n  Radix...................1.50g\n生　薑\nGingiberis   \r\n  Rhizoma..................3.00g\n大　棗\nZizyphi   \r\n  Fructus.........................3.00g\n以上生藥",
-    "efficacy": "效能】\n【適應症】\n痰熱內阻，寒熱往來，口舌苔黃咳嗽。",
-    "indications": "適應症】\n痰熱內阻，寒熱往來，口舌苔黃咳嗽。"
-  },
-  {
-    "name": "柴胡桂枝乾薑湯",
-    "composition": "藥物組成】每10.5g中含有\n柴　胡\nBupleuri   \r\n  Radix................................\n8.00g\n天花粉\n(\n栝樓根\n)\nTrichosanthes   \r\n  root.............4.00g\n桂　枝\nCinnamomi   \r\n  Ramulus........................3.00g\n黃　芩\nScutellariae   \r\n  Radix.............................\n3.00g\n牡　蠣\nOstreae   \r\n  Testa.....................\n...............2.00g\n乾　薑\nZingiberis   \r\n  Sicatum Rhizoma.............2.00g\n甘　草\nGlycyrrhizae   \r\n  Radix...........................2.00g\n以上生藥製成浸膏..........................\n...............\n4.80g\n（生藥與浸膏比",
-    "efficacy": "效能】\n【適應症】\n神經衰弱，心悸亢進，不眠。",
-    "indications": "適應症】\n神經衰弱，心悸亢進，不眠。"
-  },
-  {
-    "name": "柴胡清肝湯",
-    "composition": "藥物組成】\r\n每20.4g中含有\n柴　胡\nBupleuri\r\nRadix.................................3.00g\n生地黃\nRehmanniae Radix et Rhizoma.........\n3.00\ng\n白　芍\nPaeoniae Radix.................................\n3.0\n0g\n牛蒡子\nArctii\r\nFructus....................................\n3.00\ng\n當　歸\nAngelicae\r\nRadix...............................4.00g\n連　翹\nForsythiae\r\nFructus............................2.00g\n川　芎\nCnidium\r\nRhizoma.............................2.00g\n黃　苓\nScutellariae\r\nRadix.............................2.00g\n梔　子\nGardeniae\r\nFructus......",
-    "efficacy": "效能】\n【適應症】\n肝膽三焦風熱，鬢疽初起。",
-    "indications": "適應症】\n肝膽三焦風熱，鬢疽初起。"
-  },
-  {
-    "name": "柴胡桂枝湯",
-    "composition": "藥物組成】\r\n每16.5g中含有\n柴　胡\nBupleuri\r\nRadix...........................8.00g\n黃　苓\nScutellariae Radix.......................3.00g\n人　參\nGinseng Radix....................\n........\n3.00g\n桂　枝\nCinnamomi Ramulus..................\n3.00\ng\n芍　藥\nPaeoniae Radix...........................\n3.00\ng\n半　夏\nPinelliae Tuber............................5.00g\n生　薑\nGingiber Rhizoma.......................3.00g\n甘　草\nGlycyrrhiza Radix.......................2.00g\n大　棗\nZizyphi Fructus............................2.00g\n以上生藥製成浸膏\n.............",
-    "efficacy": "效能】\n【適應症】\n傷寒發熱，支節疼煩，微嘔，心腹卒痛。",
-    "indications": "適應症】\n傷寒發熱，支節疼煩，微嘔，心腹卒痛。"
-  },
-  {
-    "name": "柴胡加龍骨牡蠣湯",
-    "composition": "藥物組成】每10.8g中含有\n柴　胡\nBupleuri   \r\n  Radix....................\n.........\n5.00g\n龍　骨\nFossilia   \r\n  Ossis Mastodi..................\n2.00g\n生　薑\nZingiberis   \r\n  Rhizoma..............\n.......\n2.00g\n人　參\nPanax   \r\n  Ginseng C.A. Mayer.........2.00g\n茯　苓\nPoria............................................2.00g\n黃　芩\nScutellariae   \r\n  Radix........................2.00g\n牡　蠣\nOstreae   \r\n  Testa.....................\n..........\n2.00g\n桂　枝\nRamulus   \r\n  cinnamomi....................2.00g\n半　夏\nPinelliae   \r\n  Tuber....",
-    "efficacy": "效能】\n【適應症】\n清熱，降逆，鎮驚袪痰。",
-    "indications": "適應症】\n清熱，降逆，鎮驚袪痰。"
-  },
-  {
-    "name": "胃康寧",
-    "composition": "藥物組成】每\n6.0g中含有\n人　參\nGinseng \r\n  Radix....................................2.40g\n白　朮\nAtractylodis Rhizoma.........................2.40g\n茯　苓\nHoelen................................................2.40g\n半　夏\nPinelliae \r\n  Tuber....................................2.40g\n甘　草\nGlycyrrhizae \r\n  Radix.............................2.40g\n陳　皮\nAuranti Nobilis Pericarpium................1.20g\n生　薑\nGingiberis Rhizoma............................1.20g\n大　棗\nZizyphi Fructus...................................1.20g\n桂　皮\nCinn",
-    "efficacy": "效能】\n【適應症】\n胃酸過多，胃痛，食慾不振，慢性胃炎，消化不良，嘔吐，惡阻，胃部壓重感。",
-    "indications": "適應症】\n胃酸過多，胃痛，食慾不振，慢性胃炎，消化不良，嘔吐，惡阻，胃部壓重感。"
-  },
-  {
-    "name": "胃苓湯",
-    "composition": "藥物組成】每\n15.0g中含有\n蒼　朮\nAtractylodis Lancea Rhizoma.............3.00g\n厚　朴\nMagnoliae  \r\n  Cortex...............................3.00g\n陳　皮\nAuranti Nobilis Pericarpium...............3.00g\n白　朮\nAtractylodis Rhizoma.........................3.00g\n茯　苓\nHoelen................................................3.00g\n澤　瀉\nAlismatis Rhizoma..............................2.00g\n豬　苓\nPolyporus............................................2.00g\n甘　草\nGlycyrrhizae  \r\n  Radix.............................1.20g\n肉　桂\nCinnamomi  \r\n  ",
-    "efficacy": "效能】\n【適應症】\n脾胃受濕，飲食停積，浮腫泄瀉。",
-    "indications": "適應症】\n脾胃受濕，飲食停積，浮腫泄瀉。"
-  },
-  {
-    "name": "苓甘薑味辛夏仁湯",
-    "composition": "藥物組成】：每\n6.8g中含有\n茯　苓\nHoelen............................................4.00g\n半　夏\nPinelliae Tuber\n................................\n4.00g\n杏　仁\nArmeniacae Semen.........................4.00g\n甘　草　Glycyrrhizae\n...................................\n3.00g\n乾　薑\nZingiberis Sicatum   \r\n  Rhizoma\n...........\n3.00g\n細　辛\nAsiasri Radix\n.................................\n.\n2.50g\n五味子\nSchisandrae Fructus\n........................\n2.50g\n以上生藥製成浸膏\n.......................................\n3.40g\n（生藥浸膏比\n23.00:3.4＝6.76:1.00）\n【效",
-    "efficacy": "效能】\n【適應症】\n痰飲浮腫，虛寒性氣喘。",
-    "indications": "適應症】\n痰飲浮腫，虛寒性氣喘。"
-  },
-  {
-    "name": "苓桂朮甘湯",
-    "composition": "藥物組成】每\n10.5g中含有\n茯    苓\nHoelen\n.................................................\n10.00g\n桂　枝\nCinnamomi Ramulus.............................\n7.50\ng\n白　朮\nAtractylodis Rhizoma...........................\n.\n7.50g\n甘　草\nGlycyrrhizae Radix..............................\n..\n5.00g\n以上生藥製成浸膏\n............................................\n.\n4.80g\n（生藥與浸膏比\n30.00:4.80＝6.25:1.00）\n【效能】\n【適應症】\n健脾滲濕，溫化痰飲。",
-    "efficacy": "效能】\n【適應症】\n健脾滲濕，溫化痰飲。",
-    "indications": "適應症】\n健脾滲濕，溫化痰飲。"
-  },
-  {
-    "name": "香連丸",
-    "composition": "藥物組成】每\n600丸中含有\n木　香\nSaussureae  \r\n  Radix..........................100gm\n訶　子\nChebulae Fructus..........................100gm\n黃　連\nCoptidis Rhizoma.........................100gm\n陳　皮\nAuranti Nobilis   \r\n  Pericarpium.........100gm\n肉豆蔻\nMyristicae  \r\n  Semen.........................20.0gm\n白茯苓\nPoria............................................50.0gm\n【效能】\n【適應症】\n急慢性胃腸炎，腸瀉，�堳瑹嵾哄A粘血便。",
-    "efficacy": "效能】\n【適應症】\n急慢性胃腸炎，腸瀉，�堳瑹嵾哄A粘血便。",
-    "indications": "適應症】\n急慢性胃腸炎，腸瀉，�堳瑹嵾哄A粘血便。"
-  },
-  {
-    "name": "香蘇散",
-    "composition": "藥物組成】每\n7.7g中含有\n陳　皮\nAuranti Nobilis Pericarpium.........4.00g\n香　附\nCyperi Rhizoma......................8.00g\n紫蘇葉\nPerilla Herba.......................8.00g\n炙甘草\nGlycyrrhizae   \r\n  Radix..................2.00g\n生　薑\nGingiberis Rhizoma..................3.00g\n蔥　白\nAllii Fistulosi Bulbus..............3.00g\n以上生藥製成浸膏\n............................3.50g\n（生藥與浸膏比\n28.00:3.50＝8.00:1.00）\n【效能】\n理氣和中\n，\n解表散寒。\n【適應症】\n外感風寒，內有氣滯，形寒身熱，頭痛無汗，胸脘痞悶。",
-    "efficacy": "效能】\n理氣和中\n，\n解表散寒。\n【適應症】\n外感風寒，內有氣滯，形寒身熱，頭痛無汗，胸脘痞悶。",
-    "indications": "適應症】\n外感風寒，內有氣滯，形寒身熱，頭痛無汗，胸脘痞悶。"
-  },
-  {
-    "name": "香砂平胃散",
-    "composition": "藥物組成】每\n9.5g中含有\n蒼　朮\nAtractyloislancea Rhizoma...............3.60g\n陳　皮\nAuranti Nobilis Pericarpium.............2.40g\n厚　朴\nMagnoliae \r\n  Cortex.............................2.40g\n砂　仁\nAmomi \r\n  Semen.................................2.40g\n香　附\nCyperi Rhizoma...............................2.40g\n山　楂\nCrataegi Fructus...............................2.40g\n神　麴\nMassa Medicata Fermentata.............2.40g\n麥　芽\nHordei Germinatus Fructus..............2.40g\n枳　殼\nCitri immaturus Fructus....................2.40g\n白　芍\nPa",
-    "efficacy": "效能】\n【適應症】\n食鬱\n，飽悶，噯氣，食慾不振\n。",
-    "indications": "適應症】\n食鬱\n，飽悶，噯氣，食慾不振\n。"
-  },
-  {
-    "name": "香砂六君子湯",
-    "composition": "藥物組成】每\n12.2g中含有\n人　參\nGinseng \r\n  Radix.............................2.50g\n白　朮\nAtractylodis Rhizoma..................5.00g\n茯　苓\nHoelen.........................................5.00g\n甘　草\nGlycyrrhizae  \r\n  Radix......................2.00g\n陳　皮\nAuranti Nobilis Pericarpium.........2.00g\n半　夏\nPinelliae \r\n  Tuber.............................2.50g\n砂　仁\nAmomi \r\n  Semen.............................2.00g\n木　香\nSaussureae \r\n  Radix.........................2.00g\n生　薑\nGingiberis Rhizoma.....................5.00g\n以上生藥製成",
-    "efficacy": "效能】\n健脾養胃。\n【適應症】\n氣虛痰飲，嘔吐痞悶，腹脹噯氣。",
-    "indications": "適應症】\n氣虛痰飲，嘔吐痞悶，腹脹噯氣。"
-  },
-  {
-    "name": "厚朴溫中湯",
-    "composition": "藥物組成】每\n8.1g中含有\n乾　薑\nZingiberis Sicatum Rhizoma..........6.00g\n厚　朴\nMagnoliae \r\n  Cortex..........................4.50g\n陳　皮\nAuranti Nobilis Pericarpium..........4.50g\n生　薑\nGingiberis Rhizoma......................3.00g\n草豆蔻\nAmomi Costati Fructus..................2.00g\n赤茯苓\nPaeoniae Hoelen............................2.00g\n大　棗\nZizyphi Fructus..............................2.00g\n木　香\nSaussureae \r\n  Radix...........................1.50g\n甘　草\nGlycyrrhizae \r\n  Radix........................1.50g\n以上生藥製成浸膏\n.......",
-    "efficacy": "效能】\n【適應症】\n治脾胃虛寒，心腹脹滿及秋冬客寒犯胃。",
-    "indications": "適應症】\n治脾胃虛寒，心腹脹滿及秋冬客寒犯胃。"
-  },
-  {
-    "name": "洗肝明目湯",
-    "composition": "藥物組成】每\n12.0g中含有\n當　歸\nAngelicae \r\n  Radix...............................1.50g\n川　芎\nCnidium Rhizoma.............................1.50g\n薄　荷\nMenthae Herba.................................1.50g\n連　翹\nForsythiae Fructus............................1.50g\n黃　連\nCoptidis Rhizoma.............................1.50g\n梔　子\nGardeniae Fructus.............................1.50g\n甘　草\nGlycyrrhizae \r\n  Radix...........................1.50g\n羌　活\nNotopterygii Rhizoma.......................1.50g\n決明子\nCassiae Torae \r\n  Semen........",
-    "efficacy": "效能】\n【適應症】\n清熱袪風。",
-    "indications": "適應症】\n清熱袪風。"
-  },
-  {
-    "name": "保和丸",
-    "composition": "藥物組成】每\n15.0g中含有\n山　楂\nCrataegi Fructus.............................9.60g\n神　麴\nMassa Medicata  \r\n  Fermentata.............3.20g\n半　夏\nPinelliae  \r\n  Tuber.................................3.20g\n茯　苓\nHoelen.............................................3.20g\n陳　皮\nAuranti Nobilis  \r\n  Pericarpium.............1.60g\n連　翹\nForsythiae Fructus............................1.60g\n萊菔子\nRaphani  \r\n  Semen................................1.60g\n以上生藥製成浸膏\n.........................................6.00g\n(生藥與浸膏比24.00:6.00＝4.00:1.",
-    "efficacy": "效能】\n【適應症】\n食積飲停，胸膈痞滿，噯氣吞酸，腹痛泄瀉，下痢。",
-    "indications": "適應症】\n食積飲停，胸膈痞滿，噯氣吞酸，腹痛泄瀉，下痢。"
-  },
-  {
-    "name": "抑肝散",
-    "composition": "藥物組成】每\n19.5g中含有\n當　歸\nAngelicae \r\n  Radix............................5.00g\n白　朮\nAtractylodis Rhizoma....................5.00g\n茯　苓\nHoelen...........................................5.00g\n鉤　藤\nUncariae Ramulus et Uncus...........5.00g\n川　芎\nCnidium Rhizoma..........................4.00g\n柴　胡\nBupleuri \r\n  Radix...............................2.50g\n甘　草\nGlycyrrhizae \r\n  Radix........................2.50g\n以上生藥製成浸膏\n......................................9.30g\n（生藥與浸膏比\n29.00:9.30＝3.12:1.00）\n【效能】\n【適應症】\n驚悸，痰涎，腹脹，睡臥不",
-    "efficacy": "效能】\n【適應症】\n驚悸，痰涎，腹脹，睡臥不安。",
-    "indications": "適應症】\n驚悸，痰涎，腹脹，睡臥不安。"
-  },
-  {
-    "name": "金鎖固精丸",
-    "composition": "藥物組成】每\n8.1g中含有\n沙苑蒺藜\nAstragail  \r\n  Semen......................6.00g\n芡　　實\nEuryales  \r\n  Semen.......................6.00g\n蓮　　鬚\nNelumbinis    \r\n  Stamen.................6.00g\n蓮　　子\nNelumbinis    \r\n  Semen..................6.00g\n龍　　骨\nFossilia Ossis    \r\n  Mastodi.............3.00g\n牡　　蠣\nOstreae Testa..........................3.00g\n以上生藥製成浸膏\n...................................2.70g\n（生藥與浸膏比\n30:2.7＝11.11:1.00）\n【效能】\n固腎濇精。\n【適應症】\n腎虛，遺精，盜汗，腰痠耳鳴，四肢倦怠。",
-    "efficacy": "效能】\n固腎濇精。\n【適應症】\n腎虛，遺精，盜汗，腰痠耳鳴，四肢倦怠。",
-    "indications": "適應症】\n腎虛，遺精，盜汗，腰痠耳鳴，四肢倦怠。"
-  },
-  {
-    "name": "金沸草散",
-    "composition": "藥物組成】每\n10.0g中含有\n荊　芥\nSchizonepetae Herba.................6.00g\n前　胡\nPeucedani \r\n  Radix........................4.50g\n麻　黃\nEphedrae Herba.........................4.50g\n旋覆花\nInulae \r\n  Semen.............................4.50g\n甘　草\nGlycyrrhizae \r\n  Radix....................1.50g\n半　夏\nPinelliae \r\n  Tuber...........................1.50g\n赤　芍\nPaeoniae Veilchii  \r\n  Radix.............1.50g\n生　薑\nGingiberis Rhizoma...................3.00g\n大　棗\nZizyphi Fructus..........................1.00g\n以上生藥製成浸膏\n...............",
-    "efficacy": "效能】\n解表散寒，治風化痰。\n【適應症】\n肺感風寒，咳嗽多痰。",
-    "indications": "適應症】\n肺感風寒，咳嗽多痰。"
-  },
-  {
-    "name": "治濁固本丸",
-    "composition": "藥物組成】每\n10.5g中含有\n蓮　鬚\nNelumbinis \r\n  Stamen....................4.00g\n黃　蓮\nCoptidis Rhizoma......................4.00g\n茯　苓\nHoelen.......................................2.00g\n砂　仁\nAmomi \r\n  Semen...........................2.00g\n益智仁\nAlpiniae Fructus........................2.00g\n半　夏\nPinelliae \r\n  Tuber..........................2.00g\n黃　柏\nPhellodenri \r\n  Cortex....................2.00g\n炙甘草\nGlycyrrhizae \r\n  Radix...................6.00g\n豬　苓\nPolyporus..................................5.00g\n以上生藥製成浸膏\n........",
-    "efficacy": "效能】\n清熱利濕。\n【適應症】\n溼熱下注，頻尿白濁。",
-    "indications": "適應症】\n溼熱下注，頻尿白濁。"
-  },
-  {
-    "name": "炙甘草湯",
-    "composition": "藥物組成】每\n22.2g中含有\n炙甘草\nGlycyrrhizae  \r\n  Radix............................3.00g\n生　薑\nGingiberis Rhizoma...........................2.50g\n桂　枝\nCinnamomi Ramulus.........................2.50g\n人　參\nGinseng   \r\n  Radix...................................1.50g\n生地黃\nRehmanniae Radix et Rhizoma........12.00g\n阿　膠\nAsini Gelatinum.................................1.50g\n麥門冬\nOphiopogonis \r\n  Tuber..........................2.50g\n火麻仁\nCannabis Fructus...............................3.00g\n大　棗\nZizyphi Fructus..............",
-    "efficacy": "效能】\n益氣補血，滋陰復脈。\n【適應症】\n氣虛血少脈結代，心動悸，氣短胸悶，虛癆肺痿。",
-    "indications": "適應症】\n氣虛血少脈結代，心動悸，氣短胸悶，虛癆肺痿。"
-  },
-  {
-    "name": "虎潛丸",
-    "composition": "藥物組成】每\n6.0g中含有\n龜　板\nTestudinis Plastrum.............................4.00g\n黃　柏\nPhellodenri \r\n  Cortex..............................4.00g\n牛　膝\nAchyanthis \r\n  Radix...............................3.50g\n知　母\nAnemarrhenae Rhizoma.....................2.00g\n熟地黃\nRehmanniae Radix Et Rhizoma..........2.00g\n白　芍\nPaeoniae \r\n  Radix...................................1.50g\n鎖　陽\nCynomorii Herba................................1.00g\n當　歸\nAngelicae \r\n  Radix.................................1.00g\n陳　皮\nAuranti Nobilis Peri",
-    "efficacy": "效能】\n養陰潛陽，強筋壯骨。\n【適應症】\n筋骨萎軟，步履艱難。",
-    "indications": "適應症】\n筋骨萎軟，步履艱難。"
-  },
-  {
-    "name": "防己黃耆湯",
-    "composition": "藥物組成】每\n10.5g中含有\n防　己\nHanfangchi \r\n  Radix......................4.00g\n黃　耆\nAstragali \r\n  Radix..........................4.40g\n白　朮\nAtractylodis Rhizoma................3.00g\n甘　草\nGlycyrrhizae \r\n  Radix....................2.00g\n生　薑\nGingiberis Rhizoma...................1.00g\n大　棗\nZizyphi Fructus..........................1.00g\n以上生藥製成浸膏\n..................................5.00g\n（生藥與浸膏比例\n15.40:5.00＝3.08:1.00）\n【效能】\n【適應症】\n益氣健脾，利水退腫。",
-    "efficacy": "效能】\n【適應症】\n益氣健脾，利水退腫。",
-    "indications": "適應症】\n益氣健脾，利水退腫。"
-  },
-  {
-    "name": "沙參麥冬",
-    "composition": "藥物組成】每\n8.0g中含有\n沙　參\nAdenophorae \r\n  Radix..........................3.50g\n麥門冬\nOphiopogonis \r\n  Tuber.........................3.50g\n萎　蕤\nPolygonati officinale Rhizoma..........2.50g\n桑　葉\nMori \r\n  Folium......................................2.00g\n栝樓根\nTrichosanthes \r\n  Root...........................2.00g\n白扁豆\nDolichoris \r\n  Semen..............................2.00g\n甘　草\nGlycyrrhizae \r\n  Radix...........................1.50g\n以上生藥製成浸膏\n..........................................4.00g\n（生藥與浸膏比例\n17.00:4.00＝4.30",
-    "efficacy": "效能】\n【適應症】\n清養肺胃。",
-    "indications": "適應症】\n清養肺胃。"
-  },
-  {
-    "name": "折衝飲",
-    "composition": "藥物組成】每\n6.0g中含有\n當　歸\nAngelicae \r\n  Radix.........................5.00g\n桃　仁\nPersicae \r\n  Semen...........................5.00g\n牡丹皮\nMoutan \r\n  Cortex...........................3.00g\n川　芎\nCnidium Rhizoma......................3.00g\n白　芍\nPaeoniae \r\n  Radix..........................3.00g\n桂　枝\nCinnamomi Ramulus.................3.00g\n延胡索\nCorydalidis \r\n  Tuber......................2.50g\n牛　膝\nAchyranthis \r\n  Radix.....................2.50g\n紅　花\nCarthami Flos............................1.50g\n以上生藥製成浸膏\n............",
-    "efficacy": "效能】\n【適應症】\n經閉腹痛。",
-    "indications": "適應症】\n經閉腹痛。"
-  },
-  {
-    "name": "完帶湯",
-    "composition": "藥物組成】每\n16.6g中含有\n白　朮\nAtractylodis Rhizoma..................10.00g\n山　藥\nDioscoreae Rhizoma...................10.00g\n人　參\nGinseng \r\n  Radix..............................2.00g\n白　芍\nPaeoniae \r\n  Radix.............................5.00g\n車前子\nPlantaginis Semen.........................3.00g\n蒼　朮\nAtractyloislancea Rhizoma...........3.00g\n甘　草\nGlycyrrhizae   \r\n  Radix.......................1.00g\n陳　皮\nAuranti Nobilis   \r\n  Pericarpium..........0.50g\n荊芥炭\nSchizonepetae Herba....................0.50g\n柴　胡\nBupleuri   \r",
-    "efficacy": "效能】\n健脾燥濕，疏肝理氣。\n【適應症】\n白帶。",
-    "indications": "適應症】\n白帶。"
-  },
-  {
-    "name": "芎歸膠艾湯",
-    "composition": "藥物組成】每\n24.0g中含有\n川　芎\nCnidium Rhizoma............................2.50g\n當　歸\nAngelicae \r\n  Radix..............................4.00g\n阿　膠\nAsini Gelatinum...............................2.50g\n艾　葉\nArtemisiae Argyi \r\n  Folium..................4.00g\n甘　草\nGlycyrrhizae \r\n  Radix..........................2.50g\n地　黃\nRehmanniae Radix et Rhizoma........8.00g\n白　芍\nPaeoniae \r\n  Radix................................5.00g\n以上生藥製成浸膏\n........................................12.00g\n（生藥與浸膏比例\n28.5:12.00＝2.38:1.00）\n【效能】\n【適應症】\n",
-    "efficacy": "效能】\n【適應症】\n補血調經，安胎止漏。",
-    "indications": "適應症】\n補血調經，安胎止漏。"
-  },
-  {
-    "name": "吳茱萸湯",
-    "composition": "藥物組成】每\n11.2g中含有\n吳茱萸\nEvodiae Fructus..................7.50g\n人　參\nGinseng  \r\n  Radix....................4.50g\n生　薑\nGingiberis Rhizoma............9.00g\n大　棗\nZizyphi Fructus...................6.00g\n以上生藥製成浸膏\n............................5.60g\n（生藥與浸膏比例\n27.00:5.60＝4.82:1.00）\n【效能】\n溫中補虛，降逆止嘔。\n【適應症】\n脾胃虛寒，食榖欲嘔，吐利煩燥，手足厥冷，乾嘔吐涎，頭痛。\n【注意事項】\n嘔吐較重者\n，冷服為宜。",
-    "efficacy": "效能】\n溫中補虛，降逆止嘔。\n【適應症】\n脾胃虛寒，食榖欲嘔，吐利煩燥，手足厥冷，乾嘔吐涎，頭痛。\n【注意事項】\n嘔吐較重者\n，冷服為宜。",
-    "indications": "適應症】\n脾胃虛寒，食榖欲嘔，吐利煩燥，手足厥冷，乾嘔吐涎，頭痛。\n【注意事項】\n嘔吐較重者\n，冷服為宜。"
-  },
-  {
-    "name": "杏蘇散",
-    "composition": "藥物組成】每\n15.0g中含有\n半　夏\nPinelliae  \r\n  Tuber...........................3g\n茯　苓\nHoelen.......................................3g\n前　胡\nPhucedani  \r\n  Radix........................2g\n枳　殼\nCitri Immaturus Fructus..............2g\n杏　仁\nArmeniacae  \r\n  Semen.....................3g\n桔　梗\nPlatycodi  \r\n  Radix..........................2g\n陳　皮\nAuranti Nobilis Pericarpium.......1g\n紫　蘇\nPerilla Herba...............................3g\n生　薑\nGingiberis Rhizoma....................2g\n甘　草\nGlycyrrhizae  \r\n  Radix.................",
-    "efficacy": "效能】\n【適應症】\n溫散風寒，宣肺化痰。",
-    "indications": "適應症】\n溫散風寒，宣肺化痰。"
-  },
-  {
-    "name": "杏蘇散(幼科)",
-    "composition": "藥物組成】每\n16.5g中含有\n杏　仁\nArmeniacae \r\n  Semen......................3.00g\n紫　蘇\nPerilla Herba................................3.00g\n桔　梗\nPlatycodi \r\n  Radix...........................3.00g\n桑白皮\nMori \r\n  Cortex.................................3.00g\n黃　芩\nScutellariae \r\n  Radix........................3.00g\n浙貝母\nFritillaria Thunbergii Bulbus........3.00g\n前　胡\nPeucedani \r\n  Radix..........................2.00g\n枳　殼\nCitri Immaturus Fructus...............2.00g\n麥門冬\nOphiopogonis \r\n  Tuber....................2.00g\n橘　紅\nC",
-    "efficacy": "效能】\n【適應症】\n溫散風寒，宣肺化痰。",
-    "indications": "適應症】\n溫散風寒，宣肺化痰。"
-  },
-  {
-    "name": "托�堮欓r飲",
-    "composition": "藥物組成】每\n14.7g中含有\n人　參\nGinseng \r\n  Radix..............................3.0g\n白　朮\nAtractylodis Rhizoma...................3.00g\n當　歸\nAngelicae \r\n  Radix...........................3.00g\n川　芎\nCnidium Rhizoma.........................3.00g\n白　芍\nPaeoniae \r\n  Radix.............................3.00g\n桔　梗\nPlatycodi \r\n  Radix............................1.50g\n茯　苓\nHoelen..........................................3.00g\n桔  梗\n......... \r\n  .................................1.50g\n皂角刺\nGleditsiae Soina.......................",
-    "efficacy": "效能】\n【適應症】\n治瘡瘍氣血俱虛，腫不能潰，潰不能斂。",
-    "indications": "適應症】\n治瘡瘍氣血俱虛，腫不能潰，潰不能斂。"
-  },
-  {
-    "name": "竹葉石膏湯",
-    "composition": "藥物組成】每\n15.8g中含有\n竹　葉\nLophathero Herba.......................2.00g\n石　膏\nGypsum Fibrosum....................16.00g\n半　夏\nPinelliae \r\n  Tuber............................4.00g\n人　參\nGinseng \r\n  Radix............................3.00g\n炙甘草\nGlycyrrhizae \r\n  Radix.....................2.00g\n粳　米\nGerminantis Orvzae....................6.00g\n麥門冬\nOphiopgonis \r\n  Tuber.....................6.00g\n以上生藥製成浸膏\n...................................7.90g\n（生藥與浸膏比\n39.00:7.90＝4.94:1.00）\n【效能】\n清熱生津，益氣和胃。\n【適應症】\n熱病後期，氣陰兩傷，乾嘔少氣，口渴，脈虛大無",
-    "efficacy": "效能】\n清熱生津，益氣和胃。\n【適應症】\n熱病後期，氣陰兩傷，乾嘔少氣，口渴，脈虛大無力者。",
-    "indications": "適應症】\n熱病後期，氣陰兩傷，乾嘔少氣，口渴，脈虛大無力者。"
-  },
-  {
-    "name": "安胎散",
-    "composition": "藥物組成】每\n6.0g中含有\n當　歸\nAngelicae \r\n  Radix............................2.50g\n川　芎\nCnidium Rhizoma..........................2.50g\n白　芍\nPaeoniae \r\n  Radix..............................3.50g\n川貝母\nFritillaria Thunbergii Bulbus..........2.00g\n菟絲子\nCuscutae \r\n  Semen............................2.00g\n黃　耆\nAstragali \r\n  Radix.............................1.50g\n厚　朴\nMagnoliae \r\n  Cortex.........................1.50g\n荊茶穗\nSchizonepetae Herba....................1.50g\n艾　葉\nArtemisae Argyi \r\n  Folium...............1.50g\n生",
-    "efficacy": "效能】\n【適應症】\n安胎，妊娠，腰腹痛。",
-    "indications": "適應症】\n安胎，妊娠，腰腹痛。"
-  },
-  {
-    "name": "安中散",
-    "composition": "藥物組成】每\n4.5g中含有\n桂　枝\nCinnamomi Ramulus....................5.00g\n延胡索\nCorydalidis \r\n  Tuber.........................4.00g\n牡　蠣\nOstreae Testa................................4.00g\n茴　香\nFoeniculi Fructus..........................2.00g\n縮砂仁\nAmomi \r\n  Semen.............................2.00g\n甘　草\nGlycyrrhizae \r\n  Radix......................2.00g\n高良薑\nGalangae Rhizoma.......................1.00g\n以上生藥製成浸膏\n.....................................3.00g\n（生藥與浸膏比例\n20.00:3.00＝6.60:1.00）\n【效能】\n【適應症】\n胃酸過多，胃痛，胃潰瘍。",
-    "efficacy": "效能】\n【適應症】\n胃酸過多，胃痛，胃潰瘍。",
-    "indications": "適應症】\n胃酸過多，胃痛，胃潰瘍。"
-  },
-  {
-    "name": "平胃散",
-    "composition": "藥物組成】每\n13.5g中含有\n蒼　朮\nAtractylodis Lancea Rhizoma..........5.00g\n厚　朴\nMagnoliae \r\n  Cortex............................2.50g\n陳　皮\nAuranti Nobilis Pericarpiam............5.00g\n甘　草\nGlycyrrhizae \r\n  Radix.........................3.00g\n生　薑\nGingiberis Rhizoma........................3.00g\n大　棗\nZizyphi Fructus...............................2.00g\n以上生藥製成浸膏\n.......................................6.50g\n（生藥與浸膏比例\n26.00:6.50＝4.00:1.00）\n【效能】\n【適應症】\n反胃噯氣，噁心嘔吐，食慾不振，心腹脹痛。",
-    "efficacy": "效能】\n【適應症】\n反胃噯氣，噁心嘔吐，食慾不振，心腹脹痛。",
-    "indications": "適應症】\n反胃噯氣，噁心嘔吐，食慾不振，心腹脹痛。"
-  },
-  {
-    "name": "代赭旋覆湯",
-    "composition": "藥物組成】每\n12.8\ng中含有\n旋覆花\nInulae Flos..............................................4.5g\n人　參\nGinseng Rubra Radix.............................3.0g\n生　薑\nZingiberis Recens Rhizoma....................7.5g\n半　夏\nPinelliae Rhizoma...................................7.5g\n代赭石\nHaematitum............................................1.5g\n大　棗\nJujubae\nFructus.......................................4.0g\n炙甘草\nGlycyrrhizae Preparata Radix..................4.5g\n以上生藥製成浸膏\n................................................6.4g\n（生",
-    "efficacy": "效能】\n扶正益胃，降逆化痰。\n【適應症】\n汗吐下解之後，心下痞鞕，噫氣不除。",
-    "indications": "適應症】\n汗吐下解之後，心下痞鞕，噫氣不除。"
-  },
-  {
-    "name": "四君子湯",
-    "composition": "藥物組成】每\n12.4g中含有\n人　參\nGinseng  \r\n  Radix.............................6.00g\n茯　苓\nHoelen.........................................6.00g\n炙甘草\nGlycyrrhizae Radix......................3.00g\n白　朮\nAtractylodis Rhizoma............ ......6.00g\n生　薑\nGingiberis Rhizoma.................. ...3.00g\n大　棗\nZizyphi Fructus...................... \r\n  ......2.00g\n以上生藥製成浸膏\n...............................  \r\n  ....6.20g\n（生藥與浸膏比例\n26.00:6.20＝4.19:1.00）\n【效能】\n益氣健脾。\n【適應症】\n脾胃氣虛，消化不良，面色蒼白，食少便溏。",
-    "efficacy": "效能】\n益氣健脾。\n【適應症】\n脾胃氣虛，消化不良，面色蒼白，食少便溏。",
-    "indications": "適應症】\n脾胃氣虛，消化不良，面色蒼白，食少便溏。"
-  },
-  {
-    "name": "四逆湯",
-    "composition": "藥物組成】每\n4.5g中含有\n附　子\nAconiti \r\n  Tuber..............................10.00g\n乾　薑\nZingiberis Sicatum Rhizoma..........7.50g\n甘　草\nGlycyrrhizae Radix.......................10.00g\n以上生藥製成浸膏\n...................................6.20g\n（生藥與浸膏比\n27.5:6.2＝4.44:1.00）\n【效能】\n回陽救逆。\n【適應症】\n治少陰病, 表熱�奡H, 下利清榖, 四肢拘急, 手足厥冷, \r\n  脈微欲絕者。",
-    "efficacy": "效能】\n回陽救逆。\n【適應症】\n治少陰病, 表熱�奡H, 下利清榖, 四肢拘急, 手足厥冷, \r\n  脈微欲絕者。",
-    "indications": "適應症】\n治少陰病, 表熱�奡H, 下利清榖, 四肢拘急, 手足厥冷, \r\n  脈微欲絕者。"
-  },
-  {
-    "name": "甘麥大棗湯",
-    "composition": "藥物組成】每\n12.0g中含有\n甘　草\nGlycyrrhizae \r\n  Radix...................6.00g\n大　棗\nZizyphi Fructus.........................6.00g\n小　麥\nTrifici Semen..........................12.00g\n以上生藥製成浸膏.................................5.60g\n（生藥與浸膏比\n24.00:5.60＝4.29:1.00）\n【效能】\n養心安寧，和中緩急。\n【適應症】\n婦人臟躁，善悲欲泣，小兒夜啼，不眠。",
-    "efficacy": "效能】\n養心安寧，和中緩急。\n【適應症】\n婦人臟躁，善悲欲泣，小兒夜啼，不眠。",
-    "indications": "適應症】\n婦人臟躁，善悲欲泣，小兒夜啼，不眠。"
-  },
-  {
-    "name": "甘露消毒丹",
-    "composition": "藥物組成】每\n9.5g中含有\n滑　石\nTolcum\n..................\n.........................\n6.00g\n黃　芩\nScutellariae \r\n  Radix............................4.00g\n茵陳蒿\nArtemisiae Capillaris Herba..............4.40g\n藿　香\nAgastachis Herba.............................1.60g\n連　翹\nForsythiae Fructus............................1.60g\n石菖蒲\nAcori Graminei Rhizoma..................2.40g\n白豆蔻\nAmomi Cardamomi Fructus..............1.60g\n薄　荷\nMenthae Herba.................................1.60g\n木　通\nAkebiae \r\n  Caulis..........................",
-    "efficacy": "效能】\n化濁利濕，清熱解毒。\n【適應症】\n暑濕時疫，發熱倦怠，胸悶腹脹，咽腫口渴，溺赤便閉。",
-    "indications": "適應症】\n暑濕時疫，發熱倦怠，胸悶腹脹，咽腫口渴，溺赤便閉。"
-  },
-  {
-    "name": "玉屏風散",
-    "composition": "藥物組成】每\n21.0g中含有\n防　風\nSaposhnikovia Radix..................5.0g\n黃　耆\nAstragali Radix...........................15.0g\n白　朮\nAtractylodis Rhizoma................5g\n生  薑\n...........................................3.0g\n大  棗\n...................................2g\n以上生藥製成浸膏\n....................................10.2g\n（生藥與浸膏比\n30.00:10.20＝2.94:1.00）\n【 效能】\n【適應症】\n自汗不止，易感風寒。",
-    "efficacy": "效能】\n【適應症】\n自汗不止，易感風寒。",
-    "indications": "適應症】\n自汗不止，易感風寒。"
-  },
-  {
-    "name": "玉女煎",
-    "composition": "藥物組成】每\n24.0g中含有\n生石膏\nGypsum Fibrosum............................10.00g\n熟地黃\nRehmanniae Radix et Rhizoma.........10.00g\n麥門冬\nOphiopogoins Tuber...........................5.00g\n知　母\nAnemarrhenae Rhizoma.....................4.00g\n牛　膝\nAchyranthis Radix..............................4.00g\n以上生藥製成浸膏\n.........................................12.00g\n（生藥與浸膏比例\n33.00:120＝2.75:1.00）\n【效能】\n清胃滋陰。\n【適應症】\n陰虛胃熱，煩熱口渴，頭痛，牙痛。",
-    "efficacy": "效能】\n清胃滋陰。\n【適應症】\n陰虛胃熱，煩熱口渴，頭痛，牙痛。",
-    "indications": "適應症】\n陰虛胃熱，煩熱口渴，頭痛，牙痛。"
-  },
-  {
-    "name": "右歸丸",
-    "composition": "藥物組成】每\n6.0g中含有\n熟地黃\nRehmanniae Radix Et Rhizoma...........5.60g\n山茱萸\nCorni Fructus.......................................2.80g\n山　藥\nDioscoreae Rhizoma............................2.80g\n杜　仲\nEucommiae \r\n  Cortex..............................2.80g\n枸杞子\nLycii Fructus.......................................2.80g\n菟絲子\nCuscutae \r\n  Semen..................................2.80g\n肉　桂\nCinnamomi \r\n  Cortex..............................1.40g\n附　子\nAconiti \r\n  Tuber......................................1.40g\n鹿角膠\nCervi ",
-    "efficacy": "效能】\n【適應症】\n治命門火衰、脾胃虛寒。",
-    "indications": "適應症】\n治命門火衰、脾胃虛寒。"
-  },
-  {
-    "name": "加減駐景丸",
-    "composition": "藥物組成】每\n6.0g中含有\n菟絲子\nCuscutae \r\n  Semen...............................8.00g\n當　歸\nAngelicae \r\n  Radix...............................5.00g\n熟地黃\nRehmanniae Radix et Rhizoma.........5.00g\n車前子\nPlantaginis \r\n  Semen.............................2.00g\n五味子\nSchisandrae Fructus..........................2.00g\n枸杞子\nLycii Fructus.....................................1.00g\n榰實子\nBrooussonetiae Fructus.....................1.00g\n川　椒\nZanthoxyli Fructus............................1.00g\n以上生藥製成浸膏\n...........................",
-    "efficacy": "效能】\n【效應症】\n肝腎氣虛，兩目昏暗。",
-    "indications": NaN
-  },
-  {
-    "name": "白虎湯",
-    "composition": "藥物組成】每\n11.7g中含有\n知　母\nAnemarrhenae Rhizoma...............6.00g\n石　膏\nGypsum Fibrosum......................16.00g\n炙甘草\nGlycyrrhizae Radix......................  \r\n  2.00g\n粳　米\nGerminantis Orvzae Fructus......... 8.00g\n以上生藥製成浸膏\n......................................5.30g\n（生藥與浸膏比例\n32.00:5.30＝6.04:1.00）\n【效能】\n清熱生津。\n【適應症】\n陽明經症或溫病氣分大熱，症見口大渴，身大熱，脈洪大，汗大出者。",
-    "efficacy": "效能】\n清熱生津。\n【適應症】\n陽明經症或溫病氣分大熱，症見口大渴，身大熱，脈洪大，汗大出者。",
-    "indications": "適應症】\n陽明經症或溫病氣分大熱，症見口大渴，身大熱，脈洪大，汗大出者。"
-  },
-  {
-    "name": "白虎加人參湯",
-    "composition": "藥物組成】每\n6.0g中含有\n石　膏\nGypsum Fibrosum.........................9.00g\n知　母\nAnemarrhenae Rhizoma................5.40g\n粳　米\nGerminantis Oryzae Fructus..........5.40g\n人　參\nGinseng \r\n  Radix...............................2.70g\n炙甘草\nGlycyrrhizae Radix........................1.80g\n以上生藥製成浸膏\n......................................4.10g\n（生藥與浸膏比\n24.30:4.10＝5.90:1.00）\n【效能】\n【適應症】\n清涼，解熱，生津。",
-    "efficacy": "效能】\n【適應症】\n清涼，解熱，生津。",
-    "indications": "適應症】\n清涼，解熱，生津。"
-  },
-  {
-    "name": "半夏瀉心湯",
-    "composition": "藥物組成】\n半　夏\nPinelliae Tuber.........................7.50\n黃　芩\nScutellariae Radix....................4.50\n乾　薑\nZingiberis Sicatum....................4.50\n人　參\nGinseng Radix..........................4.50\n甘　草\nGlycyrrhizae Radix...................4.50\n黃　連\nCoptidis Rhizoma.....................1.50\n大　棗\nZizyphi Fructus.........................3.00\n以上生藥製成浸膏\n................................7.40\n（生藥與浸膏比\n30.00:7.40＝4.05:1.00）\n【效能】\n【適應症】\n治傷寒心下痞及嘔吐而腸鳴者。",
-    "efficacy": "效能】\n【適應症】\n治傷寒心下痞及嘔吐而腸鳴者。",
-    "indications": "適應症】\n治傷寒心下痞及嘔吐而腸鳴者。"
-  },
-  {
-    "name": "半夏白朮天麻湯",
-    "composition": "藥物組成】每\n15.6g中含有\n半　夏\nPinelliae \r\n  Tuber....................................4.50g\n麥　芽\nHordei Germinatus Fructus.................4.50g\n神　麴\nMassa Medicata Fermentata................3.00g\n白　朮\nAtractylodis Lancea Rhizoma.............3.00g\n蒼　朮\nAtractylodis Lancea Rhizoma.............1.50g\n人　參\nGinseng \r\n  Radix....................................1.50g\n黃　耆\nAstragali \r\n  Radix...................................1.50g\n陳　皮\nAuranti Nobilis Pericarpium...............4.50g\n茯　苓\nHoelen...........................",
-    "efficacy": "效能】\n【適應症】",
+// 價格表（先給空，之後可以自己補進去）
+const priceData = {};
+
+// 藥品詳細資料（由 CSV 自動轉換）
+const drugInfo = {
+  "清燥救肺湯": {
+    "composition": [
+      "藥物組成】",
+      "每13 2g中含有 桑 葉 Folium Mori 7 5g 石 膏 Gypsum Fibrosum 6 5g 甘 草 Radix et Rhizoma Glycyrrhizae 2 5g 胡麻仁 Semen Sesami 2 5g 阿 膠 Colla Corii Asini 2 0g 人 參 Radix et Rhizoma Ginseng Rubra 2 0g 麥門冬 Radix Ophiopogonis 3 0g 杏 仁 Semen Armeniacae Amarum 2 0g 枇杷葉 Folium Eriobotryae 2 0g 以上生藥製成浸膏"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 清燥潤肺 【適應症】\n 燥邪傷肺、頭痛身熱、乾咳無痰、氣逆而喘、口渴心煩",
+    "indications": "適應症】\n 燥邪傷肺、頭痛身熱、乾咳無痰、氣逆而喘、口渴心煩"
+  },
+  "源氣活力湯": {
+    "composition": [
+      "藥物組成】",
+      "每14 4g中含有 黃 耆 Astragali Radix 3 00g 蒼 朮 Atractylodis Rhizoma 3 00g 升 麻 Cimicifugae Rhizoma 3 00g 人 參 Ginseng Radix 1 50g 澤 瀉 Alismatis Rhizoma 1 50g 神 麴 Massa Medicata Fermentata 1 50g 陳 皮 Citri Reticulatae Pericarpium 1 50g 白 朮 Atractylodis Macrocephalae Rhizoma 1 50g 麥門冬 Ophiopogonis Tu"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 清暑除溼，益氣生津 【適應症】\n 長夏溼熱蒸炎、四肢困倦、身熱心煩、自汗口渴、便黃、溺赤、脈虛者",
+    "indications": "適應症】\n 長夏溼熱蒸炎、四肢困倦、身熱心煩、自汗口渴、便黃、溺赤、脈虛者"
+  },
+  "響聲破笛丸": {
+    "composition": [
+      "藥物組成】",
+      "每6 0g中含有 大 黃 Rhei Rhizoma 1 20g 砂 仁 Amomi Semen 1 20g 川 芎 Cnidium Rhizoma 1 20g 訶 子 Chebulae Fructus 1 20g 阿 仙藥 Gambir 2 40g 連 翹 Forsythiae Fructus 3 00g 桔 梗 Platycodi Radix 3 00g 甘 草 Glycyrrhizae Radix 3 00g 薄 荷 Menthae Herba 4 80g 以上生藥製成浸膏"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 喉痛聲啞，口燥咽乾",
+    "indications": "適應症】\n 喉痛聲啞，口燥咽乾"
+  },
+  "蘇子降氣湯": {
+    "composition": [
+      "藥物組成】",
+      "每9 7g中含有 當 歸 Angelicae Radix 2 00g 甘 草 Glycyrrhizae Radix 2 00g 厚 朴 Magnoliae Cortex 2 00g 前 胡 Peucedani Radix 2 00g 陳 皮 Auranti Nobilis Pericarpium 3 00g 肉 桂 Cinnamomi Cortex 3 00g 蘇 子 Perillae Fructus 5 00g 半 夏 Pinelliae Tuber 5 00g 生 薑 Gingiberis Rhizoma 2 00g 大 棗 Zizyphi"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 降氣平喘，溫化痰濕 【適應症】\n 痰涎壅盛，咳喘短氣，胸膈滿悶，咽喉不利 【注意事項】\n 喘咳具有熱象或腎陰虛者忌用",
+    "indications": "適應症】\n 痰涎壅盛，咳喘短氣，胸膈滿悶，咽喉不利 【注意事項】\n 喘咳具有熱象或腎陰虛者忌用"
+  },
+  "雙解散(防風通聖去硝黃)": {
+    "composition": [
+      "藥物組成】",
+      "每6 0g中含有 當 歸 Angelicae Radix 1 00g 白 芍 Paeoniae Radix 1 00g 川 芎 Cnidium Rhizoma 1 00g 防 風 Saposhnikovia Radix 1 00g 麻 黃 Ephedrae Herba 1 00g 薄 荷 Menthae Herba 1 00g 連 翹 Forsythiae Fructus 1 00g 白 朮 Atractylodis Rhizoma 1 00g 荊 芥 Schizonepetae Herba 1 00g 梔 子 Gardeniae Fructus 1 00g 生 薑 Gi"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 目赤睛痛圍，耳鳴鼻塞，口苦舌乾，咳嗽上氣",
+    "indications": "適應症】\n 目赤睛痛圍，耳鳴鼻塞，口苦舌乾，咳嗽上氣"
+  },
+  "瀉白散": {
+    "composition": [
+      "nan"
+    ],
+    "extractRatio": "",
+    "efficacy": "nan",
+    "indications": "nan"
+  },
+  "薏苡仁湯": {
+    "composition": [
+      "nan"
+    ],
+    "extractRatio": "",
+    "efficacy": "nan",
+    "indications": "nan"
+  },
+  "導赤散": {
+    "composition": [
+      "藥物組成】",
+      "每11 2g中含有 生地黃 Rehmanniae Radix et Rhizoma 6 00g 甘 草 Glycyrrhizae Radix 6 00g 木 通 Akebiae Caulis 6 00g 竹 葉 Lophathero Herba 6 00g 以上生藥製成浸膏 5 60g （生藥與浸膏比24 00:5 60＝4 29:1 00） 【效能】",
+      "清心火 ，利小便 【適應症】",
+      "口糜舌瘡，小便赤澀，熱淋不利"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 清心火 ，利小便 【適應症】\n 口糜舌瘡，小便赤澀，熱淋不利",
+    "indications": "適應症】\n 口糜舌瘡，小便赤澀，熱淋不利"
+  },
+  "獨活寄生湯": {
+    "composition": [
+      "藥物組成】",
+      "每20 4g中含有 獨 活 Angelicae Tuhou Radix 3 00g 寄 生 Loranthi Ramulus 2 00g 杜 仲 Eucommiae Cortex 2 00g 牛 膝 Achyranthis Radix 2 00g 細 辛 Asiasri Radix 2 00g 秦 艽 Gentianae Macrophllae Radix 2 00g 茯 苓 Hoelen 2 00g 桂 心 Cinnamomi Lignum 2 00g 防 風 Saposhnikovis Radix"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 袪風濕，止痹痛，補氣血 【適應症】\n 風寒濕痹，腰膝冷痛，腿足屈伸不利 【 注意事項】\n 濕熱性的關節疼痛， 高血壓患者及孕婦慎服",
+    "indications": "適應症】\n 風寒濕痹，腰膝冷痛，腿足屈伸不利 【 注意事項】\n 濕熱性的關節疼痛， 高血壓患者及孕婦慎服"
+  },
+  "豬苓湯": {
+    "composition": [
+      "藥物組成】",
+      "每10 8g中含有 豬 苓 Polyporus 6 00g 茯 苓 Hoelen 6 00g 滑 石 Tolcum 6 00g 澤 瀉 Alismatis Rhizoma 6 00g 阿 膠 Asini Gelatinum 6 00g 以上生藥製成浸 膏 4 30g （生藥與浸膏比30 00:4 30＝6 98:1 00） 【效能】",
+      "【適應症】",
+      "滋陰，清熱，利水"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 滋陰，清熱，利水",
+    "indications": "適應症】\n 滋陰，清熱，利水"
+  },
+  "潤腸湯": {
+    "composition": [
+      "藥物組成】",
+      "每21g中含有 當 歸 Angelicae Radix 2 50g 熟地黃 Rehmanniae Radix et Rhizoma 2 50g 生地黃 Rehmanniae Radix et Rhizoma 2 50g 火麻仁 Cannabis Fructus 2 50g 桃 仁 Persicae Semen 2 50g 杏 仁 Armeniacae Semen 2 50g 枳 實 Aurantii Immaturus Fructus 2 50g 黃 苓 Scutellariae Radix 2 50g 厚 朴 Magnolia"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 潤腸通便 【適應症】\n 腸胃燥熱，大便祕結",
+    "indications": "適應症】\n 腸胃燥熱，大便祕結"
+  },
+  "養心湯": {
+    "composition": [
+      "藥物組成】",
+      "每 13 6g 中含有 炙黃耆 Astragali Radix 3 00g 茯 神 Poria 3 00g 茯 苓 Hoelen 3 00g 半夏麴 Pinelliae Tuber 3 00g 當 歸 Angelicae Radix 3 00g 川 芎 Cnidium Rhizoma 3 00g 遠 志 Polygalae Radix 2 00g 酸棗仁 Zizyphi Spinosi Semen 2 00g 肉 桂 Cinnamomi Cortex 2 00g 柏子仁 Thujae"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 補血養心，安神定志 【適應症】\n 心血不足，心神不寧，失眠多夢",
+    "indications": "適應症】\n 心血不足，心神不寧，失眠多夢"
+  },
+  "鼻良湯(清鼻湯)": {
+    "composition": [
+      "藥物組成】",
+      "每6 0g中含有 葛 根 Puerariae Radix 4 00g 麻 黃 Ephedrae Herba 2 00g 生 薑 Gingiberis Rhizoma 2 00g 大 棗 Zizyphi Fructus 2 00g 白 芍 Paeoniae Radix 1 50g 桂 枝 Cinnamomi Ramulus 1 50g 桔 梗 Platycodi Radix 1 50g 辛 夷 Magnoliae Flos 1 50g 川 芎 Cnidum Rhizoma"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 慢性鼻炎，蓄膿症",
+    "indications": "適應症】\n 慢性鼻炎，蓄膿症"
+  },
+  "銀翹散": {
+    "composition": [
+      "藥物組成】",
+      "每12 0g中含有 銀 花 Lonicerae Flos 5 00g 連 翹 Forsythiae Fructus 5 00g 桔 梗 Platycodi Radix 3 00g 牛蒡子 Arctii Fructus 3 00g 薄荷葉 Menthae Herba 3 00g 竹 葉 Lophathero Herba 2 00g 荊 芥 Schizonepetae Herba 2 00g 甘 草 Glycyrrhizae Radix 2 00g 淡豆鼓 Sojoe Semen Praeparatum 2 50g 蘆 根 Pharagmitis Rh"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 辛涼透表，清熱解毒",
+    "indications": "適應症】\n 辛涼透表，清熱解毒"
+  },
+  "酸棗仁湯": {
+    "composition": [
+      "藥物組成】",
+      "每10 2g中含有 酸棗仁 Zizyphi Spinosi Semen 15 00g 茯 苓 Hoelen 5 00g 知 母 Anemarrhenae Rhizom 3 00g 川 芎 Cnidium Rhizoma 3 00g 甘 草 Glycyrrhizae Radix 1 00g 以上生藥製成浸膏 4 00g （生藥與浸膏比27 00:5 10＝5 29:1 00） 【效能】",
+      "【適應症】",
+      "養血安神，清熱除煩，不眠症"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 養血安神，清熱除煩，不眠症",
+    "indications": "適應症】\n 養血安神，清熱除煩，不眠症"
+  },
+  "蒼耳散": {
+    "composition": [
+      "nan"
+    ],
+    "extractRatio": "",
+    "efficacy": "nan",
+    "indications": "nan"
+  },
+  "寧嗽丸": {
+    "composition": [
+      "藥物組成】",
+      "每12 0g中含有 桔 梗 Platycodi Radix 3 00g 茯 苓 Hoelen 3 00g 穀 芽 1 50g 石 斛 Dendrobii Caulis 2 00g 半 夏 Pinelliae Tuber 3 00g 貝 母 Fritillaria Thunbergii Bulbus 3 00g 紫蘇子 Perillae Fructus 3 00g 薄 荷 Menthae Herba 2 30g 桑白皮 Mori Cortex 2 30g 杏 仁 Ar"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 鎮咳袪痰",
+    "indications": "適應症】\n 鎮咳袪痰"
+  },
+  "膈下逐瘀湯": {
+    "composition": [
+      "藥物組成】",
+      "每6 0g中含有 當 歸 Angelicae Rasix 3 00g 桃 仁 Persicae Semen 3 00g 甘 草 Glycyrrhizae Radix 3 00g 紅 花 Carthami Flos 3 00g 川 芎 Cnidium Rhizoma 2 00g 牡丹皮 Moutan Cortex 2 00g 赤 芍 Paeoniae Veilchii Radix 2 00g 烏 藥 Linderae Radix 2 00g 五靈脂 Trogopterorum Faces 2 00g 香 附 Cyperi Rhizoma 1 50"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 活血袪瘀，行氣止痛",
+    "indications": "適應症】\n 活血袪瘀，行氣止痛"
+  },
+  "過期飲": {
+    "composition": [
+      "藥物組成】",
+      "每6 0g中含有 熟地黃 Rehmanniae Radix et Rhizoma 4 00g 白 芍 Paeoniae Radix 4 00g 當 歸 Angelicae Radix 4 00g 香 附 Cyperi Rhizoma 4 00g 川 芎 Cnidium Rhizoma 2 00g 木 香 Saussureae Radix 1 60g 紅 花 Carthami Flos 1 40g 桃 仁 Persicae Semen 1 20g 莪 朮 Zedoariae Rhizoma 1 0"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 經水過期不行",
+    "indications": "適應症】\n 經水過期不行"
+  },
+  "聖愈湯": {
+    "composition": [
+      "藥物組成】",
+      "每 4 5g 中含有 熟地黃 Rehmanniae Radix et Rhizoma 4 50g 生地黃 Rehmanniae Radix et Rhizoma 4 50g 黃 耆 Astragali Radix 4 50g 人 參 Ginseng Radix 4 50g 當 歸 Angelicae Radix 2 50g 川 芎 Cnidium Rhizoma 2 50g 以上生藥製成浸膏 3 00g （生藥與浸膏比23 00:3 00＝7 66:1 00） 【效能】",
+      "【適應症】",
+      "失血過多，氣血俱虛，煩渴躁熱"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 失血過多，氣血俱虛，煩渴躁熱",
+    "indications": "適應症】\n 失血過多，氣血俱虛，煩渴躁熱"
+  },
+  "當歸飲子": {
+    "composition": [
+      "藥物組成】",
+      "每11 4g中含有 當 歸 Angelicae Raadix 3 00g 白 芍 Paeoniae Radix 3 00g 川 芎 Cnidium Rhizoma 3 00g 生地黃 Rehmanniae Radix et Rhizoma 3 00g 白蒺藜 Tribuli Fructus 3 00g 防 風 Saposhinkovia Radix 3 00g 荊 芥 Schizonepetae Herba 3 00g 何首烏 Polygoni Multiflori Radix 1 50g 黃 耆 Astragali Radix 1 5"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 補氣益血、疏風除濕 【適應症】\n 瘡疥風癬，濕毒搔癢",
+    "indications": "適應症】\n 瘡疥風癬，濕毒搔癢"
+  },
+  "當歸四逆湯": {
+    "composition": [
+      "藥物組成】",
+      "每6 0g中含有 當 歸 Angelicae Radix 3 00g 桂 枝 Cinnamomi Ramulus 3 00g 芍 藥 Paeoniae Radix 3 00g 細 辛 Asiasri Radix 3 00g 甘 草 Glycyrrhizae Radix 2 00g 木 通 Akebiae Caulis 2 00g 大 棗 Zizyphi Fructus 5 00g 以上生藥製成浸膏 4 00g （生藥與浸膏比"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 寒入厥陰，手足厥冷 ，脈微欲絕",
+    "indications": "適應症】\n 寒入厥陰，手足厥冷 ，脈微欲絕"
+  },
+  "葛根解酲湯": {
+    "composition": [
+      "藥物組成】",
+      "每9 6g中含有 葛 花 Puerariae Flos 3 50g 白豆蔻 Amomi Cardamomi Fructus 3 50g 砂 仁 Amomi Semen 3 50g 青 皮 Citri Undeveloped Exocarpium 1 50g 陳 皮 Auranti Nobilis Pericarpium 1 50g 人 參 Ginseng Radix 1 50g 白 朮 Atractylodis Rhizoma 1 50g 茯 苓 Hoelen 1 50g 神 麴 Massa Medicata Fermentata 1 00g 乾 薑 Zin"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 治飲酒太過，嘔吐痰逆，頭痛心煩，胸膈痞塞，小便不利，大便泄瀉",
+    "indications": "適應症】\n 治飲酒太過，嘔吐痰逆，頭痛心煩，胸膈痞塞，小便不利，大便泄瀉"
+  },
+  "葛根黃連黃芩湯": {
+    "composition": [
+      "藥物組成】",
+      "每4 5g中含有 葛 根 Puerariae Radix 8 00g 黃 連 Coptidis Rhizoma 3 00g 黃 芩 Scutellariae Radix 3 00g 甘 草 Glycyrrhizae Radix 3 00g 以上 生藥製成浸膏 3 00g (生藥浸膏比17 00:3 00＝5 66:1 00) 【效能】",
+      "【適應症】",
+      "發熱，瀉痢"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 發熱，瀉痢",
+    "indications": "適應症】\n 發熱，瀉痢"
+  },
+  "溫清飲": {
+    "composition": [
+      "藥物組成】",
+      "每14 1g中含有 當 歸 Angelicae Radix 3 50g 川 芎 Cnidium Rhizoma 3 50g 熟地黃 Rehmanniae Radix et Rhizoma 3 50g 白 芍 Paeoniae Radix 3 50g 黃 芩 Scutellariae Radix 3 50g 黃 柏 Phellodenri Cortex 3 50g 梔 子 Gardeniae Fructus 3 50g 黃 連 Coptidis Rhizoma 3 50g 以上生藥製成浸 膏"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 治崩中漏下，面黃腹痛(屬於陰虛有熱者)",
+    "indications": "適應症】\n 治崩中漏下，面黃腹痛(屬於陰虛有熱者)"
+  },
+  "溫經湯": {
+    "composition": [
+      "藥物組成】",
+      "每16 0g中含有 吳茱萸 Evodiae Fructus 3 00g 人 參 Ginseng Radix 2 00g 桂 枝 Cinnamomi Ramulus 2 0 g 阿 膠 Asini Gelatinum 2 0 g 牡丹皮 Moutan Cortex 2 0 0g 甘 草 Glycyrrhizae Radix 2 0 0g 生 薑 Gingiberis Rhizoma 2 0 0g 川 芎 Cnidiun Rhizoma 2 00g 白 芍 Paeoniae Radix"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 溫經散寒，養血袪瘀",
+    "indications": "適應症】\n 溫經散寒，養血袪瘀"
+  },
+  "溫膽湯": {
+    "composition": [
+      "藥物組成】",
+      "每9 0g中含有 半 夏 Pinelliae Tbaber 5 00g 茯 苓 Hoelen 4 00g 竹 茹 Bambusae Caulis In Taenii 5 00g 陳 皮 Auranti Nobilis Pericarpium 7 50g 生 薑 Gingiberis Rhizoma 5 00g 枳 實 Aurantii Immaturus Fructus 5 00g 甘 草 Glycyrrhizae Radix 2 50g 以上生藥製成浸 膏 4 20g （生藥與浸膏比35 00:4 20＝8 3:1 00） 【效能】",
+      "【適應症】",
+      "虛煩 驚悸不眠"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 虛煩 驚悸不眠",
+    "indications": "適應症】\n 虛煩 驚悸不眠"
+  },
+  "頓嗽湯": {
+    "composition": [
+      "藥物組成】",
+      "每6 0g中含有 柴 胡 Bupleuri Radix 5 00g 桔 梗 Platycodi Radix 2 50g 黃 芩 Scutellariae Radix 2 50g 桑白皮 Mori Cortex 2 50g 梔 子 Gardeniae Fructus 1 00g 甘 草 Glycyrrhizae Radix 1 00g 石 膏 Gypsum Fibrosum 5 00g 以上生藥製成浸膏 3 80g （生藥與浸膏比例19 50:3 80＝5 10:1 00） 【效能】",
+      "【適應症】",
+      "熱性症之咳嗽，乾咳"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 熱性症之咳嗽，乾咳",
+    "indications": "適應症】\n 熱性症之咳嗽，乾咳"
+  },
+  "滋腎明目湯": {
+    "composition": [
+      "藥物組成】",
+      "每19 5g中含有 川 芎 Cnidium Rhizoma 2 50g 當 歸 Angelicae Radix 2 50g 白 芍 Paeoniae Radix 2 50g 熟地黃 Rehmanniae Radix et Rhizoma 2 50g 生地黃 Rehmanniae Radix et Rhizoma 2 50g 人 參 Ginseng Radix 1 30g 桔 梗 Platycodi Radix 1 30g 梔 子 Gardeniae Fructus 1 30g 白 芷 Angelicae Dahuricae Radix 1 30g 黃 連 Co"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 滋腎，明目",
+    "indications": "適應症】\n 滋腎，明目"
+  },
+  "滋陰降火湯": {
+    "composition": [
+      "藥物組成】",
+      "每16 0g中含有 白 芍 Paeoniae Radix 2 50g 當 歸 Angelicae Radix 2 50g 熟地黃 Rehmanniae Radix et Rhizoma 2 00g 白 朮 Atractylodis Rhizoma 2 00g 天門冬 Aspargi Radix 2 00g 麥門冬 Ophiopogonis Tuber 2 00g 生地黃 Rehmanniae Radix et Rhizoma 1 50g 陳 皮 Auranti Nobilis Pericarpium 1 50g 知 母 Anemarrhenae Rhizoma"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 滋陰降火 【適應症】\n 陰虛發熱，痰咳喘急，盜汗口乾",
+    "indications": "適應症】\n 陰虛發熱，痰咳喘急，盜汗口乾"
+  },
+  "越婢加朮湯": {
+    "composition": [
+      "藥物組成】",
+      "每9g中含有 麻 黃 Ephedrae Herba 6 00g 石 膏 Gypsum Fibrosum 8 00g 生 薑 Gingiberis Rhizoma 3 00g 甘 草 Glycyrrhizae Radix 2 00g 大 棗 Zizyphi Fructus 3 00g 白 朮 Atractylodis Rhizoma 4 00g 以上生藥製成浸膏 4 50g （生藥與浸膏比26 00:4 50＝5 78:1 00） 【效能】",
+      "【適應症】",
+      "�堣穭獉_之面目黃腫，小便不利"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n �堣穭獉_之面目黃腫，小便不利",
+    "indications": "適應症】\n �堣穭獉_之面目黃腫，小便不利"
+  },
+  "散腫潰堅湯": {
+    "composition": [
+      "藥物組成】",
+      "每14 8g中含有 黃 芩 Scutellariae Radix 4 00g 龍 膽 Gentianae Radix 2 50g 天花粉 (栝樓根) Trichosanthes Root 2 50g 黃 柏 Phellodenri Cortex 4 00g 知 母 Anemarrhenae Rhizoma 2 50g 桔 梗 Platycodi Radix 2 50g 昆 布 Eckloniae Thallus 2 50g 柴 胡 Bupleuri Radix"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 清熱解毒，破結潰堅 【適應症】\n 瘰，馬刀瘡 【 注意事項】\n 病久正氣虛者不宜",
+    "indications": "適應症】\n 瘰，馬刀瘡 【 注意事項】\n 病久正氣虛者不宜"
+  },
+  "萆薢分清飲": {
+    "composition": [
+      "藥物組成】",
+      "每8 4g中含有 益智仁 Alpiniae Fructus 6 00g 萆 薢 Diosoreae Tokora 6 00g 石菖蒲 Acori Graminei 6 00g 烏 藥 Linderae Radix 6 00g 甘草梢 Glycyrrhizae Radix 3 00g 茯 苓 Hoelen 3 00g 以上生藥製成浸膏 4 20g （生藥與浸膏比例30 00:4 20＝7 14:1 00） 【效能】",
+      "溫腎利濕，分清去濁 【適應症】",
+      "膏淋白濁，小便頻數"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 溫腎利濕，分清去濁 【適應症】\n 膏淋白濁，小便頻數",
+    "indications": "適應症】\n 膏淋白濁，小便頻數"
+  },
+  "黃連上清丸": {
+    "composition": [
+      "藥物組成】",
+      "每6 0g中含有 黃 連 Coptidis Rhizoma 2 50g 黃 柏 Phellodenri Cortex 2 50g 黃 芩 Scutellariae Radix 2 50g 梔 子 Gardeniae Fructus 2 50g 薑 黃 Curcumae Longae Rhizoma 1 80g 連 翹 Forsythiae Fructus 1 80g 大 黃 Rhei Rhizoma 3 60g 菊 花 Chrysanthemi Flos 1 20g 當歸尾 Angelicae"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 治上焦積熱，眼痛咽痛，口舌生瘡",
+    "indications": "適應症】\n 治上焦積熱，眼痛咽痛，口舌生瘡"
+  },
+  "黃芩湯": {
+    "composition": [
+      "藥物組成】",
+      "每9g中含有 黃 芩 Scutellaeiae Radix 6 00g 甘 草 Glycyrrhizae Radix 4 00g 芍 藥 Paeoniae Radix 4 00g 大 棗 Zizyphi Fructus 1 50g 以上生藥製成浸膏 4 00g （生藥與浸膏 比例15 50:4 00＝3 88:1 00） 【效能】",
+      "【適應症】",
+      "清熱止痢，和中止痛"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 清熱止痢，和中止痛",
+    "indications": "適應症】\n 清熱止痢，和中止痛"
+  },
+  "黃連湯": {
+    "composition": [
+      "藥物組成】",
+      "每14 1g中含有 黃 連 Coptidis Rhizoma 4 50g 乾 薑 Zingiberis Siccatum Rhizoma 4 50 g 桂 枝 Cinnamomi Ramulus 4 50 g 人 參 Ginseng Radix 3 00g 甘 草 Glycyrrhizae Radix 4 50 g 半 夏 Pinelliae Tuber 6 00g 大 棗 Zizyphi Fructus 3 00g 以上生藥製成浸膏 6 30g （生藥與浸膏比例30 00:6 30＝4 76:1 00） 【效能】"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 治傷寒，胸中有熱，胃中有邪氣，腹中痛，欲嘔者",
+    "indications": "適應症】\n 治傷寒，胸中有熱，胃中有邪氣，腹中痛，欲嘔者"
+  },
+  "黃耆五物湯": {
+    "composition": [
+      "藥物組成】",
+      "每14 4g中含有 黃 耆 Astragali Radix 10 00g 白 芍 Paeoniae Radix 5 00g 桂 枝 Cinnamomi Ramulus 5 00g 生 薑 Gingiberis Rhizoma 5 00g 大 棗 Zizyphi Fructus 3 00g 以上生藥製成浸 膏 6 80g （生藥與浸膏 比例28 00:6 80＝4 12 :1 00） 【效能】",
+      "補氣血，和營衛 【適應症】",
+      "營衛氣血不足，風邪入侵，營血痺阻，肌肉麻木，手足無力 【 注意事項】",
+      "實證不宜"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 補氣血，和營衛 【適應症】\n 營衛氣血不足，風邪入侵，營血痺阻，肌肉麻木，手足無力 【 注意事項】\n 實證不宜",
+    "indications": "適應症】\n 營衛氣血不足，風邪入侵，營血痺阻，肌肉麻木，手足無力 【 注意事項】\n 實證不宜"
+  },
+  "黃耆建中湯": {
+    "composition": [
+      "藥物組成】",
+      "桂 枝 Cinnamomi Ramulus 4 50g 炙甘草 Glycyrrhiza Radix 3 00g 大 棗 Zizyphi Fructus 4 50g 白 芍 Paeoniae Radix 9 00g 生 薑 Cingiberis Rhizoma 4 50g 膠 飴 Saccharum Cum Malto 1 00g 黃 耆 Astragali Radix 2 50g 以上 生藥製成浸膏 5 50g (生藥與浸膏比例 29 0:5 5=5 27:1 0"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 溫中補虛 ， 和�婼w急 【適應症】\n 虛勞不足，脾胃虛寒腹痛，自汗，短氣，肢體困倦，及陽虛身痛",
+    "indications": "適應症】\n 虛勞不足，脾胃虛寒腹痛，自汗，短氣，肢體困倦，及陽虛身痛"
+  },
+  "華蓋散": {
+    "composition": [
+      "藥物組成】",
+      "每9 0g中含有 麻 黃 Ephedrae Herba …… 4 00g 蘇 子 Perillae Fructus …… 4 00g 桑白皮 Mori Cortex …… 4 00g 杏 仁 Armeniacae Semen … 4 00g 赤茯苓 Paeoniae Hoelen …… 4 00g 陳 皮 Auranti Nobilis Pericarpium 4 00g 甘 草 Glycyrrhizae Radix … 2 00g 以上生藥製成浸膏 …… 3 60g （生藥與浸膏比例26 00:3 60＝7 22:1 00） 【效能】",
+      "宣肺平喘，止咳化痰 【適應症】",
+      "肺感寒邪，咳嗽上氣，胸膈煩滿，頭昏目眩"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 宣肺平喘，止咳化痰 【適應症】\n 肺感寒邪，咳嗽上氣，胸膈煩滿，頭昏目眩",
+    "indications": "適應症】\n 肺感寒邪，咳嗽上氣，胸膈煩滿，頭昏目眩"
+  },
+  "復元活血湯": {
+    "composition": [
+      "藥物組成】",
+      "每6 0g中含有 柴 胡 Bupleuei Radix 3 50g 當 歸 Angelicae Radix 2 00g 天花粉 Trichosanthes Root 2 00g 桃 仁 Persicae Semen 2 00g 紅 花 Carthami Flos 1 50g 穿山甲 Mantidis Squama 1 50g 甘 草 Glycyrrhizae Radix 1 50g 大 黃 Rhei Rhizoma 6 50g 以上生藥製成浸膏 4 00g （ 生藥與浸膏比例 20 50:4 00＝5 13:1 00"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 活血祛瘀 【適應症】\n 跌打損傷，瘀血留脅下痛不可忍者",
+    "indications": "適應症】\n 跌打損傷，瘀血留脅下痛不可忍者"
+  },
+  "普濟消毒飲": {
+    "composition": [
+      "藥物組成】",
+      "每15 0g中含有 黃 芩 Scutellariae Radix 5 00g 黃 連 Coptidis Rhizoma 5 00g 陳 皮 Auranti Nobilis Pericarpium 2 0g 甘 草 Glycyrrhizae Radix 2 0g 玄 參 Scrophulariae Radix 2 0g 柴 胡 Bupleuri Radix 2 0g 桔 梗 Platycodi Radix 2 0g 牛蒡子 Arctii Fructus 1 0g 薄 荷 Menthae Herba 1 0g 連 翹 Fors"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 疏風散邪，清熱解毒 【適應症】\n 大頭瘟症 頭面咽喉腫痛",
+    "indications": "適應症】\n 大頭瘟症 頭面咽喉腫痛"
+  },
+  "麻子仁丸": {
+    "composition": [
+      "藥物組成】",
+      "每4 5g中含有 麻 仁 Cannabis Fructus 5 00g 白 芍 Paeoniae Radix 3 00g 枳 實 Aurantii Immaturus Fructus 2 00g 大 黃 Rhei Rhizoma 2 00g 厚 朴 Magnoliae Cortex 2 00g 杏 仁 Armeniacae Semen 2 00g 以上生藥製成浸膏 3 00g （生藥與浸膏比16 00:3 00＝5 33:1 00） 【效能】",
+      "【適應症】",
+      "潤腸通便"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 潤腸通便",
+    "indications": "適應症】\n 潤腸通便"
+  },
+  "麻杏薏甘湯": {
+    "composition": [
+      "藥物組成】",
+      "每8 5g中含有 麻 黃 Eaphedrae Herba 5 00g 炙甘草 Glycyrrhizae Radix 10 00g 薏苡仁 Coicis Semen 5 00g 杏 仁 Armeniacae Semen 4 00g 以上生藥製成浸膏 3 40g （生藥與浸膏比24 00:3 40＝7 06:1 00） 【效能】",
+      "發汗解表，袪風濕 【適應症】",
+      "風溼身痛發熱，日晡甚者"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 發汗解表，袪風濕 【適應症】\n 風溼身痛發熱，日晡甚者",
+    "indications": "適應症】\n 風溼身痛發熱，日晡甚者"
+  },
+  "麻杏甘石湯": {
+    "composition": [
+      "藥物組成】",
+      "每10 5g中含有 麻 黃 Ephedrae Herba 8 00g 杏 仁 Armeniacae Semen 6 00g 炙甘草 Glycyrrhizae Radix 4 00g 石 膏 Gypsum Fibrosum 16 00g 以上生藥製成浸膏 3 90g （生藥與浸膏比例34 00:3 90＝8 72:1 00） 【效能】",
+      "辛涼宣泄，清肺平喘 【適應症】",
+      "熱邪壅肺，發熱，咳嗽氣喘"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 辛涼宣泄，清肺平喘 【適應症】\n 熱邪壅肺，發熱，咳嗽氣喘",
+    "indications": "適應症】\n 熱邪壅肺，發熱，咳嗽氣喘"
+  },
+  "麻黃湯": {
+    "composition": [
+      "藥物組成】",
+      "每6 5g中含有 麻 黃 Ephedrae Herba 9 00g 桂 枝 Cinnamomi Ramulus 6 00g 炙甘草 Glycyrrhizae Radix 3 00g 杏 仁 Armeniacae Semen 5 00g 以上生藥製成浸膏 2 60g （生藥與浸膏比例23 00:2 60＝8 85:1 00） 【效能】",
+      "發汗解表，宣肺平喘 【適應症】",
+      "外感風寒，發熱惡寒，頭痛身疼，無汗而喘"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 發汗解表，宣肺平喘 【適應症】\n 外感風寒，發熱惡寒，頭痛身疼，無汗而喘",
+    "indications": "適應症】\n 外感風寒，發熱惡寒，頭痛身疼，無汗而喘"
+  },
+  "理中湯": {
+    "composition": [
+      "藥物組成】",
+      "每 13 8g 中含有 人 參 Ginseng Radix 6 00g 甘 草 Glycyrrhizae Radix 6 00g 白 朮 Artractylodis Rhizoma 6 00g 乾 薑 Zingiberis Sicatum 4 00g 以上生藥製成浸膏 6 90g （ 生藥與浸膏比 22 00:6 90＝3 19:1 00） 【效能】",
+      "理脾健胃，溫中散寒 【適應症】",
+      "四肢逆冷，自汗脈虛，不思飲食"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 理脾健胃，溫中散寒 【適應症】\n 四肢逆冷，自汗脈虛，不思飲食",
+    "indications": "適應症】\n 四肢逆冷，自汗脈虛，不思飲食"
+  },
+  "排膿散": {
+    "composition": [
+      "藥物組成】",
+      "每 10 4g 中含有 枳 實 Aurantii Immaturus Fructus 18 00g 白 芍 Paeoniae Radix 6 00g 桔 梗 Platycodi Radix 2 00g 以上生藥製成浸膏 5 20g （生藥與浸膏比例26 00:5 20＝5 00:1 00） 【效能】",
+      "排膿止痛 【適應症】",
+      "內癰膿從便出"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 排膿止痛 【適應症】\n 內癰膿從便出",
+    "indications": "適應症】\n 內癰膿從便出"
+  },
+  "清胃散": {
+    "composition": [
+      "藥物組成】",
+      "每19 2g中含有 當 歸 Angelicae Radix 3 60g 黃 連 Coptidis Rhizoma 3 60g 生地黃 Rehmanniae Radix et Rhizoma 3 60g 牡丹皮 Moutan Cortex 6 00g 升 麻 Cimicifugae Rhizoma 12 00g 以上生藥製成浸 膏 9 20g （生藥與浸膏比例28 80:9 20＝3 13:1 00） 【效能】",
+      "清胃火，涼血熱 【適應症】",
+      "胃火所致的牙痛，面熱，唇口頰腮腫痛生瘡，牙宣出血，牙齦潰爛"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 清胃火，涼血熱 【適應症】\n 胃火所致的牙痛，面熱，唇口頰腮腫痛生瘡，牙宣出血，牙齦潰爛",
+    "indications": "適應症】\n 胃火所致的牙痛，面熱，唇口頰腮腫痛生瘡，牙宣出血，牙齦潰爛"
+  },
+  "清肺湯": {
+    "composition": [
+      "藥物組成】",
+      "每13 9g中含有 甘 草 Glycyrrhizae Radix 0 60g 黃 芩 Scutellariae Radix 3 00g 桔 梗 Platycodi Radix 2 00g 茯 苓 Hoelen 2 00g 陳 皮 Auranti Nobilis Pericarpium 2 00g 當 歸 Angelicae Radix 2 00g 貝 母 Fritillaria Thunbergii Bulbus 2 00g 桑白皮 Mori Cortex 2 00g 天門冬 Aspargi Radix"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 清肺，化痰，止咳 【適應症】\n 咳嗽，上焦痰盛",
+    "indications": "適應症】\n 咳嗽，上焦痰盛"
+  },
+  "清上蠲痛湯": {
+    "composition": [
+      "藥物組成】",
+      "每10 6g中含有 黃 芩 Scutellariae Radix 3 00g 生 薑 Gingiberis Rhizoma 3 00g 當 歸 Angelicae Radix 2 00g 川 芎 Cnidium Rhizoma 2 00g 白 芷 Angelicae Dahuricae Radix 2 00g 羌 活 Notopterygii Rhizoma 2 00g 防 風 Saposhnikovia Radix 2 00g 蒼 朮 Atractyloislancea Rhizoma 2 00g 麥門冬 Ophiopogonis Tuber 2 00g 獨 活 Angelicae"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 偏，正頭痛，眉稜骨痛",
+    "indications": "適應症】\n 偏，正頭痛，眉稜骨痛"
+  },
+  "清心利膈湯": {
+    "composition": [
+      "藥物組成】",
+      "每6 0g中含有 淡 竹葉 Lophatheri Herba 4 00g 防 風 Saposhnikovia Radix 3 00g 薄 荷 Menthae Herba 3 00g 桔 梗 Platycodi Radix 3 00g 黃 芩 Scutellariae Radix 3 00g 黃 連 Coptidis Rhizoma 3 00g 荊 芥 Schizonepeatae Herba 3 00g 連 翹 Forsythiae Fructus 1 50g 玄 參 Scrophulariae Radix"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 咽喉腫痛，痰涎壅盛，胸膈不利，大便祕結",
+    "indications": "適應症】\n 咽喉腫痛，痰涎壅盛，胸膈不利，大便祕結"
+  },
+  "清上防風湯": {
+    "composition": [
+      "藥物組成】",
+      "每15 0g中含有 防 風 Saposhnikovia Radix 3 00g 連 翹 Forsythiae Fractus 2 40g 白 芷 Angelicae Dahuricae Radix 2 40g 桔 梗 Platycodi Radix 2 40g 黃 芩 Scutellariae Radix 2 10g 川 芎 Cnidium Rhizoma 2 10g 黃 連 Coptidis Rhizoma 1 50g 荊 芥 Schizonepetae Herba 1 50g 梔 子 Gardeniae Fructus 1 50g 枳 殼"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 清上焦火 【適應症】\n 治頭面瘡癤熱毒",
+    "indications": "適應症】\n 治頭面瘡癤熱毒"
+  },
+  "清空膏": {
+    "composition": [
+      "藥物組成】",
+      "每4 5g中含有 羌 活 Notopterygii Rhizoma 2 00g 黃 連 Coptidis Rhizoma 2 00g 防 風 Saposhnikovia Radix 2 00g 柴 胡 Bupleuri Radixs 1 40g 川 芎 Cnidium Rhizoma 1 00g 甘 草 Glycyrrhizae Radix 3 00g 黃 芩 Scutellariae Radix 6 00g 以上生藥製成浸膏 3 00g （ 生藥與浸膏比 17 40:3 00＝5 80:1 00） 【效能】",
+      "【適應症】",
+      "治頭風，濕熱上盛，遇風即發"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 治頭風，濕熱上盛，遇風即發",
+    "indications": "適應症】\n 治頭風，濕熱上盛，遇風即發"
+  },
+  "涼膈散": {
+    "composition": [
+      "藥物組成】",
+      "每14 4g中含有 大 黃 Rhei Rhizoma 4 00g 芒 硝 Mirabilitum Depuratum 4 00g 甘 草 Glycyrrhizae Radix 4 00g 連 翹 Forsythiae Fructus 8 00g 山梔子 Gardeniae Fructus 2 00g 黃 芩 Scutellariae Radix 2 00g 薄 荷 Menthae Herba 2 00g 竹 葉 Lophathero Herba 2 00g 以上生藥製成浸膏 6 90g （ 生藥"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 清熱解毒，瀉火通便 【適應症】\n 臟腑積熱，煩燥多渴，口舌生瘡，咽喉腫痛 ，便祕尿赤 【 注意事項】\n 體質虛弱及孕婦慎用",
+    "indications": "適應症】\n 臟腑積熱，煩燥多渴，口舌生瘡，咽喉腫痛 ，便祕尿赤 【 注意事項】\n 體質虛弱及孕婦慎用"
+  },
+  "參蘇飲": {
+    "composition": [
+      "藥物組成】",
+      "每13 0g中含有 陳 皮 Auranti Nobilis Pericarpium 2 00g 枳 殼 Citri Immaturus Fructus 2 00g 桔 梗 Platycodi Radix 2 00g 甘 草 Glycyrrhizae Radix 2 00g 木 香 Saussureae Radix 2 00g 半 夏 Pinelliae Tuber 3 00g 紫蘇葉 Perilla Herba 3 00g 葛 根 Puerariae Radix 3 00g 前 胡 Peucedani Radix"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 益氣解表，宣肺化痰 【適應症】\n 體虛感冒，惡寒發熱，頭痛鼻塞，咳嗽痰多",
+    "indications": "適應症】\n 體虛感冒，惡寒發熱，頭痛鼻塞，咳嗽痰多"
+  },
+  "參苓白朮散": {
+    "composition": [
+      "藥物組成】",
+      "每10 4g中含有 白扁豆 Dolichoris Semen 2 30g 人 參 Ginseng Radix 3 00g 茯 苓 Hoelen 3 00g 白 朮 Atractylodis Rhizoma 3 00g 甘 草 Glycyrrhizae Radix 3 00g 山 藥 Dioscoreae Rhizoma 3 00g 蓮子肉 Nelumbinis Semen 1 50g 桔 梗 Platycodi Radix 1 50g 薏苡仁 Coicis Semen 1 50g 砂 仁 Amomi Sem"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 補氣健脾，滲濕和胃 【適應症】\n 脾胃虛弱，食少便溏",
+    "indications": "適應症】\n 脾胃虛弱，食少便溏"
+  },
+  "射干麻黃湯": {
+    "composition": [
+      "藥物組成】",
+      "每12 0g中含有 麻 黃 Ephedrae Herba 4 00g 半 夏 Pinelliae Tuber 4 00g 生 薑 Gingiberis Rhizoma 4 00g 款冬花 Farfarae Flos 3 00g 紫 菀 Asteris Raidix et Rhizoma 3 00g 大 棗 Zizyphi Fructus 2 00g 射 干 Belamcandae Radix 1 50g 細 辛 Asiasri Radix 1 50g 五味子 Schisandrae Fructus 1 00g 以上生藥製"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 欬而上氣，喉中有水雞聲 射干麻黃湯 (No 2286) YEH GAN MA HWANG TANG /SHE GAN MA HUANG TANG 【出處】\n 《金匱要略》 【藥物組成】\n每12 0g中含有 麻 黃 Ephedrae Herba 4 00g 半 夏 Pinelliae Tuber 4 00g 生 薑 Gingiberis Rhizoma 4 00g 款冬花 Farfarae Flos 3 00g 紫 菀 Asteris Raidix et Rhizoma 3 00g 大 棗 Zizyphi Fructus 2 00g 射 干 Belamcandae Radix 1 50g 細 辛 Asiasri Radi",
+    "indications": "適應症】\n 欬而上氣，喉中有水雞聲 射干麻黃湯 (No 2286) YEH GAN MA HWANG TANG /SHE GAN MA HUANG TANG 【出處】\n 《金匱要略》 【藥物組成】\n每12 0g中含有 麻 黃 Ephedrae Herba 4 00g 半 夏 Pinelliae Tuber 4 00g 生 薑 Gingiberis Rhizoma 4 00g 款冬花 Farfarae Flos 3 00g 紫 菀 Asteris Raidix et Rhizoma 3 00g 大 棗 Zizyphi Fructus 2 00g 射 干 Belamcandae Radix 1 50g 細 辛 Asiasri Radix"
+  },
+  "荊芥連翹散": {
+    "composition": [
+      "藥物組成】",
+      "每10 6g中含有 當 歸 Angelicae Radix 2 00g 白 芍 Paeoniae Radix 2 00g 川 芎 Cnidium Rhizoma 2 00g 黃 芩 Scutellariae Radix 2 00g 山梔子 Gardeniae Fructus 2 00g 連 翹 Forsythiae Fructus 2 00g 荊 芥 Schizonepetae Herba 2 00g 防 風 Saposhnikovia Radix 2 00g 枳 殼 Citr"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 清熱解毒 【適應症】\n 治風熱耳腫疼痛",
+    "indications": "適應症】\n 治風熱耳腫疼痛"
+  },
+  "益氣聰明湯": {
+    "composition": [
+      "藥物組成】",
+      "每10 4g中含有 黃 耆 Astragali Radix 6 00g 甘 草 Glycyrrhizae Radix 1 20g 人 參 Ginseng Radix 6 00g 升 麻 Cimicifugae Rhizoma 1 80g 葛 根 Puerariae Radix 3 60g 蔓荊子 Viticis Fructus 3 60g 白 芍 Paeoniae Radix 2 40g 黃 柏 Phellodenri Cortex 2 40g 以上生藥製成浸膏 5 20g （ 生藥與浸膏比 27 00:5 20＝5 19:1"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 益氣升陽，散風清熱 【適應症】\n 風熱上擾，頭痛眩暈，內障初起，耳鳴耳聾",
+    "indications": "適應症】\n 風熱上擾，頭痛眩暈，內障初起，耳鳴耳聾"
+  },
+  "茵陳五苓散": {
+    "composition": [
+      "藥物組成】",
+      "每9 6g中含有 茵陳蒿 Artemisiae Capillaris Herba 16 00g 澤 瀉 Alismatis Rhizoma 2 50g 豬 苓 Polyporus 1 50g 茯 苓 Hoelen 1 50g 白 朮 Atractylodis Rhizoma 1 50g 桂 枝 Cinnamomi Ramulus 1 00g 以上生藥製成浸膏 3 70g （ 生藥與浸膏比 24 00:3 70＝6 49:1 00） 【效能】",
+      "利濕清熱 【適應症】",
+      "黃疸，小便不利，煩渴"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 利濕清熱 【適應症】\n 黃疸，小便不利，煩渴",
+    "indications": "適應症】\n 黃疸，小便不利，煩渴"
+  },
+  "茵陳蒿湯": {
+    "composition": [
+      "藥物組成】",
+      "每10 30g中含有 茵 陳 Artemisiae Capillaris Herba 18 00g 梔 子 Gardeniae Fructus 6 00g 大 黃 Rhei Rhizoma 6 00g 以上生藥製成浸膏 4 00g （生藥與浸膏比30 00:4 00＝7 50:1 00） 【效能】",
+      "【適應症】",
+      "黃疸，瘀熱在�堙A腹微滿者，便祕"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 黃疸，瘀熱在�堙A腹微滿者，便祕",
+    "indications": "適應症】\n 黃疸，瘀熱在�堙A腹微滿者，便祕"
+  },
+  "桃核承氣湯": {
+    "composition": [
+      "藥物組成】",
+      "每18 0g中含有 桃 仁 Persicae Semen … 5 00g 大 黃 Rhei Rhizoma …… 10 0g 甘 草 Glycyrrhizae Radix … 5 00g 桂 枝 Cinnamomi Ramulus 5 00 g 芒 硝 Mirabilitum Depuratum 5 00 g 以上生藥製成浸 膏 …… 8 8 0g （生藥與浸膏比30 00:8 80 ＝3 40:1 00） 【效能】",
+      "【適應症】",
+      "治瘀血，血結，血閉，通潤大腸"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 治瘀血，血結，血閉，通潤大腸",
+    "indications": "適應症】\n 治瘀血，血結，血閉，通潤大腸"
+  },
+  "神祕湯": {
+    "composition": [
+      "藥物組成】",
+      "每6 0g中含有 麻 黃 Ephedrae Herba 5 00g 杏 仁 Armeniacae Semen 4 00g 厚 朴 Magnoliae Cortex 3 00g 陳 皮 Auranti Nobilis Pericarpium 2 50g 甘 草 Glycyrrhizae Radix 2 00g 柴 胡 Bupleuri Radix 2 00g 紫蘇葉 Perilla Herba 1 50g 以上生藥製成浸膏 4 00g （ 生藥與浸膏比 20 0:4 00＝5 00:1 00） 【效能】",
+      "【適應症】",
+      "氣喘，支氣管喘息，支氣管炎"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 氣喘，支氣管喘息，支氣管炎",
+    "indications": "適應症】\n 氣喘，支氣管喘息，支氣管炎"
+  },
+  "真武湯": {
+    "composition": [
+      "藥物組成】",
+      "每9 9g中含有 茯 苓 Hoelen 7 50g 芍 藥 Paeoniae Radix 7 5 0g 生 薑 Gingiberis Rhizoma 7 5 0g 白 朮 Atractylodis Rhizoma 5 00g 附 子 Aconiti Tuber 3 00g 以上生藥製成浸膏 4 70g （生藥與浸膏 比30 50:4 70＝6 50:1 00） 【效能】",
+      "【適應症】",
+      "虛寒體質引起之胃腸病，慢性腹瀉，水腫，小便不利"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 虛寒體質引起之胃腸病，慢性腹瀉，水腫，小便不利",
+    "indications": "適應症】\n 虛寒體質引起之胃腸病，慢性腹瀉，水腫，小便不利"
+  },
+  "真人活命散(仙方活命散)": {
+    "composition": [
+      "藥物組成】",
+      "每10 0g中含有 金銀花 Loniurae Flos 6 00g 陳 皮 Auranti Nobilis Pericarpium 3 00g 當 歸 Angelicae Radix 3 00g 白 芷 Angelicae Dahuricae Radix 2 00g 甘 草 Glycyrrhizae Radix 2 00g 貝 母 Fritillaria Thunbergii Bulbus 2 00g 栝樓根 Trichosanthes Root 2 00g 乳 香 Olibanum 2 00g 沒 藥 Myrrha"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 癰疽 初起，赤腫疼痛",
+    "indications": "適應症】\n 癰疽 初起，赤腫疼痛"
+  },
+  "烏藥順氣散": {
+    "composition": [
+      "藥物組成】",
+      "每9 9g中含有 麻 黃 Ephedrae Herba 4 00g 陳 皮 Auranti Nobilis Pericarpium 4 00g 烏 藥 Linderae Radix 4 00g 川 芎 Cnidium Rhizoma 2 00g 白殭蠶 Bombyx Batryticatus 2 00g 枳 殼 Citri Immaturus Fructus 2 00g 白 芷 Angelicae Dahuricae Radix 2 00g 甘 草 Glycyrrhizae Radix 2 00g 桔 梗 Platycodi Radi"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 順氣宣散，袪風化痰 【適應症】\n 遍身頑麻，骨節疼痛，步履艱難，語言 �a澀，口眼喎斜，筋脈拘攣 【 注意事項】\n 孕婦忌用",
+    "indications": "適應症】\n 遍身頑麻，骨節疼痛，步履艱難，語言 �a澀，口眼喎斜，筋脈拘攣 【 注意事項】\n 孕婦忌用"
+  },
+  "消風散": {
+    "composition": [
+      "藥物組成】",
+      "每12 8g中含有 當 歸 Angelicae Radix 2 50 g 生地黃 Rehmanniae Radix et Rhizoma 2 50g 防 風 Saposhnikovia Radix 2 50g 蟬 蛻 Cicadae Periostracum 2 50g 知 母 Anemarrhenae Rhizoma 2 50g 苦 參 Sophorae Radix 2 50g 胡麻仁 Sesami Semen 2 50g 荊 芥 Schizonepetae Herba 2 50g 蒼 朮 Atractyloislancea Rhizz"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 潤血袪風，除濕清熱 【適應症】\n 風濕浸淫血脈之瘡疥搔癢及風熱隱症",
+    "indications": "適應症】\n 風濕浸淫血脈之瘡疥搔癢及風熱隱症"
+  },
+  "桑螵蛸散": {
+    "composition": [
+      "藥物組成】",
+      "每11 2g中含有 桑螵蛸 Mantidis Ootheca 3 00g 遠 志 Polygalae Radix 3 00g 人 參 Ginseng Radix 3 00g 茯 苓 Hoelen 3 00g 龍 骨 Fossilia Ossis Mastodi 3 00g 龜 板 Testudinis Plastrum 3 00g 石菖蒲 Acori Graminei Rhizoma 3 00g 當 歸 Angelicae Radix 3 00g 以上生藥製成浸 膏 4 80g （生藥與浸"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 收澀小便 【適應症】\n 遺尿",
+    "indications": "適應症】\n 遺尿"
+  },
+  "桑菊飲": {
+    "composition": [
+      "藥物組成】",
+      "每15 0g中含有 桑 葉 Mori Folium 6 00g 菊 花 Chrysanthemi Flos 2 50g 杏 仁 Armeniacae Semen 5 00g 桔 梗 Platycodi Radix 5 00g 葦 根 Pharogmitis Rhizoma 5 00g 連 翹 Forsythiae Fructus 4 00g 薄 荷 Menthae Herba 2 00g 甘 草 Glycyrrhizae Radix 2 00g 以上生藥製成浸膏"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 感冒、發熱、頭痛、咳嗽、目眩",
+    "indications": "適應症】\n 感冒、發熱、頭痛、咳嗽、目眩"
+  },
+  "秦艽鱉甲散": {
+    "composition": [
+      "藥物組成】",
+      "每8 4g中含有 鱉 甲 Amydae Carapax 5 00g 秦 艽 Gentianae Macrophllae Radix 2 50g 知 母 Anemarrhenae Rhizoma 2 50g 當 歸 Angelicae Radix 2 50g 柴 胡 Bupleuri Radix 5 00g 地骨皮 Lycii Radicis Cortex 5 00g 烏 梅 Mume Fructus 2 00g 青 蒿 Artemisiae Apiaceae Herba 1 50g 以上生藥製成浸膏"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 滋陰養血，清熱除蒸 【適應症】\n 骨蒸潮熱，唇紅頰赤，盜汗咳嗽",
+    "indications": "適應症】\n 骨蒸潮熱，唇紅頰赤，盜汗咳嗽"
+  },
+  "桔梗湯": {
+    "composition": [
+      "藥物組成】",
+      "每 6 0g 中含有 生 薑 Gingiberis Rhizoma 4 00g 黃 耆 Astragali Radix 3 00g 桔 梗 Platycodi Radix 2 00g 浙貝母 （ 浙 ） Fritillaria Thunbergii Bulbus 2 00g 當 歸 Angelicae Radix 2 00g 栝樓仁 Trichosanthis Semen 2 00g 薏苡仁 Coicis Semen 2 00g 桑白皮 Mori Cort"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 解毒瀉火，清肺利膈 【適應症】\n 治肺癰 ， 吐膿，咽乾多渴，兩腳腫滿",
+    "indications": "適應症】\n 治肺癰 ， 吐膿，咽乾多渴，兩腳腫滿"
+  },
+  "桂枝茯苓丸": {
+    "composition": [
+      "藥物組成】",
+      "每10 80g中含有 桂 枝 Cinnamomi Ramulus 6 00g 茯 苓 Hoelen 6 00g 牡丹皮 Moutan Cortex 6 00g 桃 仁 Persicae Semen 6 00g 赤 芍 Paeoniae Veilchii Radix 4 50g 以上生藥製成浸膏 4 00g （生藥與浸膏比30 00:4 20＝7 14:1 00） 【效能】",
+      "【適應症】",
+      "活血化瘀、緩消癥塊"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 活血化瘀、緩消癥塊",
+    "indications": "適應症】\n 活血化瘀、緩消癥塊"
+  },
+  "桂枝湯": {
+    "composition": [
+      "藥物組成】",
+      "每11 7g中含有 桂 枝 Cinnamomi Ramulus 6 00g 白 芍 Paeoniae Radix 6 00g 炙甘草 Glycyrrhizae Radix 4 00g 生 薑 Gingiberis Rhizoma 6 00g 大 棗 Zizyphi Fructus 5 00g 以上生藥製成浸膏 4 70g （生藥與浸膏比27 00:4 70＝5 74:1 00） 【效能】",
+      "解肌發表，調和營衛 【適應症】",
+      "外感風寒，發熱頭痛，汗出惡風，鼻鳴乾嘔"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 解肌發表，調和營衛 【適應症】\n 外感風寒，發熱頭痛，汗出惡風，鼻鳴乾嘔",
+    "indications": "適應症】\n 外感風寒，發熱頭痛，汗出惡風，鼻鳴乾嘔"
+  },
+  "桂枝加龍骨牡蠣湯": {
+    "composition": [
+      "藥物組成】",
+      "每6 3g中含有 桂 枝 Cinnamomi Ramulus 3 00g 白 芍 Paeoniae Radix 3 00g 生 薑 Gingiberis Rhizoma 3 00g 龍 骨 Fossilia Ossis Mastodi 3 00g 牡 蠣 Ostreae Testa 3 00g 甘 草 Glycyrrhizae Radix 2 00g 大 棗 Zizyphi Fructus 2 00g 以上生藥製成浸膏 2 80g （ 生藥與浸膏比 19 00:2 80＝ 6 79:1 00） 【效能】",
+      "【適應症】",
+      "體質虛弱，不眠症"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 體質虛弱，不眠症",
+    "indications": "適應症】\n 體質虛弱，不眠症"
+  },
+  "桂枝芍藥知母湯": {
+    "composition": [
+      "藥物組成】",
+      "每6 0g中含有 桂 枝 Cinnamomi Ramulus 4 00g 知 母 Anemarrhenae Rhizoma 4 00g 防 風 Saposhhikovia Radix 4 00g 白 芍 Paeoniae Radix 3 00g 甘 草 Glycyrrhizae Radix 2 00g 麻 黃 Ephedrae Herba 2 00g 生 薑 Gingiberis Rhizoma 5 00g 蒼 朮 Atractylodis Lancea Rhizoma 4 00g 附 子 Aconiti Tuber"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 風寒 濕痺 ，肢節腫痛",
+    "indications": "適應症】\n 風寒 濕痺 ，肢節腫痛"
+  },
+  "柴陷湯": {
+    "composition": [
+      "藥物組成】",
+      "：每6 0g中含有 半 夏 Pinelliae Tuber 5 00g 瓜蔞仁 Trichosanthis Semen 3 00g 柴 胡 Bupleuri Rodix 5 00g 黃 連 Coptidis Rhizoma 1 50g 黃 芩 Scutellariae Rodix 3 00g 人 參 Ginseng Radix 2 00g 甘 草 Glycyrrhizae Radix 1 50g 生 薑 Gingiberis Rhizoma 3 00g 大 棗 Zizyphi Fructus 3 00g 以上生藥"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 痰熱內阻，寒熱往來，口舌苔黃咳嗽",
+    "indications": "適應症】\n 痰熱內阻，寒熱往來，口舌苔黃咳嗽"
+  },
+  "柴胡桂枝乾薑湯": {
+    "composition": [
+      "藥物組成】",
+      "每10 5g中含有 柴 胡 Bupleuri Radix 8 00g 天花粉 ( 栝樓根 ) Trichosanthes root 4 00g 桂 枝 Cinnamomi Ramulus 3 00g 黃 芩 Scutellariae Radix 3 00g 牡 蠣 Ostreae Testa 2 00g 乾 薑 Zingiberis Sicatum Rhizoma 2 00g 甘 草 Glycyrrhizae Radix 2 00g 以上生藥製成浸膏 4 80g （生藥與浸膏比"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 神經衰弱，心悸亢進，不眠",
+    "indications": "適應症】\n 神經衰弱，心悸亢進，不眠"
+  },
+  "柴胡清肝湯": {
+    "composition": [
+      "藥物組成】",
+      "每20 4g中含有 柴 胡 Bupleuri Radix 3 00g 生地黃 Rehmanniae Radix et Rhizoma 3 00 g 白 芍 Paeoniae Radix 3 0 0g 牛蒡子 Arctii Fructus 3 00 g 當 歸 Angelicae Radix 4 00g 連 翹 Forsythiae Fructus 2 00g 川 芎 Cnidium Rhizoma 2 00g 黃 苓 Scutellariae Radix 2 00g 梔 子 Gardeniae Fructus"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 肝膽三焦風熱，鬢疽初起",
+    "indications": "適應症】\n 肝膽三焦風熱，鬢疽初起"
+  },
+  "柴胡桂枝湯": {
+    "composition": [
+      "藥物組成】",
+      "每16 5g中含有 柴 胡 Bupleuri Radix 8 00g 黃 苓 Scutellariae Radix 3 00g 人 參 Ginseng Radix 3 00g 桂 枝 Cinnamomi Ramulus 3 00 g 芍 藥 Paeoniae Radix 3 00 g 半 夏 Pinelliae Tuber 5 00g 生 薑 Gingiber Rhizoma 3 00g 甘 草 Glycyrrhiza Radix 2 00g 大 棗 Zizyphi Fructus 2 00g 以上生藥製成浸膏"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 傷寒發熱，支節疼煩，微嘔，心腹卒痛",
+    "indications": "適應症】\n 傷寒發熱，支節疼煩，微嘔，心腹卒痛"
+  },
+  "柴胡加龍骨牡蠣湯": {
+    "composition": [
+      "藥物組成】",
+      "每10 8g中含有 柴 胡 Bupleuri Radix 5 00g 龍 骨 Fossilia Ossis Mastodi 2 00g 生 薑 Zingiberis Rhizoma 2 00g 人 參 Panax Ginseng C A Mayer 2 00g 茯 苓 Poria 2 00g 黃 芩 Scutellariae Radix 2 00g 牡 蠣 Ostreae Testa 2 00g 桂 枝 Ramulus cinnamomi 2 00g 半 夏 Pinelliae Tuber"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 清熱，降逆，鎮驚袪痰",
+    "indications": "適應症】\n 清熱，降逆，鎮驚袪痰"
+  },
+  "胃康寧": {
+    "composition": [
+      "藥物組成】",
+      "每 6 0g中含有 人 參 Ginseng Radix 2 40g 白 朮 Atractylodis Rhizoma 2 40g 茯 苓 Hoelen 2 40g 半 夏 Pinelliae Tuber 2 40g 甘 草 Glycyrrhizae Radix 2 40g 陳 皮 Auranti Nobilis Pericarpium 1 20g 生 薑 Gingiberis Rhizoma 1 20g 大 棗 Zizyphi Fructus 1 20g 桂 皮 Cinn"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 胃酸過多，胃痛，食慾不振，慢性胃炎，消化不良，嘔吐，惡阻，胃部壓重感",
+    "indications": "適應症】\n 胃酸過多，胃痛，食慾不振，慢性胃炎，消化不良，嘔吐，惡阻，胃部壓重感"
+  },
+  "胃苓湯": {
+    "composition": [
+      "藥物組成】",
+      "每 15 0g中含有 蒼 朮 Atractylodis Lancea Rhizoma 3 00g 厚 朴 Magnoliae Cortex 3 00g 陳 皮 Auranti Nobilis Pericarpium 3 00g 白 朮 Atractylodis Rhizoma 3 00g 茯 苓 Hoelen 3 00g 澤 瀉 Alismatis Rhizoma 2 00g 豬 苓 Polyporus 2 00g 甘 草 Glycyrrhizae Radix 1 20g 肉 桂 Cinnamomi"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 脾胃受濕，飲食停積，浮腫泄瀉",
+    "indications": "適應症】\n 脾胃受濕，飲食停積，浮腫泄瀉"
+  },
+  "苓甘薑味辛夏仁湯": {
+    "composition": [
+      "藥物組成】",
+      "：每 6 8g中含有 茯 苓 Hoelen 4 00g 半 夏 Pinelliae Tuber 4 00g 杏 仁 Armeniacae Semen 4 00g 甘 草 Glycyrrhizae 3 00g 乾 薑 Zingiberis Sicatum Rhizoma 3 00g 細 辛 Asiasri Radix 2 50g 五味子 Schisandrae Fructus 2 50g 以上生藥製成浸膏 3 40g （生藥浸膏比 23 00:3 4＝6 76:1 00） 【效"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 痰飲浮腫，虛寒性氣喘",
+    "indications": "適應症】\n 痰飲浮腫，虛寒性氣喘"
+  },
+  "苓桂朮甘湯": {
+    "composition": [
+      "藥物組成】",
+      "每 10 5g中含有 茯 苓 Hoelen 10 00g 桂 枝 Cinnamomi Ramulus 7 50 g 白 朮 Atractylodis Rhizoma 7 50g 甘 草 Glycyrrhizae Radix 5 00g 以上生藥製成浸膏 4 80g （生藥與浸膏比 30 00:4 80＝6 25:1 00） 【效能】",
+      "【適應症】",
+      "健脾滲濕，溫化痰飲"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 健脾滲濕，溫化痰飲",
+    "indications": "適應症】\n 健脾滲濕，溫化痰飲"
+  },
+  "香連丸": {
+    "composition": [
+      "藥物組成】",
+      "每 600丸中含有 木 香 Saussureae Radix 100gm 訶 子 Chebulae Fructus 100gm 黃 連 Coptidis Rhizoma 100gm 陳 皮 Auranti Nobilis Pericarpium 100gm 肉豆蔻 Myristicae Semen 20 0gm 白茯苓 Poria 50 0gm 【效能】",
+      "【適應症】",
+      "急慢性胃腸炎，腸瀉，�堳瑹嵾哄A粘血便"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 急慢性胃腸炎，腸瀉，�堳瑹嵾哄A粘血便",
+    "indications": "適應症】\n 急慢性胃腸炎，腸瀉，�堳瑹嵾哄A粘血便"
+  },
+  "香蘇散": {
+    "composition": [
+      "藥物組成】",
+      "每 7 7g中含有 陳 皮 Auranti Nobilis Pericarpium 4 00g 香 附 Cyperi Rhizoma 8 00g 紫蘇葉 Perilla Herba 8 00g 炙甘草 Glycyrrhizae Radix 2 00g 生 薑 Gingiberis Rhizoma 3 00g 蔥 白 Allii Fistulosi Bulbus 3 00g 以上生藥製成浸膏 3 50g （生藥與浸膏比 28 00:3 50＝8 00:1 00） 【效能】",
+      "理氣和中 ， 解表散寒 【適應症】",
+      "外感風寒，內有氣滯，形寒身熱，頭痛無汗，胸脘痞悶"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 理氣和中 ， 解表散寒 【適應症】\n 外感風寒，內有氣滯，形寒身熱，頭痛無汗，胸脘痞悶",
+    "indications": "適應症】\n 外感風寒，內有氣滯，形寒身熱，頭痛無汗，胸脘痞悶"
+  },
+  "香砂平胃散": {
+    "composition": [
+      "藥物組成】",
+      "每 9 5g中含有 蒼 朮 Atractyloislancea Rhizoma 3 60g 陳 皮 Auranti Nobilis Pericarpium 2 40g 厚 朴 Magnoliae Cortex 2 40g 砂 仁 Amomi Semen 2 40g 香 附 Cyperi Rhizoma 2 40g 山 楂 Crataegi Fructus 2 40g 神 麴 Massa Medicata Fermentata 2 40g 麥 芽 Hordei Germinatus Fructus 2 40g 枳 殼 Citri immaturus Fructus 2 40g 白 芍 Pa"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 食鬱 ，飽悶，噯氣，食慾不振",
+    "indications": "適應症】\n 食鬱 ，飽悶，噯氣，食慾不振"
+  },
+  "香砂六君子湯": {
+    "composition": [
+      "藥物組成】",
+      "每 12 2g中含有 人 參 Ginseng Radix 2 50g 白 朮 Atractylodis Rhizoma 5 00g 茯 苓 Hoelen 5 00g 甘 草 Glycyrrhizae Radix 2 00g 陳 皮 Auranti Nobilis Pericarpium 2 00g 半 夏 Pinelliae Tuber 2 50g 砂 仁 Amomi Semen 2 00g 木 香 Saussureae Radix 2 00g 生 薑 Gingiberis Rhizoma 5 00g 以上生藥製成"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 健脾養胃 【適應症】\n 氣虛痰飲，嘔吐痞悶，腹脹噯氣",
+    "indications": "適應症】\n 氣虛痰飲，嘔吐痞悶，腹脹噯氣"
+  },
+  "厚朴溫中湯": {
+    "composition": [
+      "藥物組成】",
+      "每 8 1g中含有 乾 薑 Zingiberis Sicatum Rhizoma 6 00g 厚 朴 Magnoliae Cortex 4 50g 陳 皮 Auranti Nobilis Pericarpium 4 50g 生 薑 Gingiberis Rhizoma 3 00g 草豆蔻 Amomi Costati Fructus 2 00g 赤茯苓 Paeoniae Hoelen 2 00g 大 棗 Zizyphi Fructus 2 00g 木 香 Saussureae Radix 1 50g 甘 草 Glycyrrhizae Radix 1 50g 以上生藥製成浸膏"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 治脾胃虛寒，心腹脹滿及秋冬客寒犯胃",
+    "indications": "適應症】\n 治脾胃虛寒，心腹脹滿及秋冬客寒犯胃"
+  },
+  "洗肝明目湯": {
+    "composition": [
+      "藥物組成】",
+      "每 12 0g中含有 當 歸 Angelicae Radix 1 50g 川 芎 Cnidium Rhizoma 1 50g 薄 荷 Menthae Herba 1 50g 連 翹 Forsythiae Fructus 1 50g 黃 連 Coptidis Rhizoma 1 50g 梔 子 Gardeniae Fructus 1 50g 甘 草 Glycyrrhizae Radix 1 50g 羌 活 Notopterygii Rhizoma 1 50g 決明子 Cassiae Torae Semen"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 清熱袪風",
+    "indications": "適應症】\n 清熱袪風"
+  },
+  "保和丸": {
+    "composition": [
+      "藥物組成】",
+      "每 15 0g中含有 山 楂 Crataegi Fructus 9 60g 神 麴 Massa Medicata Fermentata 3 20g 半 夏 Pinelliae Tuber 3 20g 茯 苓 Hoelen 3 20g 陳 皮 Auranti Nobilis Pericarpium 1 60g 連 翹 Forsythiae Fructus 1 60g 萊菔子 Raphani Semen 1 60g 以上生藥製成浸膏 6 00g (生藥與浸膏比24 00:6 00＝4 00:1"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 食積飲停，胸膈痞滿，噯氣吞酸，腹痛泄瀉，下痢",
+    "indications": "適應症】\n 食積飲停，胸膈痞滿，噯氣吞酸，腹痛泄瀉，下痢"
+  },
+  "抑肝散": {
+    "composition": [
+      "藥物組成】",
+      "每 19 5g中含有 當 歸 Angelicae Radix 5 00g 白 朮 Atractylodis Rhizoma 5 00g 茯 苓 Hoelen 5 00g 鉤 藤 Uncariae Ramulus et Uncus 5 00g 川 芎 Cnidium Rhizoma 4 00g 柴 胡 Bupleuri Radix 2 50g 甘 草 Glycyrrhizae Radix 2 50g 以上生藥製成浸膏 9 30g （生藥與浸膏比 29 00:9 30＝3 12:1 00） 【效能】",
+      "【適應症】",
+      "驚悸，痰涎，腹脹，睡臥不"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 驚悸，痰涎，腹脹，睡臥不安",
+    "indications": "適應症】\n 驚悸，痰涎，腹脹，睡臥不安"
+  },
+  "金鎖固精丸": {
+    "composition": [
+      "藥物組成】",
+      "每 8 1g中含有 沙苑蒺藜 Astragail Semen 6 00g 芡 實 Euryales Semen 6 00g 蓮 鬚 Nelumbinis Stamen 6 00g 蓮 子 Nelumbinis Semen 6 00g 龍 骨 Fossilia Ossis Mastodi 3 00g 牡 蠣 Ostreae Testa 3 00g 以上生藥製成浸膏 2 70g （生藥與浸膏比 30:2 7＝11 11:1 00） 【效能】",
+      "固腎濇精 【適應症】",
+      "腎虛，遺精，盜汗，腰痠耳鳴，四肢倦怠"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 固腎濇精 【適應症】\n 腎虛，遺精，盜汗，腰痠耳鳴，四肢倦怠",
+    "indications": "適應症】\n 腎虛，遺精，盜汗，腰痠耳鳴，四肢倦怠"
+  },
+  "金沸草散": {
+    "composition": [
+      "藥物組成】",
+      "每 10 0g中含有 荊 芥 Schizonepetae Herba 6 00g 前 胡 Peucedani Radix 4 50g 麻 黃 Ephedrae Herba 4 50g 旋覆花 Inulae Semen 4 50g 甘 草 Glycyrrhizae Radix 1 50g 半 夏 Pinelliae Tuber 1 50g 赤 芍 Paeoniae Veilchii Radix 1 50g 生 薑 Gingiberis Rhizoma 3 00g 大 棗 Zizyphi Fructus 1 00g 以上生藥製成浸膏"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 解表散寒，治風化痰 【適應症】\n 肺感風寒，咳嗽多痰",
+    "indications": "適應症】\n 肺感風寒，咳嗽多痰"
+  },
+  "治濁固本丸": {
+    "composition": [
+      "藥物組成】",
+      "每 10 5g中含有 蓮 鬚 Nelumbinis Stamen 4 00g 黃 蓮 Coptidis Rhizoma 4 00g 茯 苓 Hoelen 2 00g 砂 仁 Amomi Semen 2 00g 益智仁 Alpiniae Fructus 2 00g 半 夏 Pinelliae Tuber 2 00g 黃 柏 Phellodenri Cortex 2 00g 炙甘草 Glycyrrhizae Radix 6 00g 豬 苓 Polyporus 5 00g 以上生藥製成浸膏"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 清熱利濕 【適應症】\n 溼熱下注，頻尿白濁",
+    "indications": "適應症】\n 溼熱下注，頻尿白濁"
+  },
+  "炙甘草湯": {
+    "composition": [
+      "藥物組成】",
+      "每 22 2g中含有 炙甘草 Glycyrrhizae Radix 3 00g 生 薑 Gingiberis Rhizoma 2 50g 桂 枝 Cinnamomi Ramulus 2 50g 人 參 Ginseng Radix 1 50g 生地黃 Rehmanniae Radix et Rhizoma 12 00g 阿 膠 Asini Gelatinum 1 50g 麥門冬 Ophiopogonis Tuber 2 50g 火麻仁 Cannabis Fructus 3 00g 大 棗 Zizyphi Fructus"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 益氣補血，滋陰復脈 【適應症】\n 氣虛血少脈結代，心動悸，氣短胸悶，虛癆肺痿",
+    "indications": "適應症】\n 氣虛血少脈結代，心動悸，氣短胸悶，虛癆肺痿"
+  },
+  "虎潛丸": {
+    "composition": [
+      "藥物組成】",
+      "每 6 0g中含有 龜 板 Testudinis Plastrum 4 00g 黃 柏 Phellodenri Cortex 4 00g 牛 膝 Achyanthis Radix 3 50g 知 母 Anemarrhenae Rhizoma 2 00g 熟地黃 Rehmanniae Radix Et Rhizoma 2 00g 白 芍 Paeoniae Radix 1 50g 鎖 陽 Cynomorii Herba 1 00g 當 歸 Angelicae Radix 1 00g 陳 皮 Auranti Nobilis Peri"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 養陰潛陽，強筋壯骨 【適應症】\n 筋骨萎軟，步履艱難",
+    "indications": "適應症】\n 筋骨萎軟，步履艱難"
+  },
+  "防己黃耆湯": {
+    "composition": [
+      "藥物組成】",
+      "每 10 5g中含有 防 己 Hanfangchi Radix 4 00g 黃 耆 Astragali Radix 4 40g 白 朮 Atractylodis Rhizoma 3 00g 甘 草 Glycyrrhizae Radix 2 00g 生 薑 Gingiberis Rhizoma 1 00g 大 棗 Zizyphi Fructus 1 00g 以上生藥製成浸膏 5 00g （生藥與浸膏比例 15 40:5 00＝3 08:1 00） 【效能】",
+      "【適應症】",
+      "益氣健脾，利水退腫"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 益氣健脾，利水退腫",
+    "indications": "適應症】\n 益氣健脾，利水退腫"
+  },
+  "沙參麥冬": {
+    "composition": [
+      "藥物組成】",
+      "每 8 0g中含有 沙 參 Adenophorae Radix 3 50g 麥門冬 Ophiopogonis Tuber 3 50g 萎 蕤 Polygonati officinale Rhizoma 2 50g 桑 葉 Mori Folium 2 00g 栝樓根 Trichosanthes Root 2 00g 白扁豆 Dolichoris Semen 2 00g 甘 草 Glycyrrhizae Radix 1 50g 以上生藥製成浸膏 4 00g （生藥與浸膏比例 17 00:4 00＝4 30"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 清養肺胃",
+    "indications": "適應症】\n 清養肺胃"
+  },
+  "折衝飲": {
+    "composition": [
+      "藥物組成】",
+      "每 6 0g中含有 當 歸 Angelicae Radix 5 00g 桃 仁 Persicae Semen 5 00g 牡丹皮 Moutan Cortex 3 00g 川 芎 Cnidium Rhizoma 3 00g 白 芍 Paeoniae Radix 3 00g 桂 枝 Cinnamomi Ramulus 3 00g 延胡索 Corydalidis Tuber 2 50g 牛 膝 Achyranthis Radix 2 50g 紅 花 Carthami Flos 1 50g 以上生藥製成浸膏"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 經閉腹痛",
+    "indications": "適應症】\n 經閉腹痛"
+  },
+  "完帶湯": {
+    "composition": [
+      "藥物組成】",
+      "每 16 6g中含有 白 朮 Atractylodis Rhizoma 10 00g 山 藥 Dioscoreae Rhizoma 10 00g 人 參 Ginseng Radix 2 00g 白 芍 Paeoniae Radix 5 00g 車前子 Plantaginis Semen 3 00g 蒼 朮 Atractyloislancea Rhizoma 3 00g 甘 草 Glycyrrhizae Radix 1 00g 陳 皮 Auranti Nobilis Pericarpium 0 50g 荊芥炭 Schizonepetae Herba 0 50g 柴 胡 Bupleuri"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 健脾燥濕，疏肝理氣 【適應症】\n 白帶",
+    "indications": "適應症】\n 白帶"
+  },
+  "芎歸膠艾湯": {
+    "composition": [
+      "藥物組成】",
+      "每 24 0g中含有 川 芎 Cnidium Rhizoma 2 50g 當 歸 Angelicae Radix 4 00g 阿 膠 Asini Gelatinum 2 50g 艾 葉 Artemisiae Argyi Folium 4 00g 甘 草 Glycyrrhizae Radix 2 50g 地 黃 Rehmanniae Radix et Rhizoma 8 00g 白 芍 Paeoniae Radix 5 00g 以上生藥製成浸膏 12 00g （生藥與浸膏比例 28 5:12 00＝2 38:1 00） 【效能】",
+      "【適應症】"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 補血調經，安胎止漏",
+    "indications": "適應症】\n 補血調經，安胎止漏"
+  },
+  "吳茱萸湯": {
+    "composition": [
+      "藥物組成】",
+      "每 11 2g中含有 吳茱萸 Evodiae Fructus 7 50g 人 參 Ginseng Radix 4 50g 生 薑 Gingiberis Rhizoma 9 00g 大 棗 Zizyphi Fructus 6 00g 以上生藥製成浸膏 5 60g （生藥與浸膏比例 27 00:5 60＝4 82:1 00） 【效能】",
+      "溫中補虛，降逆止嘔 【適應症】",
+      "脾胃虛寒，食榖欲嘔，吐利煩燥，手足厥冷，乾嘔吐涎，頭痛 【注意事項】",
+      "嘔吐較重者 ，冷服為宜"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 溫中補虛，降逆止嘔 【適應症】\n 脾胃虛寒，食榖欲嘔，吐利煩燥，手足厥冷，乾嘔吐涎，頭痛 【注意事項】\n 嘔吐較重者 ，冷服為宜",
+    "indications": "適應症】\n 脾胃虛寒，食榖欲嘔，吐利煩燥，手足厥冷，乾嘔吐涎，頭痛 【注意事項】\n 嘔吐較重者 ，冷服為宜"
+  },
+  "杏蘇散": {
+    "composition": [
+      "藥物組成】",
+      "每 15 0g中含有 半 夏 Pinelliae Tuber 3g 茯 苓 Hoelen 3g 前 胡 Phucedani Radix 2g 枳 殼 Citri Immaturus Fructus 2g 杏 仁 Armeniacae Semen 3g 桔 梗 Platycodi Radix 2g 陳 皮 Auranti Nobilis Pericarpium 1g 紫 蘇 Perilla Herba 3g 生 薑 Gingiberis Rhizoma 2g 甘 草 Glycyrrhizae Radix"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 溫散風寒，宣肺化痰",
+    "indications": "適應症】\n 溫散風寒，宣肺化痰"
+  },
+  "杏蘇散(幼科)": {
+    "composition": [
+      "藥物組成】",
+      "每 16 5g中含有 杏 仁 Armeniacae Semen 3 00g 紫 蘇 Perilla Herba 3 00g 桔 梗 Platycodi Radix 3 00g 桑白皮 Mori Cortex 3 00g 黃 芩 Scutellariae Radix 3 00g 浙貝母 Fritillaria Thunbergii Bulbus 3 00g 前 胡 Peucedani Radix 2 00g 枳 殼 Citri Immaturus Fructus 2 00g 麥門冬 Ophiopogonis Tuber 2 00g 橘 紅 C"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 溫散風寒，宣肺化痰",
+    "indications": "適應症】\n 溫散風寒，宣肺化痰"
+  },
+  "托�堮欓r飲": {
+    "composition": [
+      "藥物組成】",
+      "每 14 7g中含有 人 參 Ginseng Radix 3 0g 白 朮 Atractylodis Rhizoma 3 00g 當 歸 Angelicae Radix 3 00g 川 芎 Cnidium Rhizoma 3 00g 白 芍 Paeoniae Radix 3 00g 桔 梗 Platycodi Radix 1 50g 茯 苓 Hoelen 3 00g 桔 梗 1 50g 皂角刺 Gleditsiae Soina"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 治瘡瘍氣血俱虛，腫不能潰，潰不能斂",
+    "indications": "適應症】\n 治瘡瘍氣血俱虛，腫不能潰，潰不能斂"
+  },
+  "竹葉石膏湯": {
+    "composition": [
+      "藥物組成】",
+      "每 15 8g中含有 竹 葉 Lophathero Herba 2 00g 石 膏 Gypsum Fibrosum 16 00g 半 夏 Pinelliae Tuber 4 00g 人 參 Ginseng Radix 3 00g 炙甘草 Glycyrrhizae Radix 2 00g 粳 米 Germinantis Orvzae 6 00g 麥門冬 Ophiopgonis Tuber 6 00g 以上生藥製成浸膏 7 90g （生藥與浸膏比 39 00:7 90＝4 94:1 00） 【效能】",
+      "清熱生津，益氣和胃 【適應症】",
+      "熱病後期，氣陰兩傷，乾嘔少氣，口渴，脈虛大無"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 清熱生津，益氣和胃 【適應症】\n 熱病後期，氣陰兩傷，乾嘔少氣，口渴，脈虛大無力者",
+    "indications": "適應症】\n 熱病後期，氣陰兩傷，乾嘔少氣，口渴，脈虛大無力者"
+  },
+  "安胎散": {
+    "composition": [
+      "藥物組成】",
+      "每 6 0g中含有 當 歸 Angelicae Radix 2 50g 川 芎 Cnidium Rhizoma 2 50g 白 芍 Paeoniae Radix 3 50g 川貝母 Fritillaria Thunbergii Bulbus 2 00g 菟絲子 Cuscutae Semen 2 00g 黃 耆 Astragali Radix 1 50g 厚 朴 Magnoliae Cortex 1 50g 荊茶穗 Schizonepetae Herba 1 50g 艾 葉 Artemisae Argyi Folium 1 50g 生"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 安胎，妊娠，腰腹痛",
+    "indications": "適應症】\n 安胎，妊娠，腰腹痛"
+  },
+  "安中散": {
+    "composition": [
+      "藥物組成】",
+      "每 4 5g中含有 桂 枝 Cinnamomi Ramulus 5 00g 延胡索 Corydalidis Tuber 4 00g 牡 蠣 Ostreae Testa 4 00g 茴 香 Foeniculi Fructus 2 00g 縮砂仁 Amomi Semen 2 00g 甘 草 Glycyrrhizae Radix 2 00g 高良薑 Galangae Rhizoma 1 00g 以上生藥製成浸膏 3 00g （生藥與浸膏比例 20 00:3 00＝6 60:1 00） 【效能】",
+      "【適應症】",
+      "胃酸過多，胃痛，胃潰瘍"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 胃酸過多，胃痛，胃潰瘍",
+    "indications": "適應症】\n 胃酸過多，胃痛，胃潰瘍"
+  },
+  "平胃散": {
+    "composition": [
+      "藥物組成】",
+      "每 13 5g中含有 蒼 朮 Atractylodis Lancea Rhizoma 5 00g 厚 朴 Magnoliae Cortex 2 50g 陳 皮 Auranti Nobilis Pericarpiam 5 00g 甘 草 Glycyrrhizae Radix 3 00g 生 薑 Gingiberis Rhizoma 3 00g 大 棗 Zizyphi Fructus 2 00g 以上生藥製成浸膏 6 50g （生藥與浸膏比例 26 00:6 50＝4 00:1 00） 【效能】",
+      "【適應症】",
+      "反胃噯氣，噁心嘔吐，食慾不振，心腹脹痛"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 反胃噯氣，噁心嘔吐，食慾不振，心腹脹痛",
+    "indications": "適應症】\n 反胃噯氣，噁心嘔吐，食慾不振，心腹脹痛"
+  },
+  "代赭旋覆湯": {
+    "composition": [
+      "藥物組成】",
+      "每 12 8 g中含有 旋覆花 Inulae Flos 4 5g 人 參 Ginseng Rubra Radix 3 0g 生 薑 Zingiberis Recens Rhizoma 7 5g 半 夏 Pinelliae Rhizoma 7 5g 代赭石 Haematitum 1 5g 大 棗 Jujubae Fructus 4 0g 炙甘草 Glycyrrhizae Preparata Radix 4 5g 以上生藥製成浸膏 6 4g （生"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 扶正益胃，降逆化痰 【適應症】\n 汗吐下解之後，心下痞鞕，噫氣不除",
+    "indications": "適應症】\n 汗吐下解之後，心下痞鞕，噫氣不除"
+  },
+  "四君子湯": {
+    "composition": [
+      "藥物組成】",
+      "每 12 4g中含有 人 參 Ginseng Radix 6 00g 茯 苓 Hoelen 6 00g 炙甘草 Glycyrrhizae Radix 3 00g 白 朮 Atractylodis Rhizoma 6 00g 生 薑 Gingiberis Rhizoma 3 00g 大 棗 Zizyphi Fructus 2 00g 以上生藥製成浸膏 6 20g （生藥與浸膏比例 26 00:6 20＝4 19:1 00） 【效能】",
+      "益氣健脾 【適應症】",
+      "脾胃氣虛，消化不良，面色蒼白，食少便溏"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 益氣健脾 【適應症】\n 脾胃氣虛，消化不良，面色蒼白，食少便溏",
+    "indications": "適應症】\n 脾胃氣虛，消化不良，面色蒼白，食少便溏"
+  },
+  "四逆湯": {
+    "composition": [
+      "藥物組成】",
+      "每 4 5g中含有 附 子 Aconiti Tuber 10 00g 乾 薑 Zingiberis Sicatum Rhizoma 7 50g 甘 草 Glycyrrhizae Radix 10 00g 以上生藥製成浸膏 6 20g （生藥與浸膏比 27 5:6 2＝4 44:1 00） 【效能】",
+      "回陽救逆 【適應症】",
+      "治少陰病, 表熱�奡H, 下利清榖, 四肢拘急, 手足厥冷, 脈微欲絕者"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 回陽救逆 【適應症】\n 治少陰病, 表熱�奡H, 下利清榖, 四肢拘急, 手足厥冷, 脈微欲絕者",
+    "indications": "適應症】\n 治少陰病, 表熱�奡H, 下利清榖, 四肢拘急, 手足厥冷, 脈微欲絕者"
+  },
+  "甘麥大棗湯": {
+    "composition": [
+      "藥物組成】",
+      "每 12 0g中含有 甘 草 Glycyrrhizae Radix 6 00g 大 棗 Zizyphi Fructus 6 00g 小 麥 Trifici Semen 12 00g 以上生藥製成浸膏 5 60g （生藥與浸膏比 24 00:5 60＝4 29:1 00） 【效能】",
+      "養心安寧，和中緩急 【適應症】",
+      "婦人臟躁，善悲欲泣，小兒夜啼，不眠"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 養心安寧，和中緩急 【適應症】\n 婦人臟躁，善悲欲泣，小兒夜啼，不眠",
+    "indications": "適應症】\n 婦人臟躁，善悲欲泣，小兒夜啼，不眠"
+  },
+  "甘露消毒丹": {
+    "composition": [
+      "藥物組成】",
+      "每 9 5g中含有 滑 石 Tolcum 6 00g 黃 芩 Scutellariae Radix 4 00g 茵陳蒿 Artemisiae Capillaris Herba 4 40g 藿 香 Agastachis Herba 1 60g 連 翹 Forsythiae Fructus 1 60g 石菖蒲 Acori Graminei Rhizoma 2 40g 白豆蔻 Amomi Cardamomi Fructus 1 60g 薄 荷 Menthae Herba 1 60g 木 通 Akebiae Caulis"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 化濁利濕，清熱解毒 【適應症】\n 暑濕時疫，發熱倦怠，胸悶腹脹，咽腫口渴，溺赤便閉",
+    "indications": "適應症】\n 暑濕時疫，發熱倦怠，胸悶腹脹，咽腫口渴，溺赤便閉"
+  },
+  "玉屏風散": {
+    "composition": [
+      "藥物組成】",
+      "每 21 0g中含有 防 風 Saposhnikovia Radix 5 0g 黃 耆 Astragali Radix 15 0g 白 朮 Atractylodis Rhizoma 5g 生 薑 3 0g 大 棗 2g 以上生藥製成浸膏 10 2g （生藥與浸膏比 30 00:10 20＝2 94:1 00） 【 效能】",
+      "【適應症】",
+      "自汗不止，易感風寒"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 自汗不止，易感風寒",
+    "indications": "適應症】\n 自汗不止，易感風寒"
+  },
+  "玉女煎": {
+    "composition": [
+      "藥物組成】",
+      "每 24 0g中含有 生石膏 Gypsum Fibrosum 10 00g 熟地黃 Rehmanniae Radix et Rhizoma 10 00g 麥門冬 Ophiopogoins Tuber 5 00g 知 母 Anemarrhenae Rhizoma 4 00g 牛 膝 Achyranthis Radix 4 00g 以上生藥製成浸膏 12 00g （生藥與浸膏比例 33 00:120＝2 75:1 00） 【效能】",
+      "清胃滋陰 【適應症】",
+      "陰虛胃熱，煩熱口渴，頭痛，牙痛"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 清胃滋陰 【適應症】\n 陰虛胃熱，煩熱口渴，頭痛，牙痛",
+    "indications": "適應症】\n 陰虛胃熱，煩熱口渴，頭痛，牙痛"
+  },
+  "右歸丸": {
+    "composition": [
+      "藥物組成】",
+      "每 6 0g中含有 熟地黃 Rehmanniae Radix Et Rhizoma 5 60g 山茱萸 Corni Fructus 2 80g 山 藥 Dioscoreae Rhizoma 2 80g 杜 仲 Eucommiae Cortex 2 80g 枸杞子 Lycii Fructus 2 80g 菟絲子 Cuscutae Semen 2 80g 肉 桂 Cinnamomi Cortex 1 40g 附 子 Aconiti Tuber 1 40g 鹿角膠 Cervi"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 治命門火衰、脾胃虛寒",
+    "indications": "適應症】\n 治命門火衰、脾胃虛寒"
+  },
+  "加減駐景丸": {
+    "composition": [
+      "藥物組成】",
+      "每 6 0g中含有 菟絲子 Cuscutae Semen 8 00g 當 歸 Angelicae Radix 5 00g 熟地黃 Rehmanniae Radix et Rhizoma 5 00g 車前子 Plantaginis Semen 2 00g 五味子 Schisandrae Fructus 2 00g 枸杞子 Lycii Fructus 1 00g 榰實子 Brooussonetiae Fructus 1 00g 川 椒 Zanthoxyli Fructus 1 00g 以上生藥製成浸膏"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【效應症】\n 肝腎氣虛，兩目昏暗",
+    "indications": "nan"
+  },
+  "白虎湯": {
+    "composition": [
+      "藥物組成】",
+      "每 11 7g中含有 知 母 Anemarrhenae Rhizoma 6 00g 石 膏 Gypsum Fibrosum 16 00g 炙甘草 Glycyrrhizae Radix 2 00g 粳 米 Germinantis Orvzae Fructus 8 00g 以上生藥製成浸膏 5 30g （生藥與浸膏比例 32 00:5 30＝6 04:1 00） 【效能】",
+      "清熱生津 【適應症】",
+      "陽明經症或溫病氣分大熱，症見口大渴，身大熱，脈洪大，汗大出者"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 清熱生津 【適應症】\n 陽明經症或溫病氣分大熱，症見口大渴，身大熱，脈洪大，汗大出者",
+    "indications": "適應症】\n 陽明經症或溫病氣分大熱，症見口大渴，身大熱，脈洪大，汗大出者"
+  },
+  "白虎加人參湯": {
+    "composition": [
+      "藥物組成】",
+      "每 6 0g中含有 石 膏 Gypsum Fibrosum 9 00g 知 母 Anemarrhenae Rhizoma 5 40g 粳 米 Germinantis Oryzae Fructus 5 40g 人 參 Ginseng Radix 2 70g 炙甘草 Glycyrrhizae Radix 1 80g 以上生藥製成浸膏 4 10g （生藥與浸膏比 24 30:4 10＝5 90:1 00） 【效能】",
+      "【適應症】",
+      "清涼，解熱，生津"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 清涼，解熱，生津",
+    "indications": "適應症】\n 清涼，解熱，生津"
+  },
+  "半夏瀉心湯": {
+    "composition": [
+      "藥物組成】",
+      "半 夏 Pinelliae Tuber 7 50 黃 芩 Scutellariae Radix 4 50 乾 薑 Zingiberis Sicatum 4 50 人 參 Ginseng Radix 4 50 甘 草 Glycyrrhizae Radix 4 50 黃 連 Coptidis Rhizoma 1 50 大 棗 Zizyphi Fructus 3 00 以上生藥製成浸膏 7 40 （生藥與浸膏比 30 00:7 40＝4 05:1 00） 【效能】",
+      "【適應症】",
+      "治傷寒心下痞及嘔吐而腸鳴者"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 治傷寒心下痞及嘔吐而腸鳴者",
+    "indications": "適應症】\n 治傷寒心下痞及嘔吐而腸鳴者"
+  },
+  "半夏白朮天麻湯": {
+    "composition": [
+      "藥物組成】",
+      "每 15 6g中含有 半 夏 Pinelliae Tuber 4 50g 麥 芽 Hordei Germinatus Fructus 4 50g 神 麴 Massa Medicata Fermentata 3 00g 白 朮 Atractylodis Lancea Rhizoma 3 00g 蒼 朮 Atractylodis Lancea Rhizoma 1 50g 人 參 Ginseng Radix 1 50g 黃 耆 Astragali Radix 1 50g 陳 皮 Auranti Nobilis Pericarpium 4 50g 茯 苓 Hoelen"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】",
     "indications": "適應症】"
   },
-  {
-    "name": "半夏厚朴湯",
-    "composition": "藥物組成】每\n7.5g中含有\n半　夏\nPinelliae Tuber.................8.00g\n厚　朴\nMagnoliae Cortex............4.50g\n茯　苓\nHoelen.............................6.00g\n生　薑\nGingiberis Rhizoma.........7.50g\n紫蘇葉\nPerilla Herba....................3.00g\n以上生藥製成浸膏\n........................2.20g\n（生藥與浸膏比\n29.00:2.20＝13.2:1.00）\n【效能】\n【適應症】\n治傷寒下之早，胸滿而不痛者為痞。身寒而嘔，飲食不下。",
-    "efficacy": "效能】\n【適應症】\n治傷寒下之早，胸滿而不痛者為痞。身寒而嘔，飲食不下。",
-    "indications": "適應症】\n治傷寒下之早，胸滿而不痛者為痞。身寒而嘔，飲食不下。"
+  "半夏厚朴湯": {
+    "composition": [
+      "藥物組成】",
+      "每 7 5g中含有 半 夏 Pinelliae Tuber 8 00g 厚 朴 Magnoliae Cortex 4 50g 茯 苓 Hoelen 6 00g 生 薑 Gingiberis Rhizoma 7 50g 紫蘇葉 Perilla Herba 3 00g 以上生藥製成浸膏 2 20g （生藥與浸膏比 29 00:2 20＝13 2:1 00） 【效能】",
+      "【適應症】",
+      "治傷寒下之早，胸滿而不痛者為痞 身寒而嘔，飲食不下"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 治傷寒下之早，胸滿而不痛者為痞 身寒而嘔，飲食不下",
+    "indications": "適應症】\n 治傷寒下之早，胸滿而不痛者為痞 身寒而嘔，飲食不下"
   },
-  {
-    "name": "生化湯",
-    "composition": "藥物組成】每\n4.5g中含有\n當　歸\nAngelicae \r\n  Radix.............................9.60g\n川　芎\nCnidium Rhizoma..........................3.60g\n桃　仁\nPersicae \r\n  Semen..............................1.80g\n黑　薑\nZingiberis Sicatum Rhizoma..........0.60g\n甘　草\nGlycyrrhizae Radix........................0.60g\n以上生藥製成浸膏\n......................................3.00g\n（生藥與浸膏比\n16.20:3.00＝5.40:1.00）\n【效能】\n生新血，化瘀血，溫中散寒。\n【適應症】\n產後惡露不行，少腹疼痛。",
-    "efficacy": "效能】\n生新血，化瘀血，溫中散寒。\n【適應症】\n產後惡露不行，少腹疼痛。",
-    "indications": "適應症】\n產後惡露不行，少腹疼痛。"
+  "生化湯": {
+    "composition": [
+      "藥物組成】",
+      "每 4 5g中含有 當 歸 Angelicae Radix 9 60g 川 芎 Cnidium Rhizoma 3 60g 桃 仁 Persicae Semen 1 80g 黑 薑 Zingiberis Sicatum Rhizoma 0 60g 甘 草 Glycyrrhizae Radix 0 60g 以上生藥製成浸膏 3 00g （生藥與浸膏比 16 20:3 00＝5 40:1 00） 【效能】",
+      "生新血，化瘀血，溫中散寒 【適應症】",
+      "產後惡露不行，少腹疼痛"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 生新血，化瘀血，溫中散寒 【適應症】\n 產後惡露不行，少腹疼痛",
+    "indications": "適應症】\n 產後惡露不行，少腹疼痛"
   },
-  {
-    "name": "升陽益胃湯",
-    "composition": "藥物組成】每\n12.4g中含有\n黃　耆\nAstragali \r\n  Radix............................6.00g\n半　夏\nPinelliae \r\n  Tuber............................3.00g\n人　參\nGinseng Radix............................3.00g\n炙甘草\nGlycyrrhizae Radix.....................3.00g\n獨　活\nAngelicae Tuhou Radix..............1.50g\n防　風\nSaposhinkovia Radix..................1.50g\n白　芍\nPaeoniae Radix...........................1.50g\n羌　活\nNotopterygii Rhizoma.................1.50g\n橘　皮\nAurantii Pericarpium...................1.20g\n茯　苓\nHoelen.....................",
-    "efficacy": "效能】\n補氣健胃，疏風袪濕。\n【適應症】\n脾胃虛弱，怠惰嗜臥，大便不調。",
-    "indications": "適應症】\n脾胃虛弱，怠惰嗜臥，大便不調。"
+  "升陽益胃湯": {
+    "composition": [
+      "藥物組成】",
+      "每 12 4g中含有 黃 耆 Astragali Radix 6 00g 半 夏 Pinelliae Tuber 3 00g 人 參 Ginseng Radix 3 00g 炙甘草 Glycyrrhizae Radix 3 00g 獨 活 Angelicae Tuhou Radix 1 50g 防 風 Saposhinkovia Radix 1 50g 白 芍 Paeoniae Radix 1 50g 羌 活 Notopterygii Rhizoma 1 50g 橘 皮 Aurantii Pericarpium 1 20g 茯 苓 Hoelen"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 補氣健胃，疏風袪濕 【適應症】\n 脾胃虛弱，怠惰嗜臥，大便不調",
+    "indications": "適應症】\n 脾胃虛弱，怠惰嗜臥，大便不調"
   },
-  {
-    "name": "升麻葛根湯",
-    "composition": "藥物組成】每\n9.9g中含有\n升　麻\nCimicifugae Rhizoma....................9.00g\n葛　根\nPuerariae Radix.............................6.00g\n白　芍\nPaeoniae Radix.............................6.00g\n甘　草\nGlycyrrhizae Radix.......................3.00g\n生　薑\nGingiberis Rhizoma......................3.00g\n以上生藥製成浸膏.....................................\n4.50g\n（生藥與浸膏比\n27.00:4.50＝6.00:1.00）\n【效能】\n【適應症】\n感冒，扁桃腺炎。",
-    "efficacy": "效能】\n【適應症】\n感冒，扁桃腺炎。",
-    "indications": "適應症】\n感冒，扁桃腺炎。"
+  "升麻葛根湯": {
+    "composition": [
+      "藥物組成】",
+      "每 9 9g中含有 升 麻 Cimicifugae Rhizoma 9 00g 葛 根 Puerariae Radix 6 00g 白 芍 Paeoniae Radix 6 00g 甘 草 Glycyrrhizae Radix 3 00g 生 薑 Gingiberis Rhizoma 3 00g 以上生藥製成浸膏 4 50g （生藥與浸膏比 27 00:4 50＝6 00:1 00） 【效能】",
+      "【適應症】",
+      "感冒，扁桃腺炎"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 感冒，扁桃腺炎",
+    "indications": "適應症】\n 感冒，扁桃腺炎"
   },
-  {
-    "name": "木香檳榔丸",
-    "composition": "藥物組成】每\n6.0g中含有\n木　香\nSaussureae \r\n  Radix..........................1.00g\n檳　榔\nArecae \r\n  Semen...............................1.00g\n枳　殼\nCitri Immaturus Fructus................1.00g\n青　皮\nCitri Undeveloped Exocarpium.....1.00g\n陳　皮\nAuranti Nobilis Pericarpiium.........1.00g\n莪　朮\nZedoariae Rhizoma.......................1.00g\n三　稜\nScirpi Rhizoma..............................1.00g\n黃　柏\nPhellodenri \r\n  cortex..........................1.00g\n黃　連\nCoptidis Rhizoma..........................1.00g\n黑　丑\nPharbitidis \r\n ",
-    "efficacy": "效能】\n行氣導滯，瀉熱通便。\n【適應症】\n胸腹積滯，痞滿結痛，二便不通或瀉泄下痢。",
-    "indications": "適應症】\n胸腹積滯，痞滿結痛，二便不通或瀉泄下痢。"
+  "木香檳榔丸": {
+    "composition": [
+      "藥物組成】",
+      "每 6 0g中含有 木 香 Saussureae Radix 1 00g 檳 榔 Arecae Semen 1 00g 枳 殼 Citri Immaturus Fructus 1 00g 青 皮 Citri Undeveloped Exocarpium 1 00g 陳 皮 Auranti Nobilis Pericarpiium 1 00g 莪 朮 Zedoariae Rhizoma 1 00g 三 稜 Scirpi Rhizoma 1 00g 黃 柏 Phellodenri cortex 1 00g 黃 連 Coptidis Rhizoma 1 00g 黑 丑 Pharbitidis"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 行氣導滯，瀉熱通便 【適應症】\n 胸腹積滯，痞滿結痛，二便不通或瀉泄下痢",
+    "indications": "適應症】\n 胸腹積滯，痞滿結痛，二便不通或瀉泄下痢"
   },
-  {
-    "name": "六君子湯",
-    "composition": "藥物組成】每\n15.6g中含有\n人　參\nGinseng \r\n  Radix................................5.00g\n白　朮\nAtractylodis Rhizoma.....................5.00g\n茯　苓\nHoelen............................................5.00g\n半　夏\nPinelliae \r\n  Tuber................................5.00g\n炙甘草\nGlycyrrhizae \r\n  Radix.........................2.50g\n陳　皮\nAuranti Nobilis Pericarpium............2.50g\n生　薑\nGingiberis Rhizoma........................2.50g\n大　棗\nZizyphi Fructus...............................2.50g\n以上生藥製成浸膏\n..............................",
-    "efficacy": "效能】\n補氣和中。\n【適應症】\n脾胃虛弱，食慾不振，消化不良，大便塘池，氣虛有痰。",
-    "indications": "適應症】\n脾胃虛弱，食慾不振，消化不良，大便塘池，氣虛有痰。"
+  "六君子湯": {
+    "composition": [
+      "藥物組成】",
+      "每 15 6g中含有 人 參 Ginseng Radix 5 00g 白 朮 Atractylodis Rhizoma 5 00g 茯 苓 Hoelen 5 00g 半 夏 Pinelliae Tuber 5 00g 炙甘草 Glycyrrhizae Radix 2 50g 陳 皮 Auranti Nobilis Pericarpium 2 50g 生 薑 Gingiberis Rhizoma 2 50g 大 棗 Zizyphi Fructus 2 50g 以上生藥製成浸膏"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 補氣和中 【適應症】\n 脾胃虛弱，食慾不振，消化不良，大便塘池，氣虛有痰",
+    "indications": "適應症】\n 脾胃虛弱，食慾不振，消化不良，大便塘池，氣虛有痰"
   },
-  {
-    "name": "天麻鉤藤散",
-    "composition": "藥物組成】每\n6.0g中含有\n石決明\nHaliotidis Concha..........................4.00g\n夜交藤\nPolygoni Multiflori Caulis..............4.00g\n桑寄生\nLoranthi Ramulus..........................3.20g\n鉤　藤\nUncariae Ramulus et Uncus...........2.00g\n茯　苓\nHoelen...........................................2.00g\n杜　仲\nEucommiae \r\n  Cortex........................2.00g\n益母草\nLeonuri Herba...............................2.00g\n牛　膝\nAchyranthis Radix.........................1.60g\n梔　子\nGardeniae Fructus..........................1.20g\n黃　芩\nScutella",
-    "efficacy": "效能】\n【適應症】\n肝風內動之頭痛眩暈，耳鳴，眼花。",
-    "indications": "適應症】\n肝風內動之頭痛眩暈，耳鳴，眼花。"
+  "天麻鉤藤散": {
+    "composition": [
+      "藥物組成】",
+      "每 6 0g中含有 石決明 Haliotidis Concha 4 00g 夜交藤 Polygoni Multiflori Caulis 4 00g 桑寄生 Loranthi Ramulus 3 20g 鉤 藤 Uncariae Ramulus et Uncus 2 00g 茯 苓 Hoelen 2 00g 杜 仲 Eucommiae Cortex 2 00g 益母草 Leonuri Herba 2 00g 牛 膝 Achyranthis Radix 1 60g 梔 子 Gardeniae Fructus 1 20g 黃 芩 Scutella"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 肝風內動之頭痛眩暈，耳鳴，眼花",
+    "indications": "適應症】\n 肝風內動之頭痛眩暈，耳鳴，眼花"
   },
-  {
-    "name": "五味消毒飲",
-    "composition": "藥物組成】每\n6.0g中含有\n金 銀 花\nLoniurae Flos........................11.25g\n菊\n花　     Chrysanthemi \r\n  Flos................. 4.50g\n蒲 公 英\nTaraxaci Herba....................... 4.50g\n紫花地丁\nViolae Herba.......................... 4.50g\n紫背天葵子\nSemiaqilegiae Radix................4.50g\n以上生藥製成浸膏\n.......................................4.00g\n（生藥與浸膏比\n例 29.25 : 4.00＝7.3:1.00）\n【效能】\n【適應症】\n治諸疔毒。",
-    "efficacy": "效能】\n【適應症】\n治諸疔毒。",
-    "indications": "適應症】\n治諸疔毒。"
+  "五味消毒飲": {
+    "composition": [
+      "藥物組成】",
+      "每 6 0g中含有 金 銀 花 Loniurae Flos 11 25g 菊 花 Chrysanthemi Flos 4 50g 蒲 公 英 Taraxaci Herba 4 50g 紫花地丁 Violae Herba 4 50g 紫背天葵子 Semiaqilegiae Radix 4 50g 以上生藥製成浸膏 4 00g （生藥與浸膏比 例 29 25 : 4 00＝7 3:1 00） 【效能】",
+      "【適應症】",
+      "治諸疔毒"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 治諸疔毒",
+    "indications": "適應症】\n 治諸疔毒"
   },
-  {
-    "name": "五淋散",
-    "composition": "藥物組成】每\n8.8g中含有\n赤茯苓\nPaeoniae Hoelen.........................6.00g\n當　歸\nAngelicae Radix.........................4.80g\n甘　草\nGlycyrrhizae Radix.....................4.80g\n山梔子\nGardeniae Fructus.......................4.00g\n赤　芍\nPaeoniae Veilchii Radix..............4.00g\n燈心草\nJunci Cauli \r\n  Medulla....................2.00g\n以上生藥製成浸膏\n...................................4.00g\n（生藥與浸膏比例\n25.60:4.00＝6.40:1.00）\n【效能】\n清熱利濕，通淋和血。\n【適應症】\n治五淋，腎氣不足，膀胱有熱，小便淋瀝不通，臍腹急痛。",
-    "efficacy": "效能】\n清熱利濕，通淋和血。\n【適應症】\n治五淋，腎氣不足，膀胱有熱，小便淋瀝不通，臍腹急痛。",
-    "indications": "適應症】\n治五淋，腎氣不足，膀胱有熱，小便淋瀝不通，臍腹急痛。"
+  "五淋散": {
+    "composition": [
+      "藥物組成】",
+      "每 8 8g中含有 赤茯苓 Paeoniae Hoelen 6 00g 當 歸 Angelicae Radix 4 80g 甘 草 Glycyrrhizae Radix 4 80g 山梔子 Gardeniae Fructus 4 00g 赤 芍 Paeoniae Veilchii Radix 4 00g 燈心草 Junci Cauli Medulla 2 00g 以上生藥製成浸膏 4 00g （生藥與浸膏比例 25 60:4 00＝6 40:1 00） 【效能】",
+      "清熱利濕，通淋和血 【適應症】",
+      "治五淋，腎氣不足，膀胱有熱，小便淋瀝不通，臍腹急痛"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 清熱利濕，通淋和血 【適應症】\n 治五淋，腎氣不足，膀胱有熱，小便淋瀝不通，臍腹急痛",
+    "indications": "適應症】\n 治五淋，腎氣不足，膀胱有熱，小便淋瀝不通，臍腹急痛"
   },
-  {
-    "name": "五皮飲",
-    "composition": "藥物組成】每\n7.5g中含有\n五加皮\nAcanthopanacis \r\n  Cortex...............6.00g\n地骨皮\nLycii Radicis Cortex................6.00g\n生薑皮\nGingiberis Rhizoma..................6.00g\n大腹皮\nArecae Pericarpium..................6.00g\n茯苓皮\nHoelen Cortex.......................6.00g\n以上生藥製成浸膏\n............................2.50g\n（生藥與浸膏比例\n30.00:2.50＝12.00:1.00）\n【效能】\n健脾化濕，理氣消腫。\n【適應症】\n水病腫滿，上氣喘急，小便不利。",
-    "efficacy": "效能】\n健脾化濕，理氣消腫。\n【適應症】\n水病腫滿，上氣喘急，小便不利。",
-    "indications": "適應症】\n水病腫滿，上氣喘急，小便不利。"
+  "五皮飲": {
+    "composition": [
+      "藥物組成】",
+      "每 7 5g中含有 五加皮 Acanthopanacis Cortex 6 00g 地骨皮 Lycii Radicis Cortex 6 00g 生薑皮 Gingiberis Rhizoma 6 00g 大腹皮 Arecae Pericarpium 6 00g 茯苓皮 Hoelen Cortex 6 00g 以上生藥製成浸膏 2 50g （生藥與浸膏比例 30 00:2 50＝12 00:1 00） 【效能】",
+      "健脾化濕，理氣消腫 【適應症】",
+      "水病腫滿，上氣喘急，小便不利"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 健脾化濕，理氣消腫 【適應症】\n 水病腫滿，上氣喘急，小便不利",
+    "indications": "適應症】\n 水病腫滿，上氣喘急，小便不利"
   },
-  {
-    "name": "五積散",
-    "composition": "藥物組成】每\n13.2g中含有\n陳　皮\nAuranti Nobilis Pericarpium...........2.00g\n枳　殼\nCitri Immaturus Fructus..................2.00g\n麻　黃\nEphedrae Herba.............................2.00g\n白　芍\nPaeoniae \r\n  Radix..............................1.00g\n川　芎\nCnidium Rhizoma..........................1.00g\n當　歸\nAngelicae \r\n  Radix............................1.00g\n炙甘草\nGlycyrrhizae Radix........................1.00g\n茯　苓\nHoelen...........................................1.00g\n半　夏\nPinellicae \r\n  Tuber.............................1.",
-    "efficacy": "效能】\n解表散寒，溫中消積。\n【適應症】\n外感寒邪，內傷生冷，肢節疼痛。\n【注意事項】\n不宜長期服用。",
-    "indications": "適應症】\n外感寒邪，內傷生冷，肢節疼痛。\n【注意事項】\n不宜長期服用。"
+  "五積散": {
+    "composition": [
+      "藥物組成】",
+      "每 13 2g中含有 陳 皮 Auranti Nobilis Pericarpium 2 00g 枳 殼 Citri Immaturus Fructus 2 00g 麻 黃 Ephedrae Herba 2 00g 白 芍 Paeoniae Radix 1 00g 川 芎 Cnidium Rhizoma 1 00g 當 歸 Angelicae Radix 1 00g 炙甘草 Glycyrrhizae Radix 1 00g 茯 苓 Hoelen 1 00g 半 夏 Pinellicae Tuber 1"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 解表散寒，溫中消積 【適應症】\n 外感寒邪，內傷生冷，肢節疼痛 【注意事項】\n 不宜長期服用",
+    "indications": "適應症】\n 外感寒邪，內傷生冷，肢節疼痛 【注意事項】\n 不宜長期服用"
   },
-  {
-    "name": "五苓散",
-    "composition": "藥物組成】每\n7.8g中含有\n澤　瀉\nAlismatis Rhizoma.......................7.50g\n桂　枝\nCinnamomi Ramulus...................3.00g\n茯　苓\nHoelen........................................4.50g\n豬　苓\nPolyporus...................................4.50g\n白　朮\nAtractylodis Rhizoma.................4.50g\n以上生藥製成浸膏\n...................................3.40g\n（生藥與浸膏比\n24.00:3.40＝7.06:1.00）\n【效能】\n【適應症】\n小便不利，煩渴，水飲內停。",
-    "efficacy": "效能】\n【適應症】\n小便不利，煩渴，水飲內停。",
-    "indications": "適應症】\n小便不利，煩渴，水飲內停。"
+  "五苓散": {
+    "composition": [
+      "藥物組成】",
+      "每 7 8g中含有 澤 瀉 Alismatis Rhizoma 7 50g 桂 枝 Cinnamomi Ramulus 3 00g 茯 苓 Hoelen 4 50g 豬 苓 Polyporus 4 50g 白 朮 Atractylodis Rhizoma 4 50g 以上生藥製成浸膏 3 40g （生藥與浸膏比 24 00:3 40＝7 06:1 00） 【效能】",
+      "【適應症】",
+      "小便不利，煩渴，水飲內停"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 小便不利，煩渴，水飲內停",
+    "indications": "適應症】\n 小便不利，煩渴，水飲內停"
   },
-  {
-    "name": "小承氣湯",
-    "composition": "藥物組成】每\n15g中含有\n厚　朴\nMagnoliae \r\n  Cortex.......................7g\n大　黃\nRhei Rhizoma..............................14g\n枳　實\nAurantii Immaturus Fructus..........7g\n以上生藥製成浸膏\n...................................7.5g\n（生藥與浸膏比\n28.00:7.50＝3.73:1.00）\n【效能】\n【適應症】\n陽明實熱，胸滿便祕。",
-    "efficacy": "效能】\n【適應症】\n陽明實熱，胸滿便祕。",
-    "indications": "適應症】\n陽明實熱，胸滿便祕。"
+  "小承氣湯": {
+    "composition": [
+      "藥物組成】",
+      "每 15g中含有 厚 朴 Magnoliae Cortex 7g 大 黃 Rhei Rhizoma 14g 枳 實 Aurantii Immaturus Fructus 7g 以上生藥製成浸膏 7 5g （生藥與浸膏比 28 00:7 50＝3 73:1 00） 【效能】",
+      "【適應症】",
+      "陽明實熱，胸滿便祕"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 陽明實熱，胸滿便祕",
+    "indications": "適應症】\n 陽明實熱，胸滿便祕"
   },
-  {
-    "name": "小續命湯",
-    "composition": "藥物組成】每\n9.8g中含有\n麻　黃\nEphedrae Herba...........................2.00g\n桂　枝\nCinnamomi Rsmulus....................2.00g\n甘　草\nGlycyrrhizae Radix......................2.00g\n生　薑\nGingiberis Rhizoma.....................6.00g\n人　參\nGinseng Radix.............................2.00g\n川　芎\nCnidium Rhizoma........................2.00g\n杏　仁\nArmeniacae Semen......................2.00g\n炮附子\nAconiti \r\n  Tuber...............................1.00g\n防　己\nHanfangchi Radix........................2.00g\n白　芍\nPaeoniae Radix.............",
-    "efficacy": "效能】\n補氣散寒、疏風祛濕。\n【適應症】\n中風，口眼歪斜，筋脈拘急，半身不遂，舌強不能語或神情悶亂。",
-    "indications": "適應症】\n中風，口眼歪斜，筋脈拘急，半身不遂，舌強不能語或神情悶亂。"
+  "小續命湯": {
+    "composition": [
+      "藥物組成】",
+      "每 9 8g中含有 麻 黃 Ephedrae Herba 2 00g 桂 枝 Cinnamomi Rsmulus 2 00g 甘 草 Glycyrrhizae Radix 2 00g 生 薑 Gingiberis Rhizoma 6 00g 人 參 Ginseng Radix 2 00g 川 芎 Cnidium Rhizoma 2 00g 杏 仁 Armeniacae Semen 2 00g 炮附子 Aconiti Tuber 1 00g 防 己 Hanfangchi Radix 2 00g 白 芍 Paeoniae Radix"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 補氣散寒、疏風祛濕 【適應症】\n 中風，口眼歪斜，筋脈拘急，半身不遂，舌強不能語或神情悶亂",
+    "indications": "適應症】\n 中風，口眼歪斜，筋脈拘急，半身不遂，舌強不能語或神情悶亂"
   },
-  {
-    "name": "小柴胡湯",
-    "composition": "藥物組成】每\n10.5g中含有\n柴　胡\nBupleuri \r\n  Radix........................8.00g\n黃　芩\nScutellariae Radix...................3.00g\n人　參\nGinseng Radix.........................3.00g\n甘　草\nGlycyrrhizae Radix..................3.00g\n半　夏\nPinelliae Tuber........................5.00g\n生　薑\nGinger....................................1.50g\n大　棗\nZizyphi Fructus.......................3.00g\n以上生藥製成浸膏\n..............................5.20g\n（生藥與浸膏比例\n27.00:5.20＝5.20:1.00）\n【效能】\n【適應症】\n傷寒少陽症之往來寒熱，胸脅苦滿，心煩喜嘔，目眩咽乾，默默不欲飲食。",
-    "efficacy": "效能】\n【適應症】\n傷寒少陽症之往來寒熱，胸脅苦滿，心煩喜嘔，目眩咽乾，默默不欲飲食。",
-    "indications": "適應症】\n傷寒少陽症之往來寒熱，胸脅苦滿，心煩喜嘔，目眩咽乾，默默不欲飲食。"
+  "小柴胡湯": {
+    "composition": [
+      "藥物組成】",
+      "每 10 5g中含有 柴 胡 Bupleuri Radix 8 00g 黃 芩 Scutellariae Radix 3 00g 人 參 Ginseng Radix 3 00g 甘 草 Glycyrrhizae Radix 3 00g 半 夏 Pinelliae Tuber 5 00g 生 薑 Ginger 1 50g 大 棗 Zizyphi Fructus 3 00g 以上生藥製成浸膏 5 20g （生藥與浸膏比例 27 00:5 20＝5 20:1 00） 【效能】",
+      "【適應症】",
+      "傷寒少陽症之往來寒熱，胸脅苦滿，心煩喜嘔，目眩咽乾，默默不欲飲食"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 傷寒少陽症之往來寒熱，胸脅苦滿，心煩喜嘔，目眩咽乾，默默不欲飲食",
+    "indications": "適應症】\n 傷寒少陽症之往來寒熱，胸脅苦滿，心煩喜嘔，目眩咽乾，默默不欲飲食"
   },
-  {
-    "name": "小建中湯",
-    "composition": "藥物組成】每\n14.1g中含有\n桂　枝\nCinnamomi Ramulus...................4.50g\n芍　藥\nPaeoniae \r\n  Radix............................9.00g\n甘　草\nGlycyrrhizae \r\n  Radix......................3.00g\n生　薑\nGingiberis Rhizoma.....................4.50g\n大　棗\nZizyphi Fructus............................4.50g\n膠　飴\n....................................................1.00g\n以上生藥製成浸膏\n....................................6.40g\n（生藥與浸膏比\n26.50:6.40＝4.14:1.00）\n【效能】\n【適應症】\n溫中補虛，和�婼w急。",
-    "efficacy": "效能】\n【適應症】\n溫中補虛，和�婼w急。",
-    "indications": "適應症】\n溫中補虛，和�婼w急。"
+  "小建中湯": {
+    "composition": [
+      "藥物組成】",
+      "每 14 1g中含有 桂 枝 Cinnamomi Ramulus 4 50g 芍 藥 Paeoniae Radix 9 00g 甘 草 Glycyrrhizae Radix 3 00g 生 薑 Gingiberis Rhizoma 4 50g 大 棗 Zizyphi Fructus 4 50g 膠 飴 1 00g 以上生藥製成浸膏 6 40g （生藥與浸膏比 26 50:6 40＝4 14:1 00） 【效能】",
+      "【適應症】",
+      "溫中補虛，和�婼w急"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 溫中補虛，和�婼w急",
+    "indications": "適應症】\n 溫中補虛，和�婼w急"
   },
-  {
-    "name": "小青龍湯",
-    "composition": "藥物組成】每\n10.0g中含有\n麻　黃\nEphedrae Herba.............................4.00g\n白　芍\nPaeoniae \r\n  Radix..............................4.00g\n五味子\nSchisandrae Fruchus......................1.50g\n乾　薑\nZingiberis Sicatum Rhizoma..........4.00g\n炙甘草\nGlycyrrhizae \r\n  Radix........................4.00g\n桂　枝\nCinnamomi Ramulus.....................4.00g\n半　夏\nPinelliae \r\n  Tuber...............................4.00g\n細　辛\nAsiasri \r\n  Radix.................................1.50g\n以上生藥製成浸膏\n......................................4.00g",
-    "efficacy": "效能】\n解表散寒，溫肺化飲。\n【適應症】\n外感風寒，內停水飲。惡寒發熱，無汗，咳嗽氣喘，痰白清稀。",
-    "indications": "適應症】\n外感風寒，內停水飲。惡寒發熱，無汗，咳嗽氣喘，痰白清稀。"
+  "小青龍湯": {
+    "composition": [
+      "藥物組成】",
+      "每 10 0g中含有 麻 黃 Ephedrae Herba 4 00g 白 芍 Paeoniae Radix 4 00g 五味子 Schisandrae Fruchus 1 50g 乾 薑 Zingiberis Sicatum Rhizoma 4 00g 炙甘草 Glycyrrhizae Radix 4 00g 桂 枝 Cinnamomi Ramulus 4 00g 半 夏 Pinelliae Tuber 4 00g 細 辛 Asiasri Radix 1 50g 以上生藥製成浸膏 4 00g"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 解表散寒，溫肺化飲 【適應症】\n 外感風寒，內停水飲 惡寒發熱，無汗，咳嗽氣喘，痰白清稀",
+    "indications": "適應症】\n 外感風寒，內停水飲 惡寒發熱，無汗，咳嗽氣喘，痰白清稀"
   },
-  {
-    "name": "大柴胡湯",
-    "composition": "藥物組成】每\n15g中含有\n柴　胡\nBupleuri \r\n  Radix.........................8g\n生　薑\nGingiberis Rhizoma..................5g\n半　夏\nPinelliae Taber..........................5g\n黃　芩\nScutellariae Radix.....................3g\n芍　藥\nPaeoniae Radix.........................3g\n枳　實\nAurantii Fructus........................2g\n大　黃\nRhei Rhizoma...........................2g\n大　棗\nZizyphi Fructus.........................2g\n以上生藥製成浸膏\n.................................7.50g\n（生藥與浸膏比\n30:7.5＝4.00:1.00）\n【效能】\n【適應症】\n頭暈目赤，腹脹便祕。",
-    "efficacy": "效能】\n【適應症】\n頭暈目赤，腹脹便祕。",
-    "indications": "適應症】\n頭暈目赤，腹脹便祕。"
+  "大柴胡湯": {
+    "composition": [
+      "藥物組成】",
+      "每 15g中含有 柴 胡 Bupleuri Radix 8g 生 薑 Gingiberis Rhizoma 5g 半 夏 Pinelliae Taber 5g 黃 芩 Scutellariae Radix 3g 芍 藥 Paeoniae Radix 3g 枳 實 Aurantii Fructus 2g 大 黃 Rhei Rhizoma 2g 大 棗 Zizyphi Fructus 2g 以上生藥製成浸膏 7 50g （生藥與浸膏比 30:7 5＝4 00:1 00） 【效能】",
+      "【適應症】",
+      "頭暈目赤，腹脹便祕"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 頭暈目赤，腹脹便祕",
+    "indications": "適應症】\n 頭暈目赤，腹脹便祕"
   },
-  {
-    "name": "大青龍湯",
-    "composition": "藥物組成】每\n6.0g中含有\n麻　黃\nEphedrae Herba..........................4.50g\n杏　仁\nArmeniacae Semen.....................3.80g\n桂　枝\nCinnamomi Ramulus..................1.50g\n甘　草\nGlycyrrhizae Radix.....................1.50g\n生　薑\nGingiberis Rhizoma.....................2.30g\n大　棗\nZizyphi Fructus............................2.30g\n石　膏\nGypsum Fibrosum.......................7.50g\n以上生藥製成浸膏\n....................................4.00g\n（生藥與浸膏比\n23.40:4.00＝5.85:1.00）\n【效能】\n【適應症】\n治太陽風寒兩傷，榮衛同病俱不出汗而煩躁者。",
-    "efficacy": "效能】\n【適應症】\n治太陽風寒兩傷，榮衛同病俱不出汗而煩躁者。",
-    "indications": "適應症】\n治太陽風寒兩傷，榮衛同病俱不出汗而煩躁者。"
+  "大青龍湯": {
+    "composition": [
+      "藥物組成】",
+      "每 6 0g中含有 麻 黃 Ephedrae Herba 4 50g 杏 仁 Armeniacae Semen 3 80g 桂 枝 Cinnamomi Ramulus 1 50g 甘 草 Glycyrrhizae Radix 1 50g 生 薑 Gingiberis Rhizoma 2 30g 大 棗 Zizyphi Fructus 2 30g 石 膏 Gypsum Fibrosum 7 50g 以上生藥製成浸膏 4 00g （生藥與浸膏比 23 40:4 00＝5 85:1 00） 【效能】",
+      "【適應症】",
+      "治太陽風寒兩傷，榮衛同病俱不出汗而煩躁者"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 治太陽風寒兩傷，榮衛同病俱不出汗而煩躁者",
+    "indications": "適應症】\n 治太陽風寒兩傷，榮衛同病俱不出汗而煩躁者"
   },
-  {
-    "name": "大黃牡丹皮湯",
-    "composition": "藥物組成】每\n12.6g中含有\n大　黃\nRhei Rhizoma...........................10.0g\n牡丹皮\nMoutan \r\n  Cortex..........................2.50g\n桃　仁\nPersicae \r\n  Semen.........................2.50g\n冬瓜子\nBenincasae \r\n  Semen....................6.00g\n以上生藥製成浸膏\n.................................5.20g\n（生藥與浸膏比例\n28:5.2＝5.38:1.00）\n芒　硝\nMirabilitum Depuratam...........0.70g\n【效能】\n【適應症】\n腸癰初起之右下腹疼痛。",
-    "efficacy": "效能】\n【適應症】\n腸癰初起之右下腹疼痛。",
-    "indications": "適應症】\n腸癰初起之右下腹疼痛。"
+  "大黃牡丹皮湯": {
+    "composition": [
+      "藥物組成】",
+      "每 12 6g中含有 大 黃 Rhei Rhizoma 10 0g 牡丹皮 Moutan Cortex 2 50g 桃 仁 Persicae Semen 2 50g 冬瓜子 Benincasae Semen 6 00g 以上生藥製成浸膏 5 20g （生藥與浸膏比例 28:5 2＝5 38:1 00） 芒 硝 Mirabilitum Depuratam 0 70g 【效能】",
+      "【適應症】",
+      "腸癰初起之右下腹疼痛"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 腸癰初起之右下腹疼痛",
+    "indications": "適應症】\n 腸癰初起之右下腹疼痛"
   },
-  {
-    "name": "三黃石膏湯",
-    "composition": "藥物組成】每\n6.0g中含有\n石　膏\nGypsum Fibrosum.........................7.00g\n梔　子\nGardeniae Fructus..........................4.20g\n黃　芩\nScutellariae \r\n  Radix..........................3.50g\n黃　連\nCoptidis Rhizoma..........................3.50g\n黃　柏\nPhellodenri \r\n  Cortex.........................3.50g\n麻　黃\nEphedrae Herba.............................3.50g\n淡豆豉\nSojae Semen praeparatum..............2.80g\n蔥　白\nAllii Fistulosi Bulbus........................2.10g\n以上生藥製成浸膏\n......................................4.00g\n（生藥與浸膏",
-    "efficacy": "效能】\n【適應症】\n傷寒陽症，面赤鼻乾，舌燥口渴，煩躁不眠，譫語鼻衄。",
-    "indications": "適應症】\n傷寒陽症，面赤鼻乾，舌燥口渴，煩躁不眠，譫語鼻衄。"
+  "三黃石膏湯": {
+    "composition": [
+      "藥物組成】",
+      "每 6 0g中含有 石 膏 Gypsum Fibrosum 7 00g 梔 子 Gardeniae Fructus 4 20g 黃 芩 Scutellariae Radix 3 50g 黃 連 Coptidis Rhizoma 3 50g 黃 柏 Phellodenri Cortex 3 50g 麻 黃 Ephedrae Herba 3 50g 淡豆豉 Sojae Semen praeparatum 2 80g 蔥 白 Allii Fistulosi Bulbus 2 10g 以上生藥製成浸膏 4 00g （生藥與浸膏"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 傷寒陽症，面赤鼻乾，舌燥口渴，煩躁不眠，譫語鼻衄",
+    "indications": "適應症】\n 傷寒陽症，面赤鼻乾，舌燥口渴，煩躁不眠，譫語鼻衄"
   },
-  {
-    "name": "三黃瀉心湯",
-    "composition": "藥物組成】每\n11g中含有\n大　黃\nRhei Rhizoma..........................12.00g\n黃　連\nCoptidis Rhizoma....................6.00g\n黃　苓\nScutellariae Radix....................6.00g\n以上生藥製成浸膏\n................................5.50g\n（生藥與浸膏比\n24.00:5.50＝4.36:1.00）\n【效能】\n【適應症】\n上焦有熱致目赤頭痛，口舌生瘡，中焦有熱致心膈煩燥，飲食不美，下焦有熱致小便赤澀，大便祕結。",
-    "efficacy": "效能】\n【適應症】\n上焦有熱致目赤頭痛，口舌生瘡，中焦有熱致心膈煩燥，飲食不美，下焦有熱致小便赤澀，大便祕結。",
-    "indications": "適應症】\n上焦有熱致目赤頭痛，口舌生瘡，中焦有熱致心膈煩燥，飲食不美，下焦有熱致小便赤澀，大便祕結。"
+  "三黃瀉心湯": {
+    "composition": [
+      "藥物組成】",
+      "每 11g中含有 大 黃 Rhei Rhizoma 12 00g 黃 連 Coptidis Rhizoma 6 00g 黃 苓 Scutellariae Radix 6 00g 以上生藥製成浸膏 5 50g （生藥與浸膏比 24 00:5 50＝4 36:1 00） 【效能】",
+      "【適應症】",
+      "上焦有熱致目赤頭痛，口舌生瘡，中焦有熱致心膈煩燥，飲食不美，下焦有熱致小便赤澀，大便祕結"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 上焦有熱致目赤頭痛，口舌生瘡，中焦有熱致心膈煩燥，飲食不美，下焦有熱致小便赤澀，大便祕結",
+    "indications": "適應症】\n 上焦有熱致目赤頭痛，口舌生瘡，中焦有熱致心膈煩燥，飲食不美，下焦有熱致小便赤澀，大便祕結"
   },
-  {
-    "name": "三物香薷飲",
-    "composition": "藥物組成】每\n6.0g中含有\n香　薷\nElsholtziae Herba..................10.00g\n厚　朴\nMagnoliae Cortex...................5.00g\n白扁豆\nDolichoris Semen...................5.00g\n以上生藥製成浸膏\n...............................4.00g\n（生藥與浸膏比\n20.00:4.00＝5.00:10.00）\n【效能】\n【適應症】\n袪暑解表，化濕和中。",
-    "efficacy": "效能】\n【適應症】\n袪暑解表，化濕和中。",
-    "indications": "適應症】\n袪暑解表，化濕和中。"
+  "三物香薷飲": {
+    "composition": [
+      "藥物組成】",
+      "每 6 0g中含有 香 薷 Elsholtziae Herba 10 00g 厚 朴 Magnoliae Cortex 5 00g 白扁豆 Dolichoris Semen 5 00g 以上生藥製成浸膏 4 00g （生藥與浸膏比 20 00:4 00＝5 00:10 00） 【效能】",
+      "【適應症】",
+      "袪暑解表，化濕和中"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 袪暑解表，化濕和中",
+    "indications": "適應症】\n 袪暑解表，化濕和中"
   },
-  {
-    "name": "女科柏子仁丸",
-    "composition": "藥物組成】每\n6.0g中含有\n熟地黃\nRehmmanniae Radix Et Rhizoma........6.00g\n柏子仁\nThujae Orientalis \r\n  Semen....................4.00g\n牛　膝\nAchyranthis \r\n  Radix.............................4.00g\n卷　柏\nSelaginellae Herba.............................4.00g\n澤　蘭\nLycopi Herba....................................4.00g\n續　斷\nDipsaci \r\n  Radix....................................4.00g\n以上生藥製成浸膏\n.........................................7.00g\n（生藥與浸膏比\n26.00:7.00＝3.71:1.00）\n【效能】\n【適應症】\n血虛有火，經閉不通。",
-    "efficacy": "效能】\n【適應症】\n血虛有火，經閉不通。",
-    "indications": "適應症】\n血虛有火，經閉不通。"
+  "女科柏子仁丸": {
+    "composition": [
+      "藥物組成】",
+      "每 6 0g中含有 熟地黃 Rehmmanniae Radix Et Rhizoma 6 00g 柏子仁 Thujae Orientalis Semen 4 00g 牛 膝 Achyranthis Radix 4 00g 卷 柏 Selaginellae Herba 4 00g 澤 蘭 Lycopi Herba 4 00g 續 斷 Dipsaci Radix 4 00g 以上生藥製成浸膏 7 00g （生藥與浸膏比 26 00:7 00＝3 71:1 00） 【效能】",
+      "【適應症】",
+      "血虛有火，經閉不通"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 血虛有火，經閉不通",
+    "indications": "適應症】\n 血虛有火，經閉不通"
   },
-  {
-    "name": "人參養榮湯",
-    "composition": "藥物組成】每\n19.1g中含有\n白　芍\nPaeoniae  \r\n  Radix.................................4.00g\n當　歸\nAngelicae \r\n  Radix...............................2.50g\n桂　心\nCinnamomi Lignum..........................2.50g\n炙甘草\nGlycyrrhizae \r\n  Radix...........................2.50g\n陳　皮\nAuranti Nobilis Pericarpium..............2.50g\n人　參\nGinseng \r\n  Radix..................................2.50g\n白　朮\nAtractylodis Rhizoma.......................2.50g\n黃　耆\nAstragali \r\n  Radix.................................2.50g\n熟地黃\nRehmanniae Raidx et ",
-    "efficacy": "效能】\n補氣血。\n【適應症】\n治脾肺氣虛，營血不足，食少無味，身倦，肌瘦。\n【\r\n注意事項】\n肝陽上亢(高血壓)，孕婦及幼兒慎服。",
-    "indications": "適應症】\n治脾肺氣虛，營血不足，食少無味，身倦，肌瘦。\n【\r\n注意事項】\n肝陽上亢(高血壓)，孕婦及幼兒慎服。"
+  "人參養榮湯": {
+    "composition": [
+      "藥物組成】",
+      "每 19 1g中含有 白 芍 Paeoniae Radix 4 00g 當 歸 Angelicae Radix 2 50g 桂 心 Cinnamomi Lignum 2 50g 炙甘草 Glycyrrhizae Radix 2 50g 陳 皮 Auranti Nobilis Pericarpium 2 50g 人 參 Ginseng Radix 2 50g 白 朮 Atractylodis Rhizoma 2 50g 黃 耆 Astragali Radix 2 50g 熟地黃 Rehmanniae Raidx et"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 補氣血 【適應症】\n 治脾肺氣虛，營血不足，食少無味，身倦，肌瘦 【 注意事項】\n 肝陽上亢(高血壓)，孕婦及幼兒慎服",
+    "indications": "適應症】\n 治脾肺氣虛，營血不足，食少無味，身倦，肌瘦 【 注意事項】\n 肝陽上亢(高血壓)，孕婦及幼兒慎服"
   },
-  {
-    "name": "人參敗毒散",
-    "composition": "藥物組成】每\n14.0g中含有\n人　參\nGinseng Radix............................3.00g\n茯　苓\nHoelen........................................3.00g\n甘　草\nGlycyrrhizae Raidx.....................1.50g\n前　胡\nPeucedani Radix.........................3.00g\n川　芎\nCnidium Rhizoma.......................3.00g\n羌　活\nNotopterygii Rhizoma.................3.00g\n獨　活\nAngelicae Tuhou Radix...............3.00g\n桔　梗\nPlatycodi Radix...........................3.00g\n柴　胡\nBupleuri Radix............................3.00g\n枳　殼\nCitri lmmaturus Fructus......",
-    "efficacy": "效能】\n益氣解表，散風祛濕。\n【適應症】\n外感風寒濕邪，惡寒發熱無汗，頭項強痛，肢體煩疼，胸膈痞悶，\n鼻塞聲重，咳嗽有痰。",
-    "indications": "適應症】\n外感風寒濕邪，惡寒發熱無汗，頭項強痛，肢體煩疼，胸膈痞悶，\n鼻塞聲重，咳嗽有痰。"
+  "人參敗毒散": {
+    "composition": [
+      "藥物組成】",
+      "每 14 0g中含有 人 參 Ginseng Radix 3 00g 茯 苓 Hoelen 3 00g 甘 草 Glycyrrhizae Raidx 1 50g 前 胡 Peucedani Radix 3 00g 川 芎 Cnidium Rhizoma 3 00g 羌 活 Notopterygii Rhizoma 3 00g 獨 活 Angelicae Tuhou Radix 3 00g 桔 梗 Platycodi Radix 3 00g 柴 胡 Bupleuri Radix 3 00g 枳 殼 Citri lmmaturus Fructus"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 益氣解表，散風祛濕 【適應症】\n 外感風寒濕邪，惡寒發熱無汗，頭項強痛，肢體煩疼，胸膈痞悶， 鼻塞聲重，咳嗽有痰",
+    "indications": "適應症】\n 外感風寒濕邪，惡寒發熱無汗，頭項強痛，肢體煩疼，胸膈痞悶， 鼻塞聲重，咳嗽有痰"
   },
-  {
-    "name": "十六味流氣飲",
-    "composition": "藥物組成】\n人　參\nPanax Ginseng C.A. Mayer......................2.50g\n黃　耆\nAstragalus Membranaceus.........................2.50g\n甘　草\nGlycyrrhiza Uralensis Fisch......................1.50g\n當　歸\nAngelica Sinensis (Oliv) Diels...................2.50g\n白   \r\n  芍\nPaeoniae Lactiflorae..................................2.50g\n木　香\nSaussureae Radix.......................................1.50g\n枳　殼\nAurantii Fructus.........................................1.50g\n檳　榔\nArecae Semen............................................",
-    "efficacy": "效能】\n疏氣行血，消腫解毒。\n【適應症】\n治一切惡腫癰疽，無名腫毒，乳癌，甲狀腺腫，頸部淋巴腺腫。",
-    "indications": "適應症】\n治一切惡腫癰疽，無名腫毒，乳癌，甲狀腺腫，頸部淋巴腺腫。"
+  "十六味流氣飲": {
+    "composition": [
+      "藥物組成】",
+      "人 參 Panax Ginseng C A Mayer 2 50g 黃 耆 Astragalus Membranaceus 2 50g 甘 草 Glycyrrhiza Uralensis Fisch 1 50g 當 歸 Angelica Sinensis (Oliv) Diels 2 50g 白 芍 Paeoniae Lactiflorae 2 50g 木 香 Saussureae Radix 1 50g 枳 殼 Aurantii Fructus 1 50g 檳 榔 Arecae Semen"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 疏氣行血，消腫解毒 【適應症】\n 治一切惡腫癰疽，無名腫毒，乳癌，甲狀腺腫，頸部淋巴腺腫",
+    "indications": "適應症】\n 治一切惡腫癰疽，無名腫毒，乳癌，甲狀腺腫，頸部淋巴腺腫"
   },
-  {
-    "name": "十神湯",
-    "composition": "藥物組成】每\n6.0g中含有\n麻　黃\nEphedrae Herba............................2.00g\n葛　根\nPuerariae \r\n  Radix.............................3.80g\n升　麻\nCimicifugae Rhizoma....................2.00g\n川　芎\nCnidium Rhizoma.........................2.00g\n白　芷\nAngelicae......................................2.00g\n紫　蘇\nPerilla Herba.................................2.00g\n甘　草\nGlycyrrhizae Radix.......................1.50g\n陳　皮\nAuranti Nobilis Pericarpium..........1.50g\n香　附\nCyperi Rhizoma............................1.50g\n赤　芍\nPaeoniae ",
-    "efficacy": "效能】\n【適應症】\n傷風，感冒，頭痛，發熱，咳嗽。",
-    "indications": "適應症】\n傷風，感冒，頭痛，發熱，咳嗽。"
+  "十神湯": {
+    "composition": [
+      "藥物組成】",
+      "每 6 0g中含有 麻 黃 Ephedrae Herba 2 00g 葛 根 Puerariae Radix 3 80g 升 麻 Cimicifugae Rhizoma 2 00g 川 芎 Cnidium Rhizoma 2 00g 白 芷 Angelicae 2 00g 紫 蘇 Perilla Herba 2 00g 甘 草 Glycyrrhizae Radix 1 50g 陳 皮 Auranti Nobilis Pericarpium 1 50g 香 附 Cyperi Rhizoma 1 50g 赤 芍 Paeoniae"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 傷風，感冒，頭痛，發熱，咳嗽",
+    "indications": "適應症】\n 傷風，感冒，頭痛，發熱，咳嗽"
   },
-  {
-    "name": "十味敗毒散",
-    "composition": "藥物組成】每\n6.0g中含有\n荊　芥\nSchizonepetae Herba....................1.00g\n茯　苓\nHoelen..........................................4.00g\n柴　胡\nBupleuri \r\n  Radix.............................3.00g\n川　芎\nCnidium Rhizoma........................3.00g\n桔　梗\nPlatycodi \r\n  Radix............................3.00g\n櫻　皮\nPseudocerasi Cortex.....................3.00g\n獨　活\nAngelicae Tuhou Radix...............3.00g\n防　風\nSaposhnikovia Radix...................3.00g\n甘　草\nGlycyrrhizae Radix......................1.00g\n生　薑\nGingiberis Rhizom",
-    "efficacy": "效能】\n【適應症】\n化膿性皮膚疾患，濕疹。",
-    "indications": "適應症】\n化膿性皮膚疾患，濕疹。"
+  "十味敗毒散": {
+    "composition": [
+      "藥物組成】",
+      "每 6 0g中含有 荊 芥 Schizonepetae Herba 1 00g 茯 苓 Hoelen 4 00g 柴 胡 Bupleuri Radix 3 00g 川 芎 Cnidium Rhizoma 3 00g 桔 梗 Platycodi Radix 3 00g 櫻 皮 Pseudocerasi Cortex 3 00g 獨 活 Angelicae Tuhou Radix 3 00g 防 風 Saposhnikovia Radix 3 00g 甘 草 Glycyrrhizae Radix 1 00g 生 薑 Gingiberis Rhizom"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 化膿性皮膚疾患，濕疹",
+    "indications": "適應症】\n 化膿性皮膚疾患，濕疹"
   },
-  {
-    "name": "八珍湯",
-    "composition": "藥物組成】每\n18.1g中含有\n當　歸\nAngelicae  \r\n  Radix..................................3.00g\n川　芎\nCnidium Rhizoma................................3.00g\n白　芍\nPaeoniae \r\n  Radix....................................3.00g\n熟地黃\nRehmanniae Radix et Rhizoma............3.00g\n人　參\nGinseng \r\n  Radix.....................................3.00g\n白　朮\nAtractylodis Rhizoma..........................3.00g\n茯　苓\nHoelen.................................................3.00g\n炙甘草\nGlycyrrhizae \r\n  Radix..............................1.50g\n生　薑",
-    "efficacy": "效能】\n雙補氣血。\n【適應症】\n氣血兩虛，神疲肢倦，食慾不振，面黃肌瘦。",
-    "indications": "適應症】\n氣血兩虛，神疲肢倦，食慾不振，面黃肌瘦。"
+  "八珍湯": {
+    "composition": [
+      "藥物組成】",
+      "每 18 1g中含有 當 歸 Angelicae Radix 3 00g 川 芎 Cnidium Rhizoma 3 00g 白 芍 Paeoniae Radix 3 00g 熟地黃 Rehmanniae Radix et Rhizoma 3 00g 人 參 Ginseng Radix 3 00g 白 朮 Atractylodis Rhizoma 3 00g 茯 苓 Hoelen 3 00g 炙甘草 Glycyrrhizae Radix 1 50g 生 薑"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 雙補氣血 【適應症】\n 氣血兩虛，神疲肢倦，食慾不振，面黃肌瘦",
+    "indications": "適應症】\n 氣血兩虛，神疲肢倦，食慾不振，面黃肌瘦"
   },
-  {
-    "name": "八味帶下方",
-    "composition": "藥物組成】每\n6.0g中含有\n當　歸\nAngelicae \r\n  Radix............................5g\n土茯苓\nSmilacis Glabrae Rhizoma.............6g\n川　芎\nCnidium Rhizoma.........................3g\n茯　苓\nHoelen..........................................3g\n木　通\nAkebiae \r\n  Caulis................................3g\n陳　皮\nAuranti Nobilis Pericarpium..........2g\n金銀花\nLoniurae Flos................................3g\n大　黃\nRhei Rhizoma................................1g\n以上生藥製成浸膏\n......................................6.00g\n（生藥與浸膏比\n26:6＝4.33:1.00）\n【效能】",
-    "efficacy": "效能】\n【適應症】\n帶下.",
-    "indications": "適應症】\n帶下."
+  "八味帶下方": {
+    "composition": [
+      "藥物組成】",
+      "每 6 0g中含有 當 歸 Angelicae Radix 5g 土茯苓 Smilacis Glabrae Rhizoma 6g 川 芎 Cnidium Rhizoma 3g 茯 苓 Hoelen 3g 木 通 Akebiae Caulis 3g 陳 皮 Auranti Nobilis Pericarpium 2g 金銀花 Loniurae Flos 3g 大 黃 Rhei Rhizoma 1g 以上生藥製成浸膏 6 00g （生藥與浸膏比 26:6＝4 33:1 00） 【效能】"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 帶下",
+    "indications": "適應症】\n 帶下"
   },
-  {
-    "name": "八正散",
-    "composition": "藥物組成】每\n7.5g中含有\n車前子\nPlantaginis \r\n  Semen........................3.00g\n瞿　麥\nDianthi Herba...............................3.00g\n滑　石\nTolcum.........................................3.00g\n大　黃\nRhei Rhizoma...............................3.00g\n山梔子\nGardeniae Fructus.........................3.00g\n萹　蓄\nPolygoni Avicularis Herba............3.00g\n木　通\nAkebiae \r\n  Caulis..............................3.00g\n甘　草\nGlycyrrhizae Radix.......................3.00g\n燈心草\nJunci Cauli Medulla......................2.00g\n以上生藥製成浸",
-    "efficacy": "效能】\n清熱瀉火，利水通淋。\n【適應症】\n膀胱結熱，小便濇痛。\n【注意事項】\n淋證日久，體質虛弱及孕婦均不宜。",
-    "indications": "適應症】\n膀胱結熱，小便濇痛。\n【注意事項】\n淋證日久，體質虛弱及孕婦均不宜。"
+  "八正散": {
+    "composition": [
+      "藥物組成】",
+      "每 7 5g中含有 車前子 Plantaginis Semen 3 00g 瞿 麥 Dianthi Herba 3 00g 滑 石 Tolcum 3 00g 大 黃 Rhei Rhizoma 3 00g 山梔子 Gardeniae Fructus 3 00g 萹 蓄 Polygoni Avicularis Herba 3 00g 木 通 Akebiae Caulis 3 00g 甘 草 Glycyrrhizae Radix 3 00g 燈心草 Junci Cauli Medulla 2 00g 以上生藥製成浸"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 清熱瀉火，利水通淋 【適應症】\n 膀胱結熱，小便濇痛 【注意事項】\n 淋證日久，體質虛弱及孕婦均不宜",
+    "indications": "適應症】\n 膀胱結熱，小便濇痛 【注意事項】\n 淋證日久，體質虛弱及孕婦均不宜"
   },
-  {
-    "name": "七寶美髯丹",
-    "composition": "藥物組成】每\n6.0g中含有\n何首烏\nPolygoni Multiflori  \r\n  Radix..........................8.00g\n懷牛膝\nAchyranthis Bidentate \r\n  Radix.....................2.00g\n補骨脂\nPsoraleae \r\n  Semen.......................................2.00g\n茯　苓\nHoelen...................................................\n...\n2.00g\n菟絲子\nCuscutae \r\n  Semen........................................2.00g\n當　歸\nAngelicae \r\n  Radix........................................2.00g\n枸杞子\nLycii Fructus.............................................2.00g\n以上生藥製成浸膏\n...",
-    "efficacy": "效能】\n補腎氣，烏鬚髮。\n【適應症】\n氣血不足，腎虛體弱。",
-    "indications": "適應症】\n氣血不足，腎虛體弱。"
+  "七寶美髯丹": {
+    "composition": [
+      "藥物組成】",
+      "每 6 0g中含有 何首烏 Polygoni Multiflori Radix 8 00g 懷牛膝 Achyranthis Bidentate Radix 2 00g 補骨脂 Psoraleae Semen 2 00g 茯 苓 Hoelen 2 00g 菟絲子 Cuscutae Semen 2 00g 當 歸 Angelicae Radix 2 00g 枸杞子 Lycii Fructus 2 00g 以上生藥製成浸膏"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 補腎氣，烏鬚髮 【適應症】\n 氣血不足，腎虛體弱",
+    "indications": "適應症】\n 氣血不足，腎虛體弱"
   },
-  {
-    "name": "二陳湯",
-    "composition": "藥物組成】每\n4.5g中含有\n陳　皮\nAuranti Nobilis Pericarpium............8.00g\n半　夏\nPinelliae \r\n  Tuber................................8.00g\n茯　苓\nHoelen............................................5.00g\n甘　草\nGlycyrrhiza \r\n  Radix...........................2.50g\n生　薑\nGingiberis Rhizoma........................2.50g\n以上生藥製成浸膏\n.......................................3.00g\n（生藥與浸膏比\n26:4.30＝6.00:1.00）\n【效能】\n【適應症】\n燥濕化痰，噁心、嘔吐，理氣和中。",
-    "efficacy": "效能】\n【適應症】\n燥濕化痰，噁心、嘔吐，理氣和中。",
-    "indications": "適應症】\n燥濕化痰，噁心、嘔吐，理氣和中。"
+  "二陳湯": {
+    "composition": [
+      "藥物組成】",
+      "每 4 5g中含有 陳 皮 Auranti Nobilis Pericarpium 8 00g 半 夏 Pinelliae Tuber 8 00g 茯 苓 Hoelen 5 00g 甘 草 Glycyrrhiza Radix 2 50g 生 薑 Gingiberis Rhizoma 2 50g 以上生藥製成浸膏 3 00g （生藥與浸膏比 26:4 30＝6 00:1 00） 【效能】",
+      "【適應症】",
+      "燥濕化痰，噁心、嘔吐，理氣和中"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 燥濕化痰，噁心、嘔吐，理氣和中",
+    "indications": "適應症】\n 燥濕化痰，噁心、嘔吐，理氣和中"
   },
-  {
-    "name": "二朮湯",
-    "composition": "藥物組成】每\n6.0g中含有\n半　夏\nPinelliae \r\n  Tuber...............................4.00g\n蒼　朮\nAtractylodis Lancea Rhizoma.........2.00g\n白　朮\nAtractylodis Rhizoma.....................1.50g\n天南星\nArisaematis Rhizoma......................1.50g\n陳　皮\nAuranti Nobilis Pericarpium............1.50g\n茯　苓\nHoelen............................................1.50g\n香　附\nCyperi  \r\n  Rhizoma................................1.50g\n黃　芩\nScutellariae \r\n  Radix.............................1.50g\n威靈仙\nClematidis \r\n  Radix......................",
-    "efficacy": "效能】\n【主治】\n痰飲雙臂痛及肩腕部疼痛",
-    "indications": NaN
+  "二朮湯": {
+    "composition": [
+      "藥物組成】",
+      "每 6 0g中含有 半 夏 Pinelliae Tuber 4 00g 蒼 朮 Atractylodis Lancea Rhizoma 2 00g 白 朮 Atractylodis Rhizoma 1 50g 天南星 Arisaematis Rhizoma 1 50g 陳 皮 Auranti Nobilis Pericarpium 1 50g 茯 苓 Hoelen 1 50g 香 附 Cyperi Rhizoma 1 50g 黃 芩 Scutellariae Radix 1 50g 威靈仙 Clematidis Radix"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【主治】\n 痰飲雙臂痛及肩腕部疼痛",
+    "indications": "nan"
   },
-  {
-    "name": "乙字湯",
-    "composition": "藥物組成】每\n6.0g中含有\n柴　胡\nBupleuri \r\n  Radix.......................4.00g\n當　歸\nAngelicae \r\n  Radix.....................4.00g\n黃　芩\nScutellariae \r\n  Radix..................3.00g\n甘　草\nGlycyrrhizae Radix................2.00g\n大　黃\nRhei Rhizoma........................1.00g\n升　麻\nCimicifugae Rhizoma.............1.00g\n以上生藥製成浸膏\n.............................4.30g\n（生藥與浸膏比\n15.50:3.00＝5.20:1.00）\n【效能】\n【適應症】\n大便燥結\n、痔核疼痛",
-    "efficacy": "效能】\n【適應症】\n大便燥結\n、痔核疼痛",
-    "indications": "適應症】\n大便燥結\n、痔核疼痛"
+  "乙字湯": {
+    "composition": [
+      "藥物組成】",
+      "每 6 0g中含有 柴 胡 Bupleuri Radix 4 00g 當 歸 Angelicae Radix 4 00g 黃 芩 Scutellariae Radix 3 00g 甘 草 Glycyrrhizae Radix 2 00g 大 黃 Rhei Rhizoma 1 00g 升 麻 Cimicifugae Rhizoma 1 00g 以上生藥製成浸膏 4 30g （生藥與浸膏比 15 50:3 00＝5 20:1 00） 【效能】",
+      "【適應症】",
+      "大便燥結 、痔核疼痛"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 大便燥結 、痔核疼痛",
+    "indications": "適應症】\n 大便燥結 、痔核疼痛"
   },
-  {
-    "name": "一貫煎",
-    "composition": "藥物組成】每\n21.8g中含有\n生地黃\nRehmanniae Radix et Rhizoma............................   \r\n  8.00g\n沙　參\nAdenophorae Radix........\n......................................4.00g\n麥門冬\nOphiopogonis Tuber.............................................4.00g\n當　歸\nAngelicae Radix....................................................4.00g\n枸杞子\nLycii Fructus ........................................................   \r\n  4.00g\n川楝子\nFructus Toosendan................................................   \r\n  2.00g\n以上生藥製成浸膏\n..........",
-    "efficacy": "效能】\n【適應症】\n養陰疏肝",
-    "indications": "適應症】\n養陰疏肝"
+  "一貫煎": {
+    "composition": [
+      "藥物組成】",
+      "每 21 8g中含有 生地黃 Rehmanniae Radix et Rhizoma 8 00g 沙 參 Adenophorae Radix 4 00g 麥門冬 Ophiopogonis Tuber 4 00g 當 歸 Angelicae Radix 4 00g 枸杞子 Lycii Fructus 4 00g 川楝子 Fructus Toosendan 2 00g 以上生藥製成浸膏"
+    ],
+    "extractRatio": "",
+    "efficacy": "效能】\n 【適應症】\n 養陰疏肝",
+    "indications": "適應症】\n 養陰疏肝"
   }
-];
+};
 
 const tableBody = document.getElementById("table-body");
 const cartList = document.getElementById("cart-list");
 const cartTotal = document.getElementById("cart-total");
 const cart = {};
 
-// 假設每個藥品先隨機設一個價錢
-const priceData = {};
-drugs.forEach(d => {
-  priceData[d.name] = Math.floor(Math.random() * 500) + 400; // 400~900
-});
-
 function renderTable(filter="") {
   tableBody.innerHTML = "";
-  for (let d of drugs) {
-    if (d.name.includes(filter)) {
+  for (let name in drugInfo) {
+    if (name.includes(filter)) {
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td><input type="checkbox" data-name="${d.name}"></td>
-        <td><span class="name" data-name="${d.name}">${d.name}</span></td>
-        <td>${priceData[d.name]}</td>
+        <td><input type="checkbox" data-name="${name}"></td>
+        <td><span class="name" data-name="${name}">${name}</span></td>
+        <td>${priceData[name] || "未定價"} 元</td>
       `;
       tableBody.appendChild(row);
     }
@@ -1041,16 +1647,17 @@ function updateCart() {
   let total = 0;
   for (let name in cart) {
     let qty = cart[name];
-    let price = Math.round(priceData[name] * 0.95);
-    total += price * qty;
+    let price = priceData[name] || 0;
+    let discountPrice = Math.round(price * 0.95);
+    total += discountPrice * qty;
     const div = document.createElement("div");
     div.className = "cart-item";
     div.innerHTML = `
-      ${name} - ${price} 元 x 
+      ${name} - ${discountPrice} 元 x 
       <span class="qty-btn" data-name="${name}" data-action="minus">➖</span>
       ${qty}
       <span class="qty-btn" data-name="${name}" data-action="plus">➕</span>
-      = ${price * qty} 元
+      = ${discountPrice * qty} 元
     `;
     cartList.appendChild(div);
   }
@@ -1064,14 +1671,15 @@ document.getElementById("search").addEventListener("input", e=>{
 document.body.addEventListener("click", e=>{
   if(e.target.classList.contains("name")){
     const name = e.target.dataset.name;
-    const drug = drugs.find(d=>d.name===name);
-    if(drug){
+    const info = drugInfo[name];
+    if(info){
       document.getElementById("modal-content").innerHTML = `
-        <h3>${drug.name}</h3>
+        <h3>${name}</h3>
         <h4>【藥物組成】</h4>
-        <pre>${drug.composition}</pre>
-        <p><strong>效能：</strong>${drug.efficacy}</p>
-        <p><strong>適應症：</strong>${drug.indications}</p>
+        <ul>${info.composition.map(c=>`<li>${c}</li>`).join("")}</ul>
+        <p><strong>浸膏比例：</strong>${info.extractRatio || "（無資料）"}</p>
+        <p><strong>效能：</strong>${info.efficacy || "（無資料）"}</p>
+        <p><strong>適應症：</strong>${info.indications || "（無資料）"}</p>
         <button onclick="closeModal()">關閉</button>
       `;
       document.getElementById("info-modal").style.display = "flex";
