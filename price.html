@@ -3,47 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <title>價目表查詢</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", Roboto, "Helvetica Neue", Arial, "PingFang TC", "Microsoft JhengHei", sans-serif; margin: 0; }
-    #cart-bar {
-      position: sticky; top: 0; background: #fff; padding: 10px;
-      border-bottom: 1px solid #eee; z-index: 1000;
-    }
-    #cart-bar .total { font-weight: 700; }
-    #cart-list .item { display:flex; align-items:center; justify-content: space-between; padding:4px 0; border-bottom:1px dashed #eee; }
-    #cart-list .qty button { padding:2px 6px; margin: 0 3px; }
-    #search { width: 100%; padding: 10px; font-size: 16px; border: none; border-bottom: 1px solid #eee; }
-    table { width: 100%; border-collapse: collapse; font-size: 15px; }
-    th, td { border-bottom: 1px solid #f0f0f0; padding: 10px; text-align: left; }
-    th { background: #fafafa; position: sticky; top: 58px; z-index: 500; }
-    .name { color: #2563eb; cursor: pointer; text-decoration: underline; }
-    .muted { color: #888; }
-    .price { white-space: nowrap; }
+    :root{--bar-h:56px;}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",Roboto,"Helvetica Neue",Arial,"PingFang TC","Microsoft JhengHei",sans-serif;margin:0;background:#fff;color:#111;}
+    /* cart bar */
+    #cart-bar{position:sticky;top:0;z-index:1200;background:#fff;border-bottom:1px solid #eee;padding:10px;}
+    #cart-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    #cart-top .total{font-weight:700}
+    #cart-toggle{border:1px solid #ddd;background:#f8f8f8;border-radius:6px;padding:4px 8px}
+    #cart-list{margin-top:6px;border-top:1px dashed #eee;display:none;max-height:38vh;overflow:auto}
+    #cart-list.show{display:block}
+    #cart-list .item{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #eee}
+    #cart-list .qty button{padding:2px 8px;margin:0 3px}
+    #search{width:100%;padding:10px 12px;font-size:16px;border:none;border-bottom:1px solid #eee}
+    table{width:100%;border-collapse:collapse;font-size:15px}
+    th,td{padding:12px 10px;border-bottom:1px solid #f1f1f1;text-align:left;vertical-align:top}
+    th{background:#fafafa; /* 不再 sticky */}
+    .name{color:#2563eb;cursor:pointer;text-decoration:underline}
+    .muted{color:#888}
+    .price{white-space:nowrap}
     /* modal */
-    .modal { display:none; position:fixed; inset:0; background: rgba(0,0,0,.45); align-items:center; justify-content:center; padding:14px; }
-    .modal .box { background:#fff; max-width:720px; width:100%; max-height:85vh; overflow:auto; border-radius:10px; padding:16px 18px; }
-    .box h3 { margin: 0 0 8px 0; }
-    .box h4 { margin: 14px 0 6px; }
-    .close { float:right; cursor:pointer; }
+    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:3000;align-items:center;justify-content:center;padding:14px}
+    .modal .box{background:#fff;max-width:720px;width:100%;max-height:85vh;overflow:auto;border-radius:10px;padding:16px 18px;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+    .modal .box h3{margin:0 0 8px}
+    .modal .box h4{margin:14px 0 6px}
+    .close{position:sticky;top:0;float:right;cursor:pointer;background:#f3f4f6;border:1px solid #e5e7eb;border-radius:6px;padding:4px 8px}
+    /* mobile checkbox size */
+    input[type=checkbox]{width:20px;height:20px}
+    .btn{border:1px solid #ddd;background:#f8f8f8;border-radius:6px;padding:6px 10px}
   </style>
 </head>
 <body>
   <div id="cart-bar">
-    <div>
-      <strong>購物車總額：</strong><span id="cart-total" class="total">0</span> 元
+    <div id="cart-top">
+      <strong>購物車總額：<span id="cart-total" class="total">0</span> 元</strong>
       <span class="muted">（表格顯示原價，加入購物車後自動 95 折）</span>
-      <button id="clear-cart" style="margin-left:8px;">清空</button>
+      <button id="cart-toggle" class="btn" aria-expanded="false">展開明細</button>
+      <button id="clear-cart" class="btn">清空</button>
     </div>
     <div id="cart-list"></div>
   </div>
 
-  <input id="search" type="text" placeholder="搜尋品名（支援模糊，例如：banxiazhu… 或 半夏）…" />
+  <input id="search" type="text" placeholder="搜尋品名（支援模糊，例如：半夏…）" />
 
   <table>
     <thead>
       <tr>
-        <th style="width:72px;">選擇</th>
+        <th style="width:64px;">選擇</th>
         <th>品名</th>
         <th style="width:120px;">原價</th>
       </tr>
@@ -54,81 +61,91 @@
   <!-- 詳細資訊 Modal -->
   <div class="modal" id="modal">
     <div class="box">
-      <span class="close" onclick="hideModal()">✕</span>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <h3 id="m-title" style="margin:0"></h3>
+        <button class="close" onclick="hideModal()">關閉</button>
+      </div>
       <div id="modal-body"></div>
     </div>
   </div>
 
 <script>
-const DISCOUNT = 0.95; // 95 折只在購物車計算
-
+const DISCOUNT = 0.95; // 95折只在購物車計算
 let DATA = [];
 let CART = {}; // name -> qty
+let cartExpanded = false;
 
-// 載入資料（與 price.html 同資料夾）
-fetch('drugs.json', {cache: 'no-store'})
-  .then(r => r.json())
-  .then(json => {
-    // 僅保留需要的四個欄位，忽略任何 efficacy
+// 讀取資料
+fetch('drugs.json', {cache:'no-store'})
+  .then(r=>r.json())
+  .then(json=>{
     DATA = json.map(x => ({
-      name: String(x.name || ''),
-      price: Number(x.price || 0),
-      composition: (x.composition || '').trim(),
-      indications: (x.indications || '').trim()
+      name: String(x.name||''),
+      price: Number(x.price||0),
+      composition: (x.composition||'').trim(),
+      indications: (x.indications||'').trim()
     }));
     renderTable();
   });
 
-// 簡易模糊包含（忽略空白）
-function match(text, query) {
-  if (!query) return true;
-  const t = (text || '').replace(/\s+/g, '');
-  const q = query.replace(/\s+/g, '');
-  return t.includes(q);
+/* 工具 */
+function escapeHtml(s){return (s||'').replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
+function linesToUl(text){
+  const raw=(text||'').replace(/\r/g,'');
+  let arr = raw.split('\n').map(s=>s.trim()).filter(Boolean);
+  if(arr.length<=1){arr = raw.split(/[、，,；;•·‧]+/).map(s=>s.trim()).filter(Boolean);}
+  if(!arr.length) return '<div class="muted">（無）</div>';
+  return `<ul>${arr.map(li=>`<li>${escapeHtml(li)}</li>`).join('')}</ul>`;
+}
+function fuzzyIncludes(full, q){
+  if(!q) return true;
+  const t = String(full||'').replace(/\s+/g,'');
+  const s = String(q||'').replace(/\s+/g,'');
+  return t.includes(s);
 }
 
+/* DOM refs */
 const $tbody = document.getElementById('tbody');
 const $search = document.getElementById('search');
 const $cartList = document.getElementById('cart-list');
 const $cartTotal = document.getElementById('cart-total');
+const $cartToggle = document.getElementById('cart-toggle');
 
-function renderTable(filter="") {
+function renderTable(filter=""){
   $tbody.innerHTML = "";
-  DATA.forEach(item => {
-    if (!match(item.name, filter)) return;
+  DATA.forEach(item=>{
+    if(!fuzzyIncludes(item.name, filter)) return;
     const tr = document.createElement('tr');
-    const priceText = item.price > 0 ? `${item.price} 元` : `<span class="muted">—</span>`;
+    const checked = CART[item.name] ? 'checked' : '';
+    const disabled = item.price<=0 ? 'disabled' : '';
+    const priceText = item.price>0 ? `${item.price} 元` : `<span class="muted">—</span>`;
     tr.innerHTML = `
-      <td>
-        <button data-act="add" data-name="${item.name}" ${item.price<=0 ? 'disabled' : ''}>加入</button>
-      </td>
-      <td>
-        <span class="name" data-act="show" data-name="${item.name}">${item.name}</span>
-      </td>
+      <td><input type="checkbox" class="sel" data-name="${item.name}" ${checked} ${disabled}></td>
+      <td><a href="javascript:void(0)" class="name" data-act="show" data-name="${item.name}">${item.name}</a></td>
       <td class="price">${priceText}</td>
     `;
     $tbody.appendChild(tr);
   });
 }
 
-function renderCart() {
+function renderCart(){
   $cartList.innerHTML = "";
   let total = 0;
-  Object.entries(CART).forEach(([name, qty]) => {
-    const item = DATA.find(d => d.name === name);
-    if (!item) return;
-    const discounted = Math.round(item.price * DISCOUNT);
-    const sub = discounted * qty;
+  Object.entries(CART).forEach(([name, qty])=>{
+    const item = DATA.find(d=>d.name===name);
+    if(!item) return;
+    const disc = Math.round(item.price * DISCOUNT);
+    const sub = disc * qty;
     total += sub;
-
     const row = document.createElement('div');
     row.className = 'item';
     row.innerHTML = `
-      <div>${name} <span class="muted">（${discounted} 元/95折）</span></div>
+      <div>${escapeHtml(name)} <span class="muted">（${disc} 元/95折）</span></div>
       <div class="qty">
-        <button data-act="dec" data-name="${name}">−</button>
+        <button class="btn" data-act="dec" data-name="${name}">−</button>
         <strong>${qty}</strong>
-        <button data-act="inc" data-name="${name}">＋</button>
+        <button class="btn" data-act="inc" data-name="${name}">＋</button>
+        <button class="btn" data-act="rm" data-name="${name}" style="margin-left:6px">移除</button>
         <span style="margin-left:8px;">= ${sub} 元</span>
       </div>
     `;
@@ -137,73 +154,80 @@ function renderCart() {
   $cartTotal.textContent = total;
 }
 
-document.body.addEventListener('click', (e) => {
-  const act = e.target.getAttribute('data-act');
-  const name = e.target.getAttribute('data-name');
-  if (!act) return;
+/* 事件 */
+$search.addEventListener('input', e=> renderTable((e.target.value||'').trim()));
 
-  if (act === 'add') {
-    CART[name] = (CART[name] || 0) + 1;
+document.body.addEventListener('change', e=>{
+  if(e.target.classList.contains('sel')){
+    const name = e.target.dataset.name;
+    if(e.target.checked){
+      CART[name] = CART[name] ? CART[name] : 1;
+    }else{
+      delete CART[name];
+    }
     renderCart();
   }
-  if (act === 'inc' && CART[name] > 0) {
-    CART[name] += 1; renderCart();
-  }
-  if (act === 'dec' && CART[name] > 1) {
-    CART[name] -= 1; renderCart();
-  } else if (act === 'dec' && CART[name] === 1) {
-    delete CART[name]; renderCart();
-  }
-  if (act === 'show') {
+});
+
+document.body.addEventListener('click', e=>{
+  const act = e.target.getAttribute('data-act');
+  const name = e.target.getAttribute('data-name');
+
+  if(act === 'show'){
     showDetail(name);
+    return;
+  }
+  if(act === 'inc' && CART[name]){
+    CART[name] += 1; syncCheckbox(name,true); renderCart(); return;
+  }
+  if(act === 'dec' && CART[name]){
+    if(CART[name] > 1){ CART[name] -= 1; }
+    else { delete CART[name]; syncCheckbox(name,false); }
+    renderCart(); return;
+  }
+  if(act === 'rm' && CART[name]){
+    delete CART[name]; syncCheckbox(name,false); renderCart(); return;
   }
 });
 
-document.getElementById('clear-cart').addEventListener('click', () => {
-  CART = {}; renderCart();
+document.getElementById('clear-cart').addEventListener('click', ()=>{
+  CART = {};
+  document.querySelectorAll('input.sel:checked').forEach(cb=>cb.checked=false);
+  renderCart();
 });
 
-$search.addEventListener('input', (e) => renderTable((e.target.value || '').trim()));
+$cartToggle.addEventListener('click', ()=>{
+  cartExpanded = !cartExpanded;
+  $cartList.classList.toggle('show', cartExpanded);
+  $cartToggle.textContent = cartExpanded ? '收合明細' : '展開明細';
+  $cartToggle.setAttribute('aria-expanded', String(cartExpanded));
+});
 
-function showDetail(name) {
-  const item = DATA.find(d => d.name === name);
-  if (!item) return;
+/* 同步表格勾選狀態（避免搜尋重新渲染後遺失） */
+function syncCheckbox(name, checked){
+  const cb = document.querySelector(`input.sel[data-name="${CSS.escape(name)}"]`);
+  if(cb) cb.checked = !!checked;
+}
 
-  const comp = item.composition ? `
-      <h4>藥物組成</h4>
-      ${renderBulletLines(item.composition)}
-  ` : `<div class="muted">（尚無成分資料）</div>`;
+/* 詳細資訊 */
+function showDetail(name){
+  const item = DATA.find(d=>d.name===name);
+  if(!item) return;
+  document.getElementById('m-title').textContent = name;
 
-  const ind  = item.indications ? `
-      <h4>適應症</h4>
-      ${renderBulletLines(item.indications)}
-  ` : `<div class="muted">（尚無適應症資料）</div>`;
+  const comp = item.composition ? `<h4>藥物組成</h4>${linesToUl(item.composition)}` : `<div class="muted">（尚無成分資料）</div>`;
+  const ind  = item.indications ? `<h4>適應症</h4>${linesToUl(item.indications)}` : `<div class="muted">（尚無適應症資料）</div>`;
 
-  // 只渲染成分與適應症，完全不渲染「效能」
-  document.getElementById('modal-body').innerHTML = `
-    <h3>${escapeHtml(name)}</h3>
-    ${comp}
-    ${ind}
-  `;
+  document.getElementById('modal-body').innerHTML = `${comp}${ind}`;
   document.getElementById('modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden'; // 鎖背景卷動
+}
+function hideModal(){
+  document.getElementById('modal').style.display = 'none';
+  document.body.style.overflow = '';
 }
 
-function hideModal(){ document.getElementById('modal').style.display = 'none'; }
-function escapeHtml(s){ return (s||'').replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
-
-// 將多行文字（或用頓號/逗號分隔）渲染為項目符號
-function renderBulletLines(text) {
-  const raw = (text || "").replace(/\r/g, "");
-  // 先用換行拆；若只有一行再試著用頓號/、/、逗號拆解
-  let lines = raw.split("\n").map(s => s.trim()).filter(Boolean);
-  if (lines.length <= 1) {
-    lines = raw.split(/[、，,；;•·‧]+/).map(s => s.trim()).filter(Boolean);
-  }
-  if (!lines.length) return `<div class="muted">（無）</div>`;
-  return `<ul>${lines.map(li => `<li>${escapeHtml(li)}</li>`).join("")}</ul>`;
-}
-
-// 首次渲染（防止資料尚未載入時的空白）
+/* 初次渲染 */
 renderTable();
 </script>
 </body>
